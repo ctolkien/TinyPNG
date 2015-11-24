@@ -1,16 +1,16 @@
 ﻿using System.Threading.Tasks;
 using Xunit;
 
-namespace TinyPng.Tests
+namespace TinyPngApi.Tests
 {
     public class TinyPngTests
     {
         const string apiKey = "lolwat";
 
-        [Fact(Skip ="interation")]
+        [Fact(Skip ="integration")]
         public async Task Test()
         {
-            var png = new TinyPngApi.TinyPng(apiKey);
+            var png = new TinyPng(apiKey);
 
             var result = await png.Shrink("Resources/cat.jpg");
 

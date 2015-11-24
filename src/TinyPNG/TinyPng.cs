@@ -159,11 +159,18 @@ namespace TinyPngApi
                 {
                     return await ret.Content.ReadAsStreamAsync();
                 }
+                
                 throw new Exception("TODO: exception handling");
             }
 
         }
 
-       
+        public async static Task SaveImage(this TinyPngApiResult result, string filePath)
+        {
+            var byteData = await result.ImageByteData();
+            File.WriteAllBytes(filePath, byteData);
+        }
+
+
     }
 }
