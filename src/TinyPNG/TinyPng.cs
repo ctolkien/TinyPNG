@@ -20,18 +20,22 @@ namespace TinyPngApi
         /// <param name="apiKey">Your tinypng.com API key, signup here: https://tinypng.com/developers </param>
         public TinyPng(string apiKey) 
         {
-            if (apiKey == null)
+            if (string.IsNullOrEmpty(apiKey))
                 throw new ArgumentNullException(nameof(apiKey));
 
+            //configure basic auth api key formatting.
             var auth = $"api:{apiKey}";
             var authByteArray = System.Text.Encoding.ASCII.GetBytes(auth);
-
             _apiKey = Convert.ToBase64String(authByteArray);
 
+            //add auth to the default outgoing headers.
             httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("basic", _apiKey);
 
-            jsonSettings = new JsonSerializerSettings();
-            jsonSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+            //configure json settings for camelCase.
+            jsonSettings = new JsonSerializerSettings
+            {
+                ContractResolver = new CamelCasePropertyNamesContractResolver()
+            };
 
         }
 
@@ -49,13 +53,16 @@ namespace TinyPngApi
         /// Compress file
         /// </summary>
         /// <param name="pathToFile">Path to file on disk</param>
-        /// <returns></returns>
+        /// <returns>TinyPngApiResult, <see cref="TinyPngApiResult"/></returns>
         public async Task<TinyPngApiResult> Compress(string pathToFile)
         {
             if (pathToFile == null)
                 throw new ArgumentNullException(nameof(pathToFile));
 
-            return await Compress(File.OpenRead(pathToFile));
+            using (var file = File.OpenRead(pathToFile))
+            {
+                return await Compress(file);
+            }
         }
 
         /// <summary>
@@ -72,7 +79,7 @@ namespace TinyPngApi
 
             if (response.IsSuccessStatusCode)
             {
-                return JsonConvert.DeserializeObject<TinyPngApiResult>(await response.Content.ReadAsStringAsync(), jsonSettings);
+                return await Deserialize(response);
             }
             throw new Exception($"Api Service returned a non-success status code when attempting to compress an image: {response.StatusCode}");
         }
@@ -91,9 +98,14 @@ namespace TinyPngApi
 
             if (response.IsSuccessStatusCode)
             {
-                return JsonConvert.DeserializeObject<TinyPngApiResult>(await response.Content.ReadAsStringAsync(), jsonSettings);
+                return await Deserialize(response);
             }
             throw new Exception($"Api Service returned a non-success status code when attempting to compress an image: {response.StatusCode}");
+        }
+
+        private async Task<TinyPngApiResult> Deserialize(HttpResponseMessage response)
+        {
+            return JsonConvert.DeserializeObject<TinyPngApiResult>(await response.Content.ReadAsStringAsync(), jsonSettings);
         }
 
 
