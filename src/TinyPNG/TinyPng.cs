@@ -130,6 +130,12 @@ namespace TinyPngApi
 
     public static class Extensions
     {
+
+        /// <summary>
+        /// Get the image data as a byte array
+        /// </summary>
+        /// <param name="result">The result from compress</param>
+        /// <returns>Byte array of the image data</returns>
         public async static Task<byte[]> GetImageByteData(this TinyPngApiResult result)
         {
             using (HttpClient client = new HttpClient())

@@ -1,6 +1,6 @@
 ﻿{
   "sdk": {
-    "version": "1.0.0-rc2-16222"
+    "version": "1.0.0-rc1-final"
   },
   "projects": [ "tests/TinyPng.Tests", "src/TinyPng", "src" ]
 }
