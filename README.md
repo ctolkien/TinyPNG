@@ -11,8 +11,6 @@ This is a .NET wrapper around the TinyPng.com image compression service.
 ## Usage
 
 ```csharp
-using TinyPngApi;
-
 using (var png = new TinyPng("apiKey")) 
 {
     await (await png.Compress("pathToFile")).SaveImageToDisk("PathToSave");
