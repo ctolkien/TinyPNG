@@ -156,7 +156,7 @@ namespace TinyPngApi
 
     public static class Extensions
     {
-        public async static Task<byte[]> ImageByteData(this TinyPngApiResult result)
+        public async static Task<byte[]> GetImageByteData(this TinyPngApiResult result)
         {
             using (HttpClient client = new HttpClient())
             {
@@ -175,7 +175,7 @@ namespace TinyPngApi
         /// </summary>
         /// <param name="result">The result from compress</param>
         /// <returns>Stream of compressed image data</returns>
-        public async static Task<Stream> ImageStreamData(this TinyPngApiResult result)
+        public async static Task<Stream> GetImageStreamData(this TinyPngApiResult result)
         {
             using (HttpClient client = new HttpClient())
             {
@@ -195,9 +195,9 @@ namespace TinyPngApi
         /// <param name="result">The result from compress</param>
         /// <param name="filePath">The path to store the file</param>
         /// <returns></returns>
-        public async static Task SaveImage(this TinyPngApiResult result, string filePath)
+        public async static Task SaveImageToDisk(this TinyPngApiResult result, string filePath)
         {
-            var byteData = await result.ImageByteData();
+            var byteData = await result.GetImageByteData();
             File.WriteAllBytes(filePath, byteData);
         }
 

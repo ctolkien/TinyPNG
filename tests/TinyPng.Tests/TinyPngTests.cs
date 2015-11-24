@@ -10,11 +10,16 @@ namespace TinyPngApi.Tests
         [Fact(Skip ="integration")]
         public async Task Test()
         {
-            var png = new TinyPng(apiKey);
+            var pngx = new TinyPng(apiKey);
 
-            var result = await png.Compress("Resources/cat.jpg");
+            var result = await pngx.Compress("Resources/cat.jpg");
 
             Assert.Equal(15423, result.Output.Size);
+
+            using (var png = new TinyPng("apiKey"))
+            {
+                await (await png.Compress("pathToFile")).SaveImageToDisk("PathToSave");
+            }
 
         }
     }
