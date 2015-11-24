@@ -14,6 +14,10 @@ namespace TinyPngApi
         private HttpClient httpClient = new HttpClient();
         private readonly JsonSerializerSettings jsonSettings;
 
+        /// <summary>
+        /// Wrapper for the tinypng.com API
+        /// </summary>
+        /// <param name="apiKey">Your tinypng.com API key, signup here: https://tinypng.com/developers </param>
         public TinyPng(string apiKey) 
         {
             if (apiKey == null)
@@ -41,15 +45,25 @@ namespace TinyPngApi
             return new StreamContent(source);
         }
 
-        public async Task<TinyPngApiResult> Shrink(string data)
+        /// <summary>
+        /// Compress file
+        /// </summary>
+        /// <param name="pathToFile">Path to file on disk</param>
+        /// <returns></returns>
+        public async Task<TinyPngApiResult> Compress(string pathToFile)
         {
-            if (data == null)
-                throw new ArgumentNullException(nameof(data));
+            if (pathToFile == null)
+                throw new ArgumentNullException(nameof(pathToFile));
 
-            return await Shrink(File.ReadAllBytes(data));
+            return await Compress(File.ReadAllBytes(pathToFile));
         }
 
-        public async Task<TinyPngApiResult> Shrink(byte[] data)
+        /// <summary>
+        /// Compress byte array of image
+        /// </summary>
+        /// <param name="data">Byte array of the data to compress</param>
+        /// <returns></returns>
+        public async Task<TinyPngApiResult> Compress(byte[] data)
         {
             if (data == null)
                 throw new ArgumentNullException(nameof(data));
@@ -60,11 +74,15 @@ namespace TinyPngApi
             {
                 return JsonConvert.DeserializeObject<TinyPngApiResult>(await response.Content.ReadAsStringAsync(), jsonSettings);
             }
-            
-            throw new Exception("Todo: Exception message");
+            throw new Exception($"Api Service returned a non-success status code when attempting to compress an image: {response.StatusCode}");
         }
 
-        public async Task<TinyPngApiResult> Shrink(Stream data)
+        /// <summary>
+        /// Compress stream
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        public async Task<TinyPngApiResult> Compress(Stream data)
         {
             if (data == null)
                 throw new ArgumentNullException(nameof(data));
@@ -75,8 +93,7 @@ namespace TinyPngApi
             {
                 return JsonConvert.DeserializeObject<TinyPngApiResult>(await response.Content.ReadAsStringAsync(), jsonSettings);
             }
-
-            throw new Exception("Todo: Exception message");
+            throw new Exception($"Api Service returned a non-success status code when attempting to compress an image: {response.StatusCode}");
         }
 
         public async Task<object> Download(TinyPngApiResult response)
@@ -95,6 +112,7 @@ namespace TinyPngApi
             var streamOfBytes = await httpClient.GetStreamAsync(url);
             return streamOfBytes;
         }
+
 
         #region IDisposable Support
         private bool disposedValue = false; // To detect redundant calls
@@ -134,37 +152,49 @@ namespace TinyPngApi
         #endregion
     }
 
+    
+
     public static class Extensions
     {
         public async static Task<byte[]> ImageByteData(this TinyPngApiResult result)
         {
             using (HttpClient client = new HttpClient())
             {
-                var ret = await client.GetAsync(result.Output.Url);
-                if (ret.IsSuccessStatusCode)
+                var response = await client.GetAsync(result.Output.Url);
+                if (response.IsSuccessStatusCode)
                 {
-                    return await ret.Content.ReadAsByteArrayAsync();
+                    return await response.Content.ReadAsByteArrayAsync();
                 }
-                throw new Exception("TODO: exception handling");
+                throw new Exception($"Api Service returned a non-success status code when attempting to access a compressed image: {response.StatusCode}");
             }
 
         }
 
+        /// <summary>
+        /// Gets the image data as a stream
+        /// </summary>
+        /// <param name="result">The result from compress</param>
+        /// <returns>Stream of compressed image data</returns>
         public async static Task<Stream> ImageStreamData(this TinyPngApiResult result)
         {
             using (HttpClient client = new HttpClient())
             {
-                var ret = await client.GetAsync(result.Output.Url);
-                if (ret.IsSuccessStatusCode)
+                var response = await client.GetAsync(result.Output.Url);
+                if (response.IsSuccessStatusCode)
                 {
-                    return await ret.Content.ReadAsStreamAsync();
+                    return await response.Content.ReadAsStreamAsync();
                 }
-                
-                throw new Exception("TODO: exception handling");
+                throw new Exception($"Api Service returned a non-success status code when attempting to access a compressed image: {response.StatusCode}");
             }
 
         }
 
+        /// <summary>
+        /// Writes the image to disk
+        /// </summary>
+        /// <param name="result">The result from compress</param>
+        /// <param name="filePath">The path to store the file</param>
+        /// <returns></returns>
         public async static Task SaveImage(this TinyPngApiResult result, string filePath)
         {
             var byteData = await result.ImageByteData();

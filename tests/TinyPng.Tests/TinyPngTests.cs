@@ -12,7 +12,7 @@ namespace TinyPngApi.Tests
         {
             var png = new TinyPng(apiKey);
 
-            var result = await png.Shrink("Resources/cat.jpg");
+            var result = await png.Compress("Resources/cat.jpg");
 
             Assert.Equal(15423, result.Output.Size);
 
