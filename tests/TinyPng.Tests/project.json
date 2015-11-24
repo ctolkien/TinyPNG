@@ -1,0 +1,30 @@
+﻿{
+  "version": "1.0.0-*",
+  "description": "TinyPng.Tests Class Library",
+  "authors": [ "chad" ],
+  "tags": [ "" ],
+  "projectUrl": "",
+  "licenseUrl": "",
+  "dependencies": {
+    "TinyPNG": "1.0.0-*",
+    "xunit.runner.aspnet": "2.0.0-aspnet-*"
+  },
+  "frameworks": {
+    "dnx451": {
+      "dependencies": {
+
+      }
+    },
+    "dnxcore50": {
+      "dependencies": {
+        "System.IO.FileSystem": "4.0.1-beta-23516",
+        "System.Linq": "4.0.1-beta-23516",
+        "System.Text.Encoding": "4.0.11-rc2-23519"
+
+      }
+    }
+  },
+  "commands": {
+    "test": "xunit.runner.aspnet"
+  }
+}
