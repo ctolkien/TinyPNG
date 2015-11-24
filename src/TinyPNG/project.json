@@ -1,20 +1,25 @@
 {
+  "authors": [ "Chad Tolkien" ],
+  "copyright": "Copyright 2015 Chad Tolkien",
+  "description": "TinyPNG Wrapper",
+  "licenseUrl": "http://opensource.org/licenses/MIT",
+  "projectUrl": "https://github.com/ctolkien/tinypng",
+  "tags": [ "tinypng", "images", "compression" ],
+  "summary": "TinyPNG Wrapper",
+  "title": "TinyPNG",
+  "version": "1.0.0-beta",
   "dependencies": {
     "Newtonsoft.Json": "8.0.1-beta3",
     "System.Net.Http": "4.0.1-beta-23516"
   },
   "frameworks": {
-    "dnx451": {
-      "dependencies": {
-        
-      }
-    },
+    "dnx451": {},
     "dnxcore50": {
       "dependencies": {
         "System.IO.FileSystem": "4.0.1-beta-23516",
         "System.Linq": "4.0.1-beta-23516",
         "System.Text.Encoding": "4.0.11-beta-23516"
-        
+
       }
     }
   }

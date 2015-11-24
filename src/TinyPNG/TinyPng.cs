@@ -3,7 +3,9 @@ using Newtonsoft.Json.Serialization;
 using System;
 using System.IO;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using TinyPng;
 
 namespace TinyPngApi
 {
@@ -30,7 +32,6 @@ namespace TinyPngApi
 
             //add auth to the default outgoing headers.
             httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("basic", _apiKey);
-
             //configure json settings for camelCase.
             jsonSettings = new JsonSerializerSettings
             {
@@ -108,7 +109,22 @@ namespace TinyPngApi
             return JsonConvert.DeserializeObject<TinyPngApiResult>(await response.Content.ReadAsStringAsync(), jsonSettings);
         }
 
+        public async Task<TinyPngApiResult> Resize(TinyPngApiResult result, int height, int width, ResizeType resizeType = ResizeType.Fit)
+        {
+            var msg = new HttpRequestMessage(HttpMethod.Get, result.Output.Url);
+            
+            msg.Headers.Add("Content-Type", "application/json");
+            var requestBody = JsonConvert.SerializeObject(new ResizeOperation(resizeType, width, height));
 
+            var response = await httpClient.SendAsync(msg);
+            if (response.IsSuccessStatusCode)
+            {
+                return await Deserialize(response);
+            }
+            throw new Exception($"Api Service returned a non-success status code when attempting to compress an image: {response.StatusCode}");
+
+
+        }
         #region IDisposable Support
         public void Dispose()
         {
@@ -130,6 +146,23 @@ namespace TinyPngApi
 
     public static class Extensions
     {
+
+        public async static Task<byte[]> Resize (this TinyPngApiResult result)
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                //var msg = new HttpRequestMessage();
+                //msg.Headers.a
+
+
+                //var response = await client.GetAsync(result.Output.Url);
+                //if (response.IsSuccessStatusCode)
+                //{
+                //    return await response.Content.ReadAsByteArrayAsync();
+                //}
+                throw new Exception($"Api Service returned a non-success status code when attempting to access a compressed image: {response.StatusCode}");
+            }
+        }
 
         /// <summary>
         /// Get the image data as a byte array
