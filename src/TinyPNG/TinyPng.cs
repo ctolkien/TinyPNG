@@ -55,7 +55,7 @@ namespace TinyPngApi
             if (pathToFile == null)
                 throw new ArgumentNullException(nameof(pathToFile));
 
-            return await Compress(File.ReadAllBytes(pathToFile));
+            return await Compress(File.OpenRead(pathToFile));
         }
 
         /// <summary>
