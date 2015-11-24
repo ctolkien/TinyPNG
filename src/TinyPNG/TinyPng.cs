@@ -96,23 +96,6 @@ namespace TinyPngApi
             throw new Exception($"Api Service returned a non-success status code when attempting to compress an image: {response.StatusCode}");
         }
 
-        public async Task<object> Download(TinyPngApiResult response)
-        {
-            return await DownloadStream(response.Output.Url);
-        }
-
-        public async Task<Stream> DownloadStream(string url)
-        {
-            var streamOfBytes = await httpClient.GetStreamAsync(url);
-            return streamOfBytes;
-        }
-
-        public async Task<Stream> DownloadBytes(string url)
-        {
-            var streamOfBytes = await httpClient.GetStreamAsync(url);
-            return streamOfBytes;
-        }
-
 
         #region IDisposable Support
         public void Dispose()
