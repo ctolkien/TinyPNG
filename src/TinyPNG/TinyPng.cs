@@ -133,4 +133,37 @@ namespace TinyPngApi
         }
         #endregion
     }
+
+    public static class Extensions
+    {
+        public async static Task<byte[]> ImageByteData(this TinyPngApiResult result)
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                var ret = await client.GetAsync(result.Output.Url);
+                if (ret.IsSuccessStatusCode)
+                {
+                    return await ret.Content.ReadAsByteArrayAsync();
+                }
+                throw new Exception("TODO: exception handling");
+            }
+
+        }
+
+        public async static Task<Stream> ImageStreamData(this TinyPngApiResult result)
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                var ret = await client.GetAsync(result.Output.Url);
+                if (ret.IsSuccessStatusCode)
+                {
+                    return await ret.Content.ReadAsStreamAsync();
+                }
+                throw new Exception("TODO: exception handling");
+            }
+
+        }
+
+       
+    }
 }

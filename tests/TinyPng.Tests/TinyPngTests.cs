@@ -7,7 +7,7 @@ namespace TinyPng.Tests
     {
         const string apiKey = "lolwat";
 
-        [Fact(Skip ="Integration test")]
+        [Fact(Skip ="interation")]
         public async Task Test()
         {
             var png = new TinyPngApi.TinyPng(apiKey);
