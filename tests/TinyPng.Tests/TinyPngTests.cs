@@ -12,9 +12,8 @@ namespace TinyPngApi.Tests
         {
             var pngx = new TinyPng(apiKey);
 
-            var result = await pngx.Compress("Resources/cat.jpg");
+            var result = await (await pngx.Compress("Resources/cat.jpg")).GetImageByteData();
 
-            Assert.Equal(15423, result.Output.Size);
 
             using (var png = new TinyPng("apiKey"))
             {
