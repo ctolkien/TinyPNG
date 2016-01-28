@@ -8,7 +8,10 @@ before_build:
   - node aspnetcore-version.js
 build:
   verbosity: minimal
-test: off # restore this once we've figured out testing on appveyor
+test_script:
+- cmd: >-
+    cd tests/tinypng.tests
+    dnx test
 artifacts:
   - path: src/tinypng/artifacts/bin/tinypng/{configuration}/*.nupkg
 configuration: release
