@@ -12,6 +12,7 @@ var semversion      = semver.valid(basePackageVer + "." + buildNumber)
 jsonfile.readFile(file, function (err, project) {
     project.version = semversion;
     jsonfile.writeFile(file, project, {spaces: 2}, function(err) {
+        console.error("We've failed to update the build number");
         console.error(err);
     });
 })
