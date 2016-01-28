@@ -21,6 +21,7 @@ deploy:
   on:
     branch: master
   cache:
-    - node_modules                    # local npm modules 
-    - %APPDATA%\npm-cache             # npm cache
-    - %APPDATA%\.dnx             # dnx cache 
+    - node_modules 
+    - %APPDATA%\npm-cache
+    - %APPDATA%\.dnx
+     
