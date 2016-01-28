@@ -145,7 +145,7 @@
           "lib/net45/_._": {}
         }
       },
-      "TinyPNG/1.0.2-beta": {
+      "TinyPNG/1.0.3": {
         "type": "project",
         "framework": "DNX,Version=v4.5.1",
         "dependencies": {
@@ -980,7 +980,7 @@
           "lib/dotnet5.4/System.Xml.XDocument.dll": {}
         }
       },
-      "TinyPNG/1.0.2-beta": {
+      "TinyPNG/1.0.3": {
         "type": "project",
         "framework": "DNXCore,Version=v5.0",
         "dependencies": {
@@ -1297,7 +1297,7 @@
           "lib/net45/_._": {}
         }
       },
-      "TinyPNG/1.0.2-beta": {
+      "TinyPNG/1.0.3": {
         "type": "project",
         "framework": "DNX,Version=v4.5.1",
         "dependencies": {
@@ -1558,7 +1558,7 @@
           "lib/net45/_._": {}
         }
       },
-      "TinyPNG/1.0.2-beta": {
+      "TinyPNG/1.0.3": {
         "type": "project",
         "framework": "DNX,Version=v4.5.1",
         "dependencies": {
@@ -2758,7 +2758,7 @@
           "lib/dotnet5.4/System.Xml.XDocument.dll": {}
         }
       },
-      "TinyPNG/1.0.2-beta": {
+      "TinyPNG/1.0.3": {
         "type": "project",
         "framework": "DNXCore,Version=v5.0",
         "dependencies": {
@@ -4014,7 +4014,7 @@
           "lib/dotnet5.4/System.Xml.XDocument.dll": {}
         }
       },
-      "TinyPNG/1.0.2-beta": {
+      "TinyPNG/1.0.3": {
         "type": "project",
         "framework": "DNXCore,Version=v5.0",
         "dependencies": {
@@ -4190,7 +4190,7 @@
     }
   },
   "libraries": {
-    "TinyPNG/1.0.2-beta": {
+    "TinyPNG/1.0.3": {
       "type": "project",
       "path": "../../src/TinyPNG/project.json"
     },
