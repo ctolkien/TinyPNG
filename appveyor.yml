@@ -11,7 +11,6 @@ build:
 test_script:
   - cmd: pushd tests\tinypng.tests
   - cmd: dnx test
-  - cmd: popd
 artifacts:
 - path: src/tinypng/artifacts/bin/tinypng/{configuration}/*.nupkg
 configuration: release
