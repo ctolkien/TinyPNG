@@ -18,5 +18,6 @@ deploy:
   api_key:
     secure: Gerln5x/jQ3CsCjXe76zQuP2Rjh12sKBH2wj88LIpt1IQym1+6MlFVWmvx5j+KSw
   skip_symbols: false
-  artifact: /.*\.nupkg/
-
+  artifact: /src\/TinyPNG\/bin\/release\/TinyPNG\.1\.0\.{build}\.*\.nupkgg/
+  on:
+    branch: master
