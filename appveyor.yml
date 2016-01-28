@@ -3,21 +3,20 @@ os: Visual Studio 2015
 install:
 - cmd: dnvm install 1.0.0-rc1-update1
 before_build:
-- dnu restore
-- npm i 
-- node aspnetcore-version.js
+  - dnu restore
+  - npm i 
+  - node aspnetcore-version.js
 build:
   verbosity: minimal
 test: off # restore this once we've figured out testing on appveyor
-branches:
-  only:
-    - master
+artificats:
+  - 
 configuration: release
 deploy:
   provider: NuGet
   api_key:
     secure: Gerln5x/jQ3CsCjXe76zQuP2Rjh12sKBH2wj88LIpt1IQym1+6MlFVWmvx5j+KSw
   skip_symbols: false
-  artifact: /src\/TinyPNG\/bin\/release\/TinyPNG\.1\.0\.{build}\.*\.nupkgg/
+  artifact: /artifacts\\bin\\tinypng\\{configuration}\\.*\.nupkg/
   on:
     branch: master
