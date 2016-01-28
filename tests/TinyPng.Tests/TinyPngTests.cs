@@ -12,17 +12,13 @@ namespace TinyPngApi.Tests
         {
             var pngx = new TinyPng(apiKey);
 
-
             var result = await pngx.Compress("Resources/cat.jpg");
-
 
             Assert.Equal("image/jpeg", result.Input.Type);
 
-            Assert.Equal(300, result.Output.Width);
+            Assert.Equal(300, result.Output.Size);
 
             Assert.Equal(182, (await result.GetImageByteData()).Length);
-            
-
         }
 
         [Fact(Skip = "integration")]
@@ -35,7 +31,6 @@ namespace TinyPngApi.Tests
             var resized = await pngx.Resize(result, new ScaleHeightResizeOperation(100));
 
             Assert.Equal(7085, (await resized.GetImageByteData()).Length);
-            
 
         }
     }

@@ -106,10 +106,16 @@ namespace TinyPngApi
         }
 
 
-        public async Task<TinyPngResizeResponse> Resize(TinyPngCompressResponse result, ResizeOperation resizeOp)
+        /// <summary>
+        /// Uses the TinyPng API to create a resized version of your uploaded image.
+        /// </summary>
+        /// <param name="result">This is the previous result of running a compression <see cref="Compress(string)"/></param>
+        /// <param name="resizeOperation">Supply a strongly typed Resize Operation. See <typeparamref name="CoverResizeOperation"/>, <typeparamref name="FitResizeOperation"/>, <typeparamref name="ScaleHeightResizeOperation"/>, <typeparamref name="ScaleWidthResizeOperation"/></param>
+        /// <returns></returns>
+        public async Task<TinyPngResizeResponse> Resize(TinyPngCompressResponse result, ResizeOperation resizeOperation)
         {
 
-            var requestBody = JsonConvert.SerializeObject(new { resize = resizeOp }, jsonSettings);
+            var requestBody = JsonConvert.SerializeObject(new { resize = resizeOperation }, jsonSettings);
 
 
             var msg = new HttpRequestMessage(HttpMethod.Post, result.Output.Url);
@@ -125,7 +131,15 @@ namespace TinyPngApi
             throw new TinyPngApiException((int)response.StatusCode, response.ReasonPhrase, errorMsg.Error, errorMsg.Message);
         }
 
-        public async Task<TinyPngResizeResponse> Resize(TinyPngCompressResponse result, int height, int width, ResizeType resizeType = ResizeType.Fit)
+        /// <summary>
+        /// Uses the TinyPng API to create a resized version of your uploaded image.
+        /// </summary>
+        /// <param name="result">This is the previous result of running a compression <see cref="Compress(string)"/></param>
+        /// <param name="width"></param>
+        /// <param name="height"></param>
+        /// <param name="resizeType"></param>
+        /// <returns></returns>
+        public async Task<TinyPngResizeResponse> Resize(TinyPngCompressResponse result, int width, int height, ResizeType resizeType = ResizeType.Fit)
         {
             var resizeOp = new ResizeOperation(resizeType, width, height);
 
