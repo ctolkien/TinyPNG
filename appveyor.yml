@@ -9,9 +9,9 @@ before_build:
 build:
   verbosity: minimal
 test_script:
-- cmd: >-
-    cd tests/tinypng.tests
-    dnx test
+  - pushd tests/tinypng.tests
+  - dnx test
+  - popd
 artifacts:
 - path: src/tinypng/artifacts/bin/tinypng/{configuration}/*.nupkg
 configuration: release
