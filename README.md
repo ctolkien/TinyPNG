@@ -18,6 +18,14 @@ Install via Nuget
     Install-Package TinyPNG
 ```
 
+## Quickstart
+```csharp
+using (var png = new TinyPngClient("yourSecretApiKey")) 
+{
+    await (await png.Compress("cat.jpg")).SaveImageToDisk("compressedCat.jpg");
+}
+```
+
 ## Compressing Images
 
 ```csharp
