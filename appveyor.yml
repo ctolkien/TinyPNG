@@ -10,7 +10,7 @@ build:
   verbosity: minimal
 test: off # restore this once we've figured out testing on appveyor
 artifacts:
-  - path: artifacts/bin/tinypng/{configuration}/*.nupkg
+  - path: tinypng/artifacts/bin/tinypng/{configuration}/*.nupkg
 configuration: release
 deploy:
   provider: NuGet
