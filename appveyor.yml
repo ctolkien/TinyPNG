@@ -1,0 +1,22 @@
+version: 1.0.{build}
+os: Visual Studio 2015
+install:
+- cmd: dnvm install 1.0.0-rc1-update1
+before_build:
+- cmd: dnu restore
+build:
+  verbosity: minimal
+test: off # restore this once we've figured out testing on appveyor
+branches:
+  only:
+    - master
+configuration: release
+deploy:
+  provider: NuGet
+  server:                  # remove to push to NuGet.org
+  api_key:
+    secure: Gerln5x/jQ3CsCjXe76zQuP2Rjh12sKBH2wj88LIpt1IQym1+6MlFVWmvx5j+KSw
+  skip_symbols: false
+  symbol_server:           # remove to push symbols to SymbolSource.org
+  artifact: /.*\.nupkg/
+  after_build: node aspnetcore-version.js
