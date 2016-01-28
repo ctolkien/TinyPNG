@@ -3,9 +3,9 @@ os: Visual Studio 2015
 install:
 - cmd: dnvm install 1.0.0-rc1-update1
 before_build:
-  - dnu restore
-  - npm i 
-  - node aspnetcore-version.js
+- dnu restore
+  npm i 
+  node aspnetcore-version.js
 build:
   verbosity: minimal
 test_script:
@@ -13,10 +13,10 @@ test_script:
     cd tests/tinypng.tests
     dnx test
 artifacts:
-  - path: src/tinypng/artifacts/bin/tinypng/{configuration}/*.nupkg
+- path: src/tinypng/artifacts/bin/tinypng/{configuration}/*.nupkg
 configuration: release
 deploy:
-  provider: NuGet
+-  provider: NuGet
   api_key:
     secure: Gerln5x/jQ3CsCjXe76zQuP2Rjh12sKBH2wj88LIpt1IQym1+6MlFVWmvx5j+KSw
   skip_symbols: false
