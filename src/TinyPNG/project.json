@@ -7,14 +7,14 @@
   "tags": [ "tinypng", "images", "compression" ],
   "summary": "TinyPNG Wrapper",
   "title": "TinyPNG",
-  "version": "1.0.1-beta",
+  "version": "1.0.2-beta",
   "dependencies": {
     "Newtonsoft.Json": "8.0.2",
     "System.Net.Http": "4.0.0"
   },
   "frameworks": {
-    "net452": { },
-    "dotnet5.4": {
+    "dnx451": { },
+    "dnxcore50": {
       "dependencies": {
         "System.IO.FileSystem": "4.0.1-beta-23516",
         "System.Linq": "4.0.1-beta-23516",

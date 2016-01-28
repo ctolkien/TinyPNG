@@ -1,17 +1,5 @@
-﻿using System.Net.Http;
-
-namespace TinyPngApi
+﻿namespace TinyPngApi
 {
-
-    public class TinyPngHttpResponseMessage
-    {
-        public HttpResponseMessage ResponseMessage { get; private set; }
-
-        public TinyPngHttpResponseMessage(HttpResponseMessage msg)
-        {
-            ResponseMessage = msg;
-        }
-    }
 
     public class TinyPngApiResult
     {
