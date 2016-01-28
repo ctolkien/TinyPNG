@@ -4,8 +4,7 @@
   "description": "This is a .NET wrapper around the TinyPng.com image compression service.",
   "main": "aspnetcore-version.js",
   "dependencies": {
-    "jsonfile": "^2.2.3",
-    "semver": "^5.1.0"
+    "jsonfile": "^2.2.3"
   },
   "devDependencies": {},
   "repository": {
