@@ -13,10 +13,8 @@ branches:
 configuration: release
 deploy:
   provider: NuGet
-  server:                  # remove to push to NuGet.org
   api_key:
     secure: Gerln5x/jQ3CsCjXe76zQuP2Rjh12sKBH2wj88LIpt1IQym1+6MlFVWmvx5j+KSw
   skip_symbols: false
-  symbol_server:           # remove to push symbols to SymbolSource.org
   artifact: /.*\.nupkg/
-  after_build: node aspnetcore-version.js
+after_build: node aspnetcore-version.js
