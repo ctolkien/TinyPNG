@@ -6,6 +6,8 @@ This is a .NET wrapper around the TinyPng.com image compression service.
 * Non-blocking async turtles all the way down
 * `Byte[]`, `Stream` and `File` API's available
 
+[![Build status](https://ci.appveyor.com/api/projects/status/jow5inetxx0lq7uu?svg=true)]
+
 ## Installation
 
 Install via Nuget
@@ -14,11 +16,13 @@ Install via Nuget
     Install-Package TinyPNG
 ```
 
-## Compressing Image
+## Compressing Images
 
 ```csharp
+//create an instance of the TinyPngClient
 using (var png = new TinyPngClient("yourSecretApiKey")) 
 {
+    //compress an image
     var compressResult = await png.Compress("pathToFile or byte array or stream)");
 
     //get the image data as a byte array

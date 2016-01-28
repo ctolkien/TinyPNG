@@ -3,7 +3,7 @@
     "Chad Tolkien"
   ],
   "copyright": "Copyright 2015 Chad Tolkien",
-  "description": "TinyPNG Wrapper",
+  "description": "This is a .NET wrapper around the TinyPng.com image compression service.",
   "licenseUrl": "http://opensource.org/licenses/MIT",
   "projectUrl": "https://github.com/ctolkien/tinypng",
   "tags": [
@@ -11,7 +11,7 @@
     "images",
     "compression"
   ],
-  "summary": "TinyPNG Wrapper",
+  "summary": "This is a .NET wrapper around the TinyPng.com image compression service.",
   "title": "TinyPNG",
   "dependencies": {
     "Newtonsoft.Json": "8.0.2",
