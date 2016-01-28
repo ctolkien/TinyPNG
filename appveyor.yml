@@ -7,7 +7,7 @@ before_build:
 - npm i 
 - node aspnetcore-version.js
 build:
-  verbosity: minimal
+  verbosity: normal
   publish_nuget: true
 test_script:
   - cmd: pushd tests\tinypng.tests
