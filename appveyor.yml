@@ -12,7 +12,7 @@ test_script:
   - cmd: pushd tests\tinypng.tests
   - cmd: dnx test
 artifacts:
-- path: src/tinypng/artifacts/bin/tinypng/{configuration}/*.nupkg
+- path: src/tinypng/artifacts/bin/tinypng/release/*.nupkg
 configuration: release
 deploy:
 - provider: NuGet
