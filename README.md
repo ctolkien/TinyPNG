@@ -23,7 +23,7 @@ Install via Nuget
 using (var png = new TinyPngClient("yourSecretApiKey")) 
 {
     //compress an image
-    var compressResult = await png.Compress("pathToFile or byte array or stream)");
+    var compressResult = await png.Compress("pathToFile or byte array or stream");
 
     //get the image data as a byte array
     var bytes = await compressResult.GetImageByteData();
@@ -56,7 +56,7 @@ Further details about the result of the compression are also available on the `I
 ```csharp
 using (var png = new TinyPngClient("yourSecretApiKey")) 
 {
-    var compressResult = await png.Compress("pathToFile or byte array or stream)");
+    var compressResult = await png.Compress("pathToFile or byte array or stream");
     
     var resizedImage = await png.Resize(compressResult, width, height, ResizeType);
 
@@ -74,7 +74,7 @@ depending on the type of resize you want to do.
 ```csharp
 using (var png = new TinyPngClient("yourSecretApiKey")) 
 {
-    var compressResult = await png.Compress("pathToFile or byte array or stream)");
+    var compressResult = await png.Compress("pathToFile or byte array or stream");
     
     await png.Resize(compressResult, new ScaleWidthResizeOperation(width));
     await png.Resize(compressResult, new ScaleHeightResizeOperation(width));
