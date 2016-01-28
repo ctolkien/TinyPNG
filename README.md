@@ -17,7 +17,7 @@ Install via Nuget
 ## Compressing Image
 
 ```csharp
-using (var png = new TinyPng("yourSecretApiKey")) 
+using (var png = new TinyPngClient("yourSecretApiKey")) 
 {
     var compressResult = await png.Compress("pathToFile or byte array or stream)");
 
@@ -33,7 +33,7 @@ using (var png = new TinyPng("yourSecretApiKey"))
 }
 ```
 
-Further details about the result of the compression are also available on the `Input` and `Output` properties.
+Further details about the result of the compression are also available on the `Input` and `Output` properties. Some examples:
 ```csharp
 
     //old size
@@ -50,7 +50,7 @@ Further details about the result of the compression are also available on the `I
 ## Resizing Images
 
 ```csharp
-using (var png = new TinyPng("yourSecretApiKey")) 
+using (var png = new TinyPngClient("yourSecretApiKey")) 
 {
     var compressResult = await png.Compress("pathToFile or byte array or stream)");
     
@@ -68,7 +68,7 @@ TinyPNG. We also include strongly type resize operations,
 depending on the type of resize you want to do. 
 
 ```csharp
-using (var png = new TinyPng("yourSecretApiKey")) 
+using (var png = new TinyPngClient("yourSecretApiKey")) 
 {
     var compressResult = await png.Compress("pathToFile or byte array or stream)");
     

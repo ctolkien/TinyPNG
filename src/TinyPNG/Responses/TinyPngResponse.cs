@@ -1,6 +1,6 @@
 ﻿using System.Net.Http;
 
-namespace TinyPngApi
+namespace TinyPng.Responses
 {
     public class TinyPngResponse
     {

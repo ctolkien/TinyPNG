@@ -1,7 +1,8 @@
 ﻿using System.Threading.Tasks;
+using TinyPng;
 using Xunit;
 
-namespace TinyPngApi.Tests
+namespace TinyPng.Tests
 {
     public class TinyPngTests
     {
@@ -10,7 +11,7 @@ namespace TinyPngApi.Tests
         [Fact(Skip ="integration")]
         public async Task Compression()
         {
-            var pngx = new TinyPng(apiKey);
+            var pngx = new TinyPngClient(apiKey);
 
             var result = await pngx.Compress("Resources/cat.jpg");
 
@@ -24,7 +25,7 @@ namespace TinyPngApi.Tests
         [Fact(Skip = "integration")]
         public async Task Resizing()
         {
-            var pngx = new TinyPng(apiKey);
+            var pngx = new TinyPngClient(apiKey);
 
             var result = await pngx.Compress("Resources/cat.jpg");
 

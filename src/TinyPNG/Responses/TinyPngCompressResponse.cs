@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
-namespace TinyPngApi.Responses
+namespace TinyPng.Responses
 {
     public class TinyPngCompressResponse : TinyPngResponse
     {

@@ -1,5 +1,5 @@
 ﻿
-namespace TinyPngApi.Responses
+namespace TinyPng.Responses
 {
     public class ApiErrorResponse
     {

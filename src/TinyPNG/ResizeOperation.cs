@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace TinyPngApi
+namespace TinyPng
 {
 
     public class ScaleWidthResizeOperation : ResizeOperation

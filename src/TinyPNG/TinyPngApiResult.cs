@@ -1,4 +1,4 @@
-﻿namespace TinyPngApi
+﻿namespace TinyPng
 {
 
     public class TinyPngApiResult

@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
-using TinyPngApi.Responses;
+using TinyPng.Responses;
 
-namespace TinyPngApi
+namespace TinyPng
 {
-    public class TinyPng : IDisposable
+    public class TinyPngClient : IDisposable
     {
         private readonly string _apiKey;
         private const string ApiEndpoint = "https://api.tinify.com/shrink";
@@ -21,7 +21,7 @@ namespace TinyPngApi
         /// Wrapper for the tinypng.com API
         /// </summary>
         /// <param name="apiKey">Your tinypng.com API key, signup here: https://tinypng.com/developers </param>
-        public TinyPng(string apiKey) 
+        public TinyPngClient(string apiKey) 
         {
             if (string.IsNullOrEmpty(apiKey))
                 throw new ArgumentNullException(nameof(apiKey));
