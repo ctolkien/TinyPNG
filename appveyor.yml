@@ -16,7 +16,7 @@ artifacts:
 - path: src/tinypng/artifacts/bin/tinypng/{configuration}/*.nupkg
 configuration: release
 deploy:
--  provider: NuGet
+- provider: NuGet
   api_key:
     secure: Gerln5x/jQ3CsCjXe76zQuP2Rjh12sKBH2wj88LIpt1IQym1+6MlFVWmvx5j+KSw
   skip_symbols: false
