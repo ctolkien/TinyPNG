@@ -6,7 +6,7 @@ This is a .NET wrapper around the TinyPng.com image compression service.
 * Non-blocking async turtles all the way down
 * `Byte[]`, `Stream` and `File` API's available
 
-[![Build status](https://ci.appveyor.com/api/projects/status/jow5inetxx0lq7uu?svg=true)]
+![Build status](https://ci.appveyor.com/api/projects/status/jow5inetxx0lq7uu?svg=true)
 
 ## Installation
 
