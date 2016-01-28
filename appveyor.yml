@@ -4,8 +4,8 @@ install:
 - cmd: dnvm install 1.0.0-rc1-update1
 before_build:
 - dnu restore
-- npm i 
-- node aspnetcore-version.js
+#- npm i 
+#- node aspnetcore-version.js
 build:
   verbosity: normal
   publish_nuget: true
