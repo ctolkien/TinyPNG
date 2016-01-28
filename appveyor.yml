@@ -8,6 +8,7 @@ before_build:
 - node aspnetcore-version.js
 build:
   verbosity: minimal
+  publish_nuget: true
 test_script:
   - cmd: pushd tests\tinypng.tests
   - cmd: dnx test
