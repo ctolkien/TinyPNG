@@ -17,4 +17,6 @@ deploy:
     secure: Gerln5x/jQ3CsCjXe76zQuP2Rjh12sKBH2wj88LIpt1IQym1+6MlFVWmvx5j+KSw
   skip_symbols: false
   artifact: /.*\.nupkg/
-after_build: node aspnetcore-version.js
+after_build:
+  - npm i 
+  - node aspnetcore-version.js
