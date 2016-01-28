@@ -13,7 +13,6 @@
   ],
   "summary": "TinyPNG Wrapper",
   "title": "TinyPNG",
-  "version": "1.0.3",
   "dependencies": {
     "Newtonsoft.Json": "8.0.2",
     "System.Net.Http": "4.0.0"
@@ -27,5 +26,6 @@
         "System.Text.Encoding": "4.0.11-beta-23516"
       }
     }
-  }
+  },
+  "version": "123"
 }
