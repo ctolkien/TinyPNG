@@ -20,8 +20,8 @@ deploy:
   artifact: /.*\.nupkg/
   on:
     branch: master
-cache:
-  - node_modules 
-  - %APPDATA%\npm-cache
-  - %APPDATA%\.dnx
+#cache:
+#  - node_modules 
+#  - %APPDATA%\npm-cache
+#  - %APPDATA%\.dnx
      
