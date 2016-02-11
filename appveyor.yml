@@ -22,8 +22,8 @@ deploy:
   skip_symbols: false
   artifact: /.*\.nupkg/
   on:
-    branch: master
-    appveyor_repo_tag: true
+    branch: release
+
 
 #cache:
 #  - node_modules 
