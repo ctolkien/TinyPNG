@@ -4,7 +4,7 @@
 ![Version](https://img.shields.io/nuget/v/tinypng.svg)
 ![Downloads](https://img.shields.io/nuget/dt/tinypng.svg)
 
-This is a .NET wrapper around the [TinyPng.com](http://tinypng.com) image compression service.
+This is a .NET wrapper around the [TinyPng.com](http://tinypng.com) image compression service. This is not an official TinyPNG.com product.
 
 * Supports .Net Core and full .Net Framework
 * Non-blocking async turtles all the way down
@@ -78,7 +78,7 @@ using (var png = new TinyPngClient("yourSecretApiKey"))
 ### Resize Operations
 
 There are certain combinations when specifying resize options which aren't compatible with
-TinyPNG. We also include strongly type resize operations, 
+TinyPNG. We also include strongly typed resize operations, 
 depending on the type of resize you want to do. 
 
 ```csharp

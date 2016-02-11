@@ -2,8 +2,19 @@
   "authors": [
     "Chad Tolkien"
   ],
-  "copyright": "Copyright 2015 Chad Tolkien",
-  "description": "This is a .NET wrapper around the TinyPng.com image compression service.",
+  "title": "TinyPNG",  
+  "copyright": "Copyright 2016 Chad Tolkien",
+  "summary": "This is a .NET wrapper around the TinyPng.com image compression service.",  
+  "description": "This is a .NET wrapper around the TinyPng.com image compression service. Supports .Net Core and full .Net Framework. Non-blocking async turtles all the way down. Byte[], Stream and File API's available.",
+  "releaseNotes": ".51 - Fixes to the project.json template",
+  "iconUrl": "https://raw.githubusercontent.com/ctolkien/TinyPNG/master/icon.png",
+  "repository": {
+      "type": "git",
+      "url": "https://github.com/ctolkien/tinypng"
+  },
+  "owners": [
+      "Chad Tolkien"
+  ],
   "licenseUrl": "http://opensource.org/licenses/MIT",
   "projectUrl": "https://github.com/ctolkien/tinypng",
   "tags": [
@@ -11,8 +22,6 @@
     "images",
     "compression"
   ],
-  "summary": "This is a .NET wrapper around the TinyPng.com image compression service.",
-  "title": "TinyPNG",
   "dependencies": {
     "Newtonsoft.Json": "8.0.2",
     "System.Net.Http": "4.0.0"
