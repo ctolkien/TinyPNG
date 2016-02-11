@@ -4,7 +4,7 @@
 ![Version](https://img.shields.io/nuget/v/tinypng.svg)
 ![Downloads](https://img.shields.io/nuget/dt/tinypng.svg)
 
-This is a .NET wrapper around the [TinyPng.com](http://tinypng.com) image compression service.
+This is a .NET wrapper around the [TinyPng.com](http://tinypng.com) image compression service. This is not an official TinyPNG.com product.
 
 * Supports .Net Core and full .Net Framework
 * Non-blocking async turtles all the way down
