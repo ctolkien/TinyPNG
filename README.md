@@ -78,7 +78,7 @@ using (var png = new TinyPngClient("yourSecretApiKey"))
 ### Resize Operations
 
 There are certain combinations when specifying resize options which aren't compatible with
-TinyPNG. We also include strongly type resize operations, 
+TinyPNG. We also include strongly typed resize operations, 
 depending on the type of resize you want to do. 
 
 ```csharp
