@@ -7,7 +7,7 @@
   "summary": "This is a .NET wrapper around the TinyPng.com image compression service.",  
   "description": "This is a .NET wrapper around the TinyPng.com image compression service. Supports .Net Core and full .Net Framework. Non-blocking async turtles all the way down. Byte[], Stream and File API's available.",
   "releaseNotes": ".51 - Fixes to the project.json template",
-  "iconUrl": "",
+  "iconUrl": "https://raw.githubusercontent.com/ctolkien/TinyPNG/master/icon.png",
   "repository": {
       "type": "git",
       "url": "https://github.com/ctolkien/tinypng"
