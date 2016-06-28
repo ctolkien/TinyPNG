@@ -4,16 +4,13 @@
   "authors": [ "chad" ],
   "testRunner": "xunit",
   "dependencies": {
-    "TinyPNG": "*",
     "xunit": "2.2.0-beta2-build3300",
+    "TinyPNG": "1.1.0-*",
     "dotnet-test-xunit": "2.2.0-preview2-build1029"
   },
   "frameworks": {
     "netcoreapp1.0": {
-      "imports": [
-        "dotnet5.6",
-        "portable-net45+win8"
-      ],
+      "imports": ["netstandard1.3"],
       "dependencies": {
         "Microsoft.NETCore.App": {
           "type": "platform",
