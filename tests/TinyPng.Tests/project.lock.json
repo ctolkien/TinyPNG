@@ -2540,7 +2540,7 @@
           "lib/netstandard1.1/xunit.runner.utility.dotnet.dll": {}
         }
       },
-      "TinyPNG/1.0.3": {
+      "TinyPNG/1.1.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v1.0",
         "dependencies": {
@@ -7540,7 +7540,7 @@
         "xunit.runner.utility.nuspec"
       ]
     },
-    "TinyPNG/1.0.3": {
+    "TinyPNG/1.1.0": {
       "type": "project",
       "path": "../../src/TinyPNG/project.json",
       "msbuildProject": "../../src/TinyPNG/TinyPNG.xproj"
