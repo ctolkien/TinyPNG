@@ -7,17 +7,16 @@ install:
 - cmd: DotNetCore.1.0.0-SDK.Preview2-x64.exe /quiet
 environment:
   PATH: $(PATH);$(PROGRAMFILES)\dotnet\
-before_build:
-- dotnet restore
-- npm i 
-- node aspnetcore-version.js
 build:
   verbosity: minimal
   publish_nuget: true
-test_script:
-  - cmd: dotnet test -c %CONFIGURATION% --no-build .\tests\TinyPng.Tests\
+
 build_script:
+ - dotnet restore -v Minimal
+ - dotnet build **\project.json -c %CONFIGURATION%
  - dotnet pack -c %CONFIGURATION% --version-suffix %LABEL% -o .\artifacts .\src\TinyPNG\project.json
+ test_script:
+  - cmd: dotnet test -c %CONFIGURATION% --no-build .\tests\TinyPng.Tests\
 artifacts:
 - path: artifacts\**\*.*
 configuration: Release
