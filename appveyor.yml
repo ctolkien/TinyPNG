@@ -31,7 +31,7 @@ deploy:
     branch: release
 cache:
 - '%USERPROFILE%\.nuget\packages'    
-- node_modules 
-- %APPDATA%\npm-cache
+- 'node_modules'
+- '%APPDATA%\npm-cache'
 
      
