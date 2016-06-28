@@ -1,19 +1,25 @@
 version: 1.0.{build}
 os: Visual Studio 2015
+init:
+- ps: $Env:LABEL = "CI" + $Env:APPVEYOR_BUILD_NUMBER.PadLeft(5, "0")
 install:
-- cmd: dnvm install 1.0.0-rc1-update1
+- cmd: appveyor DownloadFile https://go.microsoft.com/fwlink/?LinkID=809122
+- cmd: DotNetCore.1.0.0-SDK.Preview2-x64.exe /quiet
+environment:
+  PATH: $(PATH);$(PROGRAMFILES)\dotnet\
 before_build:
-- dnu restore
+- dotnet restore
 - npm i 
 - node aspnetcore-version.js
 build:
   verbosity: minimal
   publish_nuget: true
 test_script:
-  - cmd: pushd tests\tinypng.tests
-  - cmd: dnx test
+  - cmd: dotnet test -c %CONFIGURATION% --no-build .\tests\TinyPng.Tests\
+build_script:
+ - dotnet pack -c %CONFIGURATION% --version-suffix %LABEL% -o .\artifacts .\src\TinyPNG\project.json
 artifacts:
-- path: 'src\artifacts\bin\tinypng\$(configuration)\*.nupkg'
+- path: artifacts\**\*.*
 configuration: Release
 deploy:
 - provider: NuGet
@@ -23,10 +29,9 @@ deploy:
   artifact: /.*\.nupkg/
   on:
     branch: release
+cache:
+- '%USERPROFILE%\.nuget\packages'    
+- node_modules 
+- %APPDATA%\npm-cache
 
-
-#cache:
-#  - node_modules 
-#  - %APPDATA%\npm-cache
-#  - %APPDATA%\.dnx
      
