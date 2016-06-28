@@ -1,7 +1,7 @@
 version: 1.0.{build}
 os: Visual Studio 2015
 init:
-- ps: $Env:LABEL = "CI" + $Env:APPVEYOR_BUILD_NUMBER.PadLeft(5, "0")
+- ps: $Env:LABEL = "CI" + $Env:APPVEYOR_BUILD_VERSION.PadLeft(5, "0")
 install:
 - cmd: appveyor DownloadFile https://download.microsoft.com/download/A/3/8/A38489F3-9777-41DD-83F8-2CBDFAB2520C/packages/DotNetCore.1.0.0-SDK.Preview2-x64.exe
 - cmd: DotNetCore.1.0.0-SDK.Preview2-x64.exe /quiet
