@@ -21,7 +21,8 @@
     "tags": [
       "tinypng",
       "images",
-      "compression"
+      "compression",
+      "resizing"
     ]
   },
   "dependencies": {
