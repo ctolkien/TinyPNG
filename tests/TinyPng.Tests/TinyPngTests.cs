@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using TinyPng;
+using TinyPNG;
 using Xunit;
 
 namespace TinyPng.Tests
@@ -22,7 +22,7 @@ namespace TinyPng.Tests
             Assert.Equal(182, (await result.GetImageByteData()).Length);
         }
 
-        [Fact(Skip ="Integration")]
+        [Fact(Skip = "Integration")]
         public async Task Resizing()
         {
             var pngx = new TinyPngClient(apiKey);
@@ -30,7 +30,7 @@ namespace TinyPng.Tests
             var result = await pngx.Compress("Resources/cat.jpg");
 
             var resized = await pngx.Resize(result, new ScaleHeightResizeOperation(100));
-
+            
             Assert.Equal(7111, (await resized.GetImageByteData()).Length);
 
         }
