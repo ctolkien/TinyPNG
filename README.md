@@ -2,11 +2,11 @@
 
 | Platform | Status|
 |---------|-------|
-|Windows  | [![Build status](https://img.shields.io/appveyor/ci/soda-digital/tinypng.svg?maxAge=2592000)](https://ci.appveyor.com/project/Soda-Digital/tinypng) |
-|Linux/OSX| [![Build Status](https://img.shields.io/travis/ctolkien/TinyPNG.svg?maxAge=2592000)](https://travis-ci.org/ctolkien/TinyPNG) |
+|Windows  | [![Build status](https://img.shields.io/appveyor/ci/soda-digital/tinypng.svg)](https://ci.appveyor.com/project/Soda-Digital/tinypng) |
+|Linux/OSX| [![Build Status](https://img.shields.io/travis/ctolkien/TinyPNG.svg)](https://travis-ci.org/ctolkien/TinyPNG) |
 
 
-![Version](https://img.shields.io/nuget/v/tinypng.svg?maxAge=2592000)
+![Version](https://img.shields.io/nuget/v/tinypng.svg)
 [![license](https://img.shields.io/github/license/ctolkien/TinyPNG.svg?maxAge=2592000)]()
 
 
@@ -101,3 +101,13 @@ using (var png = new TinyPngClient("yourSecretApiKey"))
 ```
 
 The same `Byte[]`, `Stream` and `File` path API's are available from the result of the `Resize()` method.
+
+### Compression Count
+
+You can get a read on the number of compression operations you've performed by inspecting the `CompressionCount` property
+on the result of any operation you've performed. This is useful for keeping tabs on your API usage.
+
+```csharp
+var compressedCat = await png.Compress("cat.jpg");
+compressedCat.CompressionCount;
+```
