@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using TinyPNG;
 using Xunit;
 
@@ -8,12 +9,14 @@ namespace TinyPng.Tests
     {
         const string apiKey = "lolwat";
 
+        const string Cat = "Resources/cat.jpg";
+
         [Fact(Skip = "Integration")]
         public async Task Compression()
         {
             var pngx = new TinyPngClient(apiKey);
 
-            var result = await pngx.Compress("Resources/cat.jpg");
+            var result = await pngx.Compress(Cat);
 
             Assert.Equal("image/jpeg", result.Input.Type);
 
@@ -27,11 +30,42 @@ namespace TinyPng.Tests
         {
             var pngx = new TinyPngClient(apiKey);
 
-            var result = await pngx.Compress("Resources/cat.jpg");
-
+            var result = await pngx.Compress(Cat);
+            
             var resized = await pngx.Resize(result, new ScaleHeightResizeOperation(100));
             
             Assert.Equal(7111, (await resized.GetImageByteData()).Length);
+
+        }
+
+      
+
+        [Fact]
+        public async Task CompressAndStoreToS3ShouldThrowIfS3HasNotBeenConfigured()
+        {
+            var pngx = new TinyPngClient(apiKey);
+            
+            var result = await pngx.Compress(Cat);
+
+            await Assert.ThrowsAsync<InvalidOperationException>(async () => await pngx.SaveCompressedImageToAmazonS3(result, "bucket/path.jpg"));
+
+        }
+
+        private const string ApiKey = "lolwat";
+        private const string ApiAccessKey = "lolwat";
+
+        [Fact(Skip ="Integration")]
+        public async Task CompressAndStoreToS3()
+        {
+            var pngx = new TinyPngClient(apiKey);
+
+            var result = await pngx.Compress(Cat);
+
+            var sendToAmazon = (await pngx.SaveCompressedImageToAmazonS3(result, 
+                new AmazonS3Configuration(ApiKey, ApiAccessKey, "ap-southeast-2"), 
+                "tinypng-test-bucket/path.jpg")).ToString();
+
+            Assert.Equal("https://s3-ap-southeast-2.amazonaws.com/tinypng-test-bucket/path.jpg", sendToAmazon);
 
         }
     }

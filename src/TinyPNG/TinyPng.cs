@@ -43,7 +43,26 @@ namespace TinyPng
             
         }
 
-        public int CompressionCount { get; private set; }
+        /// <summary>
+        /// Wrapper for the tinypng.com API
+        /// </summary>
+        /// <param name="apiKey">Your tinypng.com API key, signup here: https://tinypng.com/developers </param>
+        /// <param name="amazonConfiguration">Configures defaults to use for storing images on Amazon S3</param>
+        public TinyPngClient(string apiKey, AmazonS3Configuration amazonConfiguration) : this(apiKey)
+        {
+            if (string.IsNullOrEmpty(apiKey))
+                throw new ArgumentNullException(nameof(apiKey));
+
+            if (amazonConfiguration == null)
+                throw new ArgumentNullException(nameof(amazonConfiguration));
+
+            AmazonS3Configuration = amazonConfiguration;
+        }
+
+        /// <summary>
+        /// Configures the client to use these AmazonS3 settings when storing images in S3
+        /// </summary>
+        public AmazonS3Configuration AmazonS3Configuration { get; set; }
 
         private HttpContent CreateContent(byte[] source)
         {
@@ -146,8 +165,67 @@ namespace TinyPng
             var resizeOp = new ResizeOperation(resizeType, width, height);
 
             return await Resize(result, height, width, resizeType);
-
         }
+
+
+        /// <summary>
+        /// Stores a previously compressed image directly into Amazon S3 storage
+        /// </summary>
+        /// <param name="result">The previously compressed image</param>
+        /// <param name="amazonSettings">The settings for the amazon connection</param>
+        /// <param name="pathBucket">The path and bucket to store in: bucket/file.png format</param>
+        /// <returns></returns>
+        public async Task<Uri> SaveCompressedImageToAmazonS3(TinyPngCompressResponse result, AmazonS3Configuration amazonSettings, string pathBucket)
+        {
+            if (result == null)
+                throw new ArgumentNullException(nameof(result));
+
+            if (amazonSettings == null)
+                throw new ArgumentNullException(nameof(amazonSettings));
+
+
+            amazonSettings.Path = pathBucket;
+
+            var amazonSettingsAsJson = JsonConvert.SerializeObject(new { store = amazonSettings });
+
+            var msg = new HttpRequestMessage(HttpMethod.Post, result.Output.Url);
+            msg.Content = new StringContent(amazonSettingsAsJson, System.Text.Encoding.UTF8, "application/json");
+
+            var response = await httpClient.SendAsync(msg);
+
+            if (response.IsSuccessStatusCode)
+            {
+                return response.Headers.Location;
+            }
+
+            var errorMsg = JsonConvert.DeserializeObject<ApiErrorResponse>(await response.Content.ReadAsStringAsync());
+            throw new TinyPngApiException((int)response.StatusCode, response.ReasonPhrase, errorMsg.Error, errorMsg.Message);
+        }
+
+        /// <summary>
+        /// Stores a previously compressed image directly into Amazon S3 storage
+        /// </summary>
+        /// <param name="result">The previously compressed image</param>
+        /// <param name="pathBucket">The path and bucket to store in: bucket/file.png format</param>
+        /// <param name="regionOverride">Optional: To override the previosly configured region</param>
+        /// <returns></returns>
+        public async Task<Uri> SaveCompressedImageToAmazonS3(TinyPngCompressResponse result, string pathBucket, string regionOverride = "")
+        {
+            if (result == null)
+                throw new ArgumentNullException(nameof(result));
+
+            if (AmazonS3Configuration == null)
+                throw new InvalidOperationException("AmazonS3Configuration has not been configured");
+
+            var amazonSettings = AmazonS3Configuration.Clone();
+            amazonSettings.Path = pathBucket;
+
+            if (!string.IsNullOrEmpty(regionOverride))
+                amazonSettings.Region = regionOverride;
+            
+            return await SaveCompressedImageToAmazonS3(result, amazonSettings, pathBucket);
+        }
+
         #region IDisposable Support
         public void Dispose()
         {
