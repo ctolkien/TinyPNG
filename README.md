@@ -102,7 +102,34 @@ using (var png = new TinyPngClient("yourSecretApiKey"))
 
 The same `Byte[]`, `Stream` and `File` path API's are available from the result of the `Resize()` method.
 
-### Compression Count
+## Amazon S3 Storage
+
+The result of any compress operation can be stored directly on to Amazon S3 storage. There are two ways to configure this.
+
+If you're going to be storing images for most requests onto S3, then you can pass in an `AmazonS3Configuration` object to the constructor.
+
+```csharp
+using (var png = new TinyPngClient("yourSecretApiKey", new AmazonS3Configuration("awsAccessKeyId", "awsSecretAccessKey", "defaultRegion"))) 
+{
+    var compressedCat = await png.Compress("cat.jpg");
+    var s3Uri = await png.SaveCompressedImageToAmazonS3(compressedCat, "bucket/file-name.png");
+}
+
+```
+
+You can also pass a `AmazonS3Configuration` object directly into calls to `SaveCompressedImageToAmazonS3`
+
+```csharp
+using (var png = new TinyPngClient("yourSecretApiKey")) 
+{
+    var compressedCat = await png.Compress("cat.jpg");
+    var s3Uri = await png.SaveCompressedImageToAmazonS3(compressedCat, new AmazonS3Configuration("awsAccessKeyId", "awsSecretAccessKey", "defaultRegion"), "bucket/file-name.png");
+}
+
+```
+
+
+## Compression Count
 
 You can get a read on the number of compression operations you've performed by inspecting the `CompressionCount` property
 on the result of any operation you've performed. This is useful for keeping tabs on your API usage.
