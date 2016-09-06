@@ -40,7 +40,7 @@ namespace TinyPng.Tests
 
       
 
-        [Fact]
+        [Fact(Skip ="Integration")]
         public async Task CompressAndStoreToS3ShouldThrowIfS3HasNotBeenConfigured()
         {
             var pngx = new TinyPngClient(apiKey);
