@@ -2,11 +2,11 @@
 
 | Platform | Status|
 |---------|-------|
-|Windows  | [![Build status](https://img.shields.io/appveyor/ci/soda-digital/tinypng.svg)](https://ci.appveyor.com/project/Soda-Digital/tinypng) |
+|Windows  | [![Build status](https://img.shields.io/appveyor/ci/soda-digital/tinypng.svg?maxAge=2592000)](https://ci.appveyor.com/project/Soda-Digital/tinypng) |
 |Linux/OSX| [![Build Status](https://img.shields.io/travis/ctolkien/TinyPNG.svg?maxAge=2592000)](https://travis-ci.org/ctolkien/TinyPNG) |
 
 
-![Version](https://img.shields.io/nuget/v/tinypng.svg)
+![Version](https://img.shields.io/nuget/v/tinypng.svg?maxAge=2592000)
 [![license](https://img.shields.io/github/license/ctolkien/TinyPNG.svg?maxAge=2592000)]()
 
 
