@@ -5,26 +5,17 @@ namespace TinyPng
 
     public class ScaleWidthResizeOperation : ResizeOperation
     {
-        public ScaleWidthResizeOperation(int width) : base (ResizeType.Scale, width, 0)
-        {
-
-        }
+        public ScaleWidthResizeOperation(int width) : base (ResizeType.Scale, width, 0) { }
     }
 
     public class ScaleHeightResizeOperation : ResizeOperation
     {
-        public ScaleHeightResizeOperation(int height) : base(ResizeType.Scale, 0, height)
-        {
-
-        }
+        public ScaleHeightResizeOperation(int height) : base(ResizeType.Scale, 0, height) { }
     }
 
     public class FitResizeOperation : ResizeOperation
     {
-        public FitResizeOperation(int width, int height) : base(ResizeType.Fit, width, height)
-        {
-
-        }
+        public FitResizeOperation(int width, int height) : base(ResizeType.Fit, width, height) { }
     }
 
     public class CoverResizeOperation : ResizeOperation
