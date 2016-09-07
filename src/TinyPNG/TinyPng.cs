@@ -21,7 +21,7 @@ namespace TinyPng
         /// Wrapper for the tinypng.com API
         /// </summary>
         /// <param name="apiKey">Your tinypng.com API key, signup here: https://tinypng.com/developers </param>
-        public TinyPngClient(string apiKey) 
+        public TinyPngClient(string apiKey)
         {
             if (string.IsNullOrEmpty(apiKey))
                 throw new ArgumentNullException(nameof(apiKey));
@@ -39,8 +39,8 @@ namespace TinyPng
             {
                 ContractResolver = new CamelCasePropertyNamesContractResolver()
             };
-            jsonSettings.Converters.Add(new StringEnumConverter {CamelCaseText = true });
-            
+            jsonSettings.Converters.Add(new StringEnumConverter { CamelCaseText = true });
+
         }
 
         /// <summary>
@@ -186,7 +186,7 @@ namespace TinyPng
 
             amazonSettings.Path = pathBucket;
 
-            var amazonSettingsAsJson = JsonConvert.SerializeObject(new { store = amazonSettings });
+            var amazonSettingsAsJson = JsonConvert.SerializeObject(new { store = amazonSettings }, jsonSettings);
 
             var msg = new HttpRequestMessage(HttpMethod.Post, result.Output.Url);
             msg.Content = new StringContent(amazonSettingsAsJson, System.Text.Encoding.UTF8, "application/json");
@@ -222,7 +222,7 @@ namespace TinyPng
 
             if (!string.IsNullOrEmpty(regionOverride))
                 amazonSettings.Region = regionOverride;
-            
+
             return await SaveCompressedImageToAmazonS3(result, amazonSettings, pathBucket);
         }
 
@@ -242,5 +242,5 @@ namespace TinyPng
         }
         #endregion
     }
-    
+
 }
