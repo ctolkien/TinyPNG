@@ -1,5 +1,5 @@
-﻿using System;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
+
 namespace TinyPng
 {
     public class AmazonS3Configuration 

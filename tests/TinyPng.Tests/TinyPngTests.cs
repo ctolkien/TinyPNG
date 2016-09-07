@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using TinyPNG;
 using Xunit;
 
 namespace TinyPng.Tests
