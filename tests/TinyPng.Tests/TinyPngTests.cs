@@ -53,7 +53,7 @@ namespace TinyPng.Tests
         private const string ApiKey = "lolwat";
         private const string ApiAccessKey = "lolwat";
 
-        [Fact(Skip ="Integration")]
+        [Fact]
         public async Task CompressAndStoreToS3()
         {
             var pngx = new TinyPngClient(apiKey);
@@ -61,8 +61,8 @@ namespace TinyPng.Tests
             var result = await pngx.Compress(Cat);
 
             var sendToAmazon = (await pngx.SaveCompressedImageToAmazonS3(result, 
-                new AmazonS3Configuration(ApiKey, ApiAccessKey, "ap-southeast-2"), 
-                "tinypng-test-bucket/path.jpg")).ToString();
+                new AmazonS3Configuration(ApiKey, ApiAccessKey, "tinypng-test-bucket", "ap-southeast-2"), 
+                "path.jpg")).ToString();
 
             Assert.Equal("https://s3-ap-southeast-2.amazonaws.com/tinypng-test-bucket/path.jpg", sendToAmazon);
 

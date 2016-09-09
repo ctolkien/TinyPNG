@@ -173,9 +173,9 @@ namespace TinyPng
         /// </summary>
         /// <param name="result">The previously compressed image</param>
         /// <param name="amazonSettings">The settings for the amazon connection</param>
-        /// <param name="pathBucket">The path and bucket to store in: bucket/file.png format</param>
+        /// <param name="path">The path and bucket to store in: bucket/file.png format</param>
         /// <returns></returns>
-        public async Task<Uri> SaveCompressedImageToAmazonS3(TinyPngCompressResponse result, AmazonS3Configuration amazonSettings, string pathBucket)
+        public async Task<Uri> SaveCompressedImageToAmazonS3(TinyPngCompressResponse result, AmazonS3Configuration amazonSettings, string path)
         {
             if (result == null)
                 throw new ArgumentNullException(nameof(result));
@@ -184,7 +184,7 @@ namespace TinyPng
                 throw new ArgumentNullException(nameof(amazonSettings));
 
 
-            amazonSettings.Path = pathBucket;
+            amazonSettings.Path = path;
 
             var amazonSettingsAsJson = JsonConvert.SerializeObject(new { store = amazonSettings }, jsonSettings);
 
@@ -209,7 +209,7 @@ namespace TinyPng
         /// <param name="pathBucket">The path and bucket to store in: bucket/file.png format</param>
         /// <param name="regionOverride">Optional: To override the previosly configured region</param>
         /// <returns></returns>
-        public async Task<Uri> SaveCompressedImageToAmazonS3(TinyPngCompressResponse result, string pathBucket, string regionOverride = "")
+        public async Task<Uri> SaveCompressedImageToAmazonS3(TinyPngCompressResponse result, string path, string bucketOverride = "", string regionOverride = "")
         {
             if (result == null)
                 throw new ArgumentNullException(nameof(result));
@@ -218,12 +218,15 @@ namespace TinyPng
                 throw new InvalidOperationException("AmazonS3Configuration has not been configured");
 
             var amazonSettings = AmazonS3Configuration.Clone();
-            amazonSettings.Path = pathBucket;
+            amazonSettings.Path = path;
 
             if (!string.IsNullOrEmpty(regionOverride))
                 amazonSettings.Region = regionOverride;
 
-            return await SaveCompressedImageToAmazonS3(result, amazonSettings, pathBucket);
+            if (!string.IsNullOrEmpty(bucketOverride))
+                amazonSettings.Bucket = bucketOverride;
+
+            return await SaveCompressedImageToAmazonS3(result, amazonSettings, path);
         }
 
         #region IDisposable Support

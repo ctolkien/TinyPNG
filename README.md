@@ -109,10 +109,20 @@ The result of any compress operation can be stored directly on to Amazon S3 stor
 If you're going to be storing images for most requests onto S3, then you can pass in an `AmazonS3Configuration` object to the constructor.
 
 ```csharp
-using (var png = new TinyPngClient("yourSecretApiKey", new AmazonS3Configuration("awsAccessKeyId", "awsSecretAccessKey", "defaultRegion"))) 
+using (var png = new TinyPngClient("yourSecretApiKey", 
+    new AmazonS3Configuration("awsAccessKeyId", "awsSecretAccessKey", "bucket", "region"))) 
 {
     var compressedCat = await png.Compress("cat.jpg");
-    var s3Uri = await png.SaveCompressedImageToAmazonS3(compressedCat, "bucket/file-name.png");
+    var s3Uri = await png.SaveCompressedImageToAmazonS3(compressedCat, "file-name.png");
+
+    //if you'd like to override the particular bucket or region
+    //an image is being stored to from what is specified in the AmazonS3Configuration:
+    var s3UriInNewSpot = await png.SaveCompressedImageToAmazonS3(
+        compressedCat, 
+        "file-name.png", 
+        bucketOverride: "different-bucket", 
+        regionOverride: "different-region");
+
 }
 
 ```
@@ -123,7 +133,12 @@ You can also pass a `AmazonS3Configuration` object directly into calls to `SaveC
 using (var png = new TinyPngClient("yourSecretApiKey")) 
 {
     var compressedCat = await png.Compress("cat.jpg");
-    var s3Uri = await png.SaveCompressedImageToAmazonS3(compressedCat, new AmazonS3Configuration("awsAccessKeyId", "awsSecretAccessKey", "defaultRegion"), "bucket/file-name.png");
+    var s3Uri = await png.SaveCompressedImageToAmazonS3(compressedCat, 
+        new AmazonS3Configuration(
+            "awsAccessKeyId", 
+            "awsSecretAccessKey", 
+            "bucket", 
+            "region"), "file-name.png");
 }
 
 ```
