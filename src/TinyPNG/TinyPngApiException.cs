@@ -4,10 +4,10 @@ namespace TinyPng
 {
     public class TinyPngApiException : Exception
     {
-        public int StatusCode { get; private set; }
-        public string StatusReasonPhrase { get; private set; }
-        public string ErrorTitle { get; private set; }
-        public string ErrorMessage { get; private set; }
+        public int StatusCode { get; }
+        public string StatusReasonPhrase { get; }
+        public string ErrorTitle { get; }
+        public string ErrorMessage { get; }
 
 
         public TinyPngApiException(int statusCode, string statusReasonPhrase, string errorTitle, string errorMessage)
