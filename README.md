@@ -28,7 +28,7 @@ Install via Nuget
 ```csharp
 using (var png = new TinyPngClient("yourSecretApiKey")) 
 {
-    await (await png.Compress("cat.jpg")).SaveImageToDisk("compressedCat.jpg");
+    await png.Compress("cat.jpg");
 }
 ```
 
@@ -39,31 +39,36 @@ using (var png = new TinyPngClient("yourSecretApiKey"))
 using (var png = new TinyPngClient("yourSecretApiKey")) 
 {
     //compress an image
-    var compressResult = await png.Compress("pathToFile or byte array or stream");
+    var result = await png.Compress("pathToFile or byte array or stream");
+
+    //this gives you the information about your image as stored by TinyPNG
+    //they don't give you the actual bits as you may want to chain this with a resize
+    //operation without caring for the originally sied image. For that, we need to:
+    var compressedImage = await result.Download();
 
     //get the image data as a byte array
-    var bytes = await compressResult.GetImageByteData();
+    var bytes = await compressedImage.GetImageByteData();
 
     //get a stream instead
-    var stream  = await compressResult.GetImageStreamData()
+    var stream  = await compressedImage.GetImageStreamData()
 
     //or just save to disk
-    await compressResult.SaveImageToDisk("pathToSaveImage");
+    await compressedImage.SaveImageToDisk("pathToSaveImage");
 
 }
 ```
 
-Further details about the result of the compression are also available on the `Input` and `Output` properties. Some examples:
+Further details about the result of the compression are also available on the `Input` and `Output` properties of a `Compress` operation. Some examples:
 ```csharp
 
     //old size
-    compressResult.Input.Size;
+    result.Input.Size;
     
     //new size
-    compressResult.Output.Size;
+    result.Output.Size;
 
     //URL of the compressed Image
-    compressResult.Output.Url;
+    result.Output.Url; 
 
 ```
 
@@ -72,9 +77,9 @@ Further details about the result of the compression are also available on the `I
 ```csharp
 using (var png = new TinyPngClient("yourSecretApiKey")) 
 {
-    var compressResult = await png.Compress("pathToFile or byte array or stream");
+    var result = await png.Compress("pathToFile or byte array or stream");
     
-    var resizedImage = await png.Resize(compressResult, width, height, ResizeType);
+    var resizedImage = await png.Resize(result, width, height, ResizeType);
 
     await resizedImage.SaveImageToDisk("pathToSaveImage");
 }
@@ -90,12 +95,12 @@ depending on the type of resize you want to do.
 ```csharp
 using (var png = new TinyPngClient("yourSecretApiKey")) 
 {
-    var compressResult = await png.Compress("pathToFile or byte array or stream");
+    var result = await png.Compress("pathToFile or byte array or stream");
     
-    await png.Resize(compressResult, new ScaleWidthResizeOperation(width));
-    await png.Resize(compressResult, new ScaleHeightResizeOperation(width));
-    await png.Resize(compressResult, new FitResizeOperation(width, height));
-    await png.Resize(compressResult, new CoverResizeOperation(width, height));
+    await png.Resize(result, new ScaleWidthResizeOperation(width));
+    await png.Resize(result, new ScaleHeightResizeOperation(width));
+    await png.Resize(result, new FitResizeOperation(width, height));
+    await png.Resize(result, new CoverResizeOperation(width, height));
 }
 
 ```
@@ -104,7 +109,8 @@ The same `Byte[]`, `Stream` and `File` path API's are available from the result 
 
 ## Amazon S3 Storage
 
-The result of any compress operation can be stored directly on to Amazon S3 storage. There are two ways to configure this.
+The result of any compress operation can be stored directly on to Amazon S3 storage. I'd strongly recommend referring to [TinyPNG.com's documentation](https://tinypng.com/developers/reference) with regard to how to configure
+the appropriate S3 access.
 
 If you're going to be storing images for most requests onto S3, then you can pass in an `AmazonS3Configuration` object to the constructor.
 

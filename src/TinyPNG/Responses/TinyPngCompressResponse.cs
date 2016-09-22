@@ -10,6 +10,7 @@ namespace TinyPng.Responses
         public TinyPngApiInput Input { get; private set; }
         public TinyPngApiOutput Output { get; private set; }
         public TinyPngApiResult ApiResult { get; private set; }
+
         private readonly JsonSerializerSettings jsonSettings;
 
         public TinyPngCompressResponse(HttpResponseMessage msg) : base(msg)

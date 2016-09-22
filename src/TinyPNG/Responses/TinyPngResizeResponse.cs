@@ -2,7 +2,7 @@
 
 namespace TinyPng.Responses
 {
-    public class TinyPngResizeResponse : TinyPngResponse
+    public class TinyPngResizeResponse : TinyPngImageResponse
     {
         public TinyPngResizeResponse(HttpResponseMessage msg) : base(msg)
         {

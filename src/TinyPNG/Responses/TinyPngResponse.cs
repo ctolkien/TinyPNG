@@ -6,17 +6,11 @@ namespace TinyPng.Responses
 {
     public class TinyPngResponse
     {
-        public HttpResponseMessage HttpResponseMessage { get; private set; }
+        public HttpResponseMessage HttpResponseMessage { get; }
 
         private int compressionCount;
 
-        public int CompressionCount
-        {
-            get
-            {
-                return compressionCount;
-            }
-        }
+        public int CompressionCount => compressionCount;
 
         protected TinyPngResponse(HttpResponseMessage msg)
         {

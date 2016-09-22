@@ -14,7 +14,8 @@ namespace TinyPng
     {
         private readonly string _apiKey;
         private const string ApiEndpoint = "https://api.tinify.com/shrink";
-        private HttpClient httpClient = new HttpClient();
+
+        public HttpClient httpClient = new HttpClient();
         private readonly JsonSerializerSettings jsonSettings;
 
         /// <summary>
@@ -125,6 +126,22 @@ namespace TinyPng
             var errorMsg = JsonConvert.DeserializeObject<ApiErrorResponse>(await response.Content.ReadAsStringAsync());
             throw new TinyPngApiException((int)response.StatusCode, response.ReasonPhrase, errorMsg.Error, errorMsg.Message);
         }
+        public async Task<TinyPngImageResponse> Download(TinyPngCompressResponse result)
+        {
+            if (result == null)
+                throw new ArgumentNullException(nameof(result));
+
+            var msg = new HttpRequestMessage(HttpMethod.Get, result.Output.Url);
+
+            var response = await httpClient.SendAsync(msg);
+            if (response.IsSuccessStatusCode)
+            {
+                return new TinyPngImageResponse(response);
+            }
+
+            var errorMsg = JsonConvert.DeserializeObject<ApiErrorResponse>(await response.Content.ReadAsStringAsync());
+            throw new TinyPngApiException((int)response.StatusCode, response.ReasonPhrase, errorMsg.Error, errorMsg.Message);
+        }
 
 
         /// <summary>
@@ -141,7 +158,6 @@ namespace TinyPng
                 throw new ArgumentNullException(nameof(resizeOperation));
 
             var requestBody = JsonConvert.SerializeObject(new { resize = resizeOperation }, jsonSettings);
-
 
             var msg = new HttpRequestMessage(HttpMethod.Post, result.Output.Url);
             msg.Content = new StringContent(requestBody, System.Text.Encoding.UTF8, "application/json");
@@ -217,8 +233,9 @@ namespace TinyPng
         /// Stores a previously compressed image directly into Amazon S3 storage
         /// </summary>
         /// <param name="result">The previously compressed image</param>
-        /// <param name="pathBucket">The path and bucket to store in: bucket/file.png format</param>
-        /// <param name="regionOverride">Optional: To override the previosly configured region</param>
+        /// <param name="path">The path to storage the image as</param>
+        /// <param name="bucketOverride">Optional: To override the previously configured bucket</param>
+        /// <param name="regionOverride">Optional: To override the previously configured region</param>
         /// <returns></returns>
         public async Task<Uri> SaveCompressedImageToAmazonS3(TinyPngCompressResponse result, string path, string bucketOverride = "", string regionOverride = "")
         {
