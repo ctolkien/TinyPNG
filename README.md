@@ -44,7 +44,7 @@ using (var png = new TinyPngClient("yourSecretApiKey"))
     //this gives you the information about your image as stored by TinyPNG
     //they don't give you the actual bits as you may want to chain this with a resize
     //operation without caring for the originally sied image. For that, we need to:
-    var compressedImage = await result.Download();
+    var compressedImage = await png.Download(result);
 
     //get the image data as a byte array
     var bytes = await compressedImage.GetImageByteData();
@@ -54,6 +54,9 @@ using (var png = new TinyPngClient("yourSecretApiKey"))
 
     //or just save to disk
     await compressedImage.SaveImageToDisk("pathToSaveImage");
+
+    //async turtle all the things!
+    await (await png.Download(await png.Compress("path"))).SaveImageToDisk("savedPath");
 
 }
 ```
