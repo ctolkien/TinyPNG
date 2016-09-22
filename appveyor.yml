@@ -23,8 +23,6 @@ test_script:
 - cmd: pushd
 - cmd: cd .\tests\TinyPng.Tests\ 
 - cmd: dotnet test -c %CONFIGURATION% --no-build #.\tests\TinyPng.Tests\
-- cmd: popd
-
 
 artifacts:
 - path: artifacts\**\*.*
