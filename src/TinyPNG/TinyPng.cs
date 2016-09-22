@@ -135,6 +135,10 @@ namespace TinyPng
         /// <returns></returns>
         public async Task<TinyPngResizeResponse> Resize(TinyPngCompressResponse result, ResizeOperation resizeOperation)
         {
+            if (result == null)
+                throw new ArgumentNullException(nameof(result));
+            if (resizeOperation == null)
+                throw new ArgumentNullException(nameof(resizeOperation));
 
             var requestBody = JsonConvert.SerializeObject(new { resize = resizeOperation }, jsonSettings);
 
@@ -162,6 +166,13 @@ namespace TinyPng
         /// <returns></returns>
         public async Task<TinyPngResizeResponse> Resize(TinyPngCompressResponse result, int width, int height, ResizeType resizeType = ResizeType.Fit)
         {
+            if (result == null)
+                throw new ArgumentNullException(nameof(result));
+            if (width == 0)
+                throw new ArgumentOutOfRangeException(nameof(width));
+            if (height == 0)
+                throw new ArgumentOutOfRangeException(nameof(height));
+
             var resizeOp = new ResizeOperation(resizeType, width, height);
 
             return await Resize(result, height, width, resizeType);
@@ -179,10 +190,10 @@ namespace TinyPng
         {
             if (result == null)
                 throw new ArgumentNullException(nameof(result));
-
             if (amazonSettings == null)
                 throw new ArgumentNullException(nameof(amazonSettings));
-
+            if (string.IsNullOrEmpty(path))
+                throw new ArgumentNullException(nameof(path));
 
             amazonSettings.Path = path;
 
@@ -213,9 +224,10 @@ namespace TinyPng
         {
             if (result == null)
                 throw new ArgumentNullException(nameof(result));
-
             if (AmazonS3Configuration == null)
                 throw new InvalidOperationException("AmazonS3Configuration has not been configured");
+            if (string.IsNullOrEmpty(path))
+                throw new ArgumentNullException(nameof(path));
 
             var amazonSettings = AmazonS3Configuration.Clone();
             amazonSettings.Path = path;
