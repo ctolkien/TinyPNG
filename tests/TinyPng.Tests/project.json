@@ -3,6 +3,11 @@
   "description": "TinyPng.Tests Class Library",
   "authors": [ "chad" ],
   "testRunner": "xunit",
+  "buildOptions": {
+    "copyToOutput": [
+      "Resources/**"
+    ]
+  },
   "dependencies": {
     "xunit": "2.2.0-beta2-build3300",
     "TinyPNG": "*",
