@@ -100,7 +100,7 @@ namespace TinyPng.Tests
         {
             Assert.Throws<ArgumentNullException>(() => new TinyPngClient(null));
             Assert.Throws<ArgumentNullException>(() => new TinyPngClient("apiKey", null));
-            Assert.Throws<ArgumentNullException>(() => new TinyPngClient(null, new AmazonS3Configuration("a", "b", "c", "d"));
+            Assert.Throws<ArgumentNullException>(() => new TinyPngClient(null, new AmazonS3Configuration("a", "b", "c", "d")));
         }
 
 
