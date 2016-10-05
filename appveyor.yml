@@ -18,11 +18,14 @@ build_script:
 - dotnet build **\project.json -c %CONFIGURATION%
 - dotnet pack -c %CONFIGURATION% -o .\artifacts .\src\TinyPNG\project.json
 
-
+before_test:
+- cmd: choco install opencover.portable
 test_script:
 - cmd: pushd
 - cmd: cd .\tests\TinyPng.Tests\ 
 - cmd: dotnet test -c %CONFIGURATION% --no-build #.\tests\TinyPng.Tests\
+after_test:
+- cmd: opencover.console -target:"dotnet.exe" -targetargs:"test" -skipautoprops
 
 artifacts:
 - path: artifacts\**\*.*
