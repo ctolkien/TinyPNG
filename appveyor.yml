@@ -3,7 +3,9 @@ os: Visual Studio 2015
 configuration: Release
 pull_requests:
   do_not_increment_build_number: true
-
+environment:
+  CODECOV_TOKEN: 
+    secure: bVt/DVcvyzeJiiyAxWCU4SCTnG1OM3omaApnMKArl0veMjYem04lV3CWDG20iQ4H
 init:
 - ps: $Env:LABEL = $Env:APPVEYOR_BUILD_NUMBER
 - ps: Set DOTNET_SKIP_FIRST_TIME_EXPERIENCE
@@ -26,7 +28,7 @@ test_script:
 - cmd: dotnet test -c %CONFIGURATION% --no-build #.\tests\TinyPng.Tests\
 after_test:
 - cmd: opencover.console -target:"dotnet.exe" -targetargs:"test -c %CONFIGURATION% --no-build" -register:user -filter:"+[*]* -[xunit*]*" -output:"coverage.xml"
-
+- bash <(curl -s https://codecov.io/bash)
 artifacts:
 - path: artifacts\**\*.*
 
