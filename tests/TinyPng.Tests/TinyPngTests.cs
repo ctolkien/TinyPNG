@@ -137,14 +137,14 @@ namespace TinyPng.Tests
         {
             var pngx = new TinyPngClient(apiKey);
             pngx.httpClient = new HttpClient(new FakeResponseHandler().Compress());
+            using (var fileStream = File.OpenRead(Cat))
+            {
+                var result = await pngx.Compress(fileStream);
 
-            var fileStream = File.OpenRead(Cat);
-
-            var result = await pngx.Compress(fileStream);
-
-            Assert.Equal("image/jpeg", result.Input.Type);
-            Assert.Equal(400, result.Output.Width);
-            Assert.Equal(400, result.Output.Height);
+                Assert.Equal("image/jpeg", result.Input.Type);
+                Assert.Equal(400, result.Output.Width);
+                Assert.Equal(400, result.Output.Height);
+            }
         }
 
         [Fact]
@@ -171,23 +171,7 @@ namespace TinyPng.Tests
             Assert.Equal(16646, (await downloadResult.GetImageByteData()).Length);
         }
 
-        [Fact]
-        public async Task ResizingOperation()
-        {
-            var pngx = new TinyPngClient(apiKey);
-            pngx.httpClient = new HttpClient(new FakeResponseHandler()
-                .Compress()
-                .Resize());
 
-            var result = await pngx.Compress(Cat);
-
-            var resized = await pngx.Resize(result, 150, 150);
-
-            var resizedImageByteData = await resized.GetImageByteData();
-
-            Assert.Equal(5970, resizedImageByteData.Length);
-
-        }
 
         [Fact]
         public async Task ResizingOperationThrows()
@@ -204,7 +188,22 @@ namespace TinyPng.Tests
             await Assert.ThrowsAsync<ArgumentNullException>(async () => await pngx.Resize(result, null));
             await Assert.ThrowsAsync<ArgumentOutOfRangeException>(async () => await pngx.Resize(result, 0, 150));
             await Assert.ThrowsAsync<ArgumentOutOfRangeException>(async () => await pngx.Resize(result, 150, 0));
-            
+
+        }
+
+        [Fact]
+        public async Task ResizingOperation()
+        {
+            var pngx = new TinyPngClient(apiKey);
+            pngx.httpClient = new HttpClient(new FakeResponseHandler()
+                .Compress()
+                .Resize());
+
+            var result = await pngx.Compress(Cat);
+            var resized = await pngx.Resize(result, 150, 150);
+
+            var resizedImageByteData = await resized.GetImageByteData();
+            Assert.Equal(5970, resizedImageByteData.Length);
         }
 
         [Fact]

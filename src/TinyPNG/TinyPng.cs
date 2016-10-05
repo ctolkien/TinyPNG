@@ -191,7 +191,7 @@ namespace TinyPng
 
             var resizeOp = new ResizeOperation(resizeType, width, height);
 
-            return await Resize(result, height, width, resizeType);
+            return await Resize(result, resizeOp);
         }
 
 
