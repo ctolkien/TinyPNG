@@ -141,7 +141,41 @@ namespace TinyPng.Tests
         }
 
         [Fact]
-        public async Task Resizing()
+        public async Task ResizingOperation()
+        {
+            var pngx = new TinyPngClient(apiKey);
+            pngx.httpClient = new HttpClient(new FakeResponseHandler()
+                .Compress()
+                .Resize());
+
+            var result = await pngx.Compress(Cat);
+
+            var resized = await pngx.Resize(result, 150, 150);
+
+            var resizedImageByteData = await resized.GetImageByteData();
+
+            Assert.Equal(5970, resizedImageByteData.Length);
+
+        }
+
+        [Fact]
+        public async Task ResizingOperationThrows()
+        {
+            var pngx = new TinyPngClient(apiKey);
+            pngx.httpClient = new HttpClient(new FakeResponseHandler()
+                .Compress()
+                .Resize());
+
+            var result = await pngx.Compress(Cat);
+
+            await Assert.ThrowsAsync<ArgumentNullException>(async () => await pngx.Resize(null, 150, 150));
+            await Assert.ThrowsAsync<ArgumentOutOfRangeException>(async () => await pngx.Resize(result, 0, 150));
+            await Assert.ThrowsAsync<ArgumentOutOfRangeException>(async () => await pngx.Resize(result, 150, 0));
+            
+        }
+
+        [Fact]
+        public async Task ResizingScaleHeightOperation()
         {
             var pngx = new TinyPngClient(apiKey);
             pngx.httpClient = new HttpClient(new FakeResponseHandler()
@@ -262,6 +296,20 @@ namespace TinyPng.Tests
                 "path.jpg")).ToString();
 
             Assert.Equal("https://s3-ap-southeast-2.amazonaws.com/tinypng-test-bucket/path.jpg", sendToAmazon);
+
+        }
+
+        [Fact]
+        public async Task CompressAndStoreToS3Throws()
+        {
+            var pngx = new TinyPngClient(apiKey);
+            pngx.httpClient = new HttpClient(new FakeResponseHandler()
+                .Compress()
+                .S3());
+
+            var result = await pngx.Compress(Cat);
+
+            await Assert.ThrowsAsync<ArgumentNullException>(async () => await pngx.SaveCompressedImageToAmazonS3(result, path: string.Empty));
 
         }
 
