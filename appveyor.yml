@@ -25,7 +25,7 @@ test_script:
 - cmd: cd .\tests\TinyPng.Tests\ 
 - cmd: dotnet test -c %CONFIGURATION% --no-build #.\tests\TinyPng.Tests\
 after_test:
-- cmd: opencover.console -target:"dotnet.exe" -targetargs:"test -c %CONFIGURATION% --no-build" -skipautoprops
+- cmd: opencover.console -target:"dotnet.exe" -targetargs:"test -c %CONFIGURATION% --no-build" -register:user -filter:"+[*]* -[xunit*]*" -output:"coverage.xml"
 
 artifacts:
 - path: artifacts\**\*.*
