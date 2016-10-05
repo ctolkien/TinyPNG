@@ -366,12 +366,18 @@ namespace TinyPng.Tests
         [Fact]
         public void TinyPngExceptionPopulatesCorrectData()
         {
-            var e = new TinyPngApiException(200, "status", "title", "message");
+            var StatusCode = 200;
+            var StatusReasonPhrase = "status";
+            var ErrorTitle = "title";
+            var ErrorMessage = "message";
+            var e = new TinyPngApiException(StatusCode, StatusReasonPhrase, ErrorTitle, "message");
 
-            Assert.Equal(200, e.StatusCode);
-            Assert.Equal("status", e.StatusReasonPhrase);
-            Assert.Equal("title", e.ErrorTitle);
-            Assert.Equal("message", e.Message);
+            var msg = $"Api Service returned a non-success status code when attempting an operation on an image: {StatusCode} - {StatusReasonPhrase}. {ErrorTitle}, {ErrorMessage}";
+
+            Assert.Equal(StatusCode, e.StatusCode);
+            Assert.Equal(StatusReasonPhrase, e.StatusReasonPhrase);
+            Assert.Equal(ErrorTitle, e.ErrorTitle);
+            Assert.Equal(msg, e.Message);
         }
     }
 }
