@@ -27,8 +27,10 @@ test_script:
 - cmd: cd .\tests\TinyPng.Tests\ 
 - cmd: dotnet test -c %CONFIGURATION% --no-build #.\tests\TinyPng.Tests\
 after_test:
-- cmd: opencover.console -target:"dotnet.exe" -targetargs:"test -c %CONFIGURATION% --no-build" -register:user -filter:"+[*]* -[xunit*]*" -output:"coverage.xml"
-- bash <(curl -s https://codecov.io/bash)
+- cmd: opencover.console -target:"dotnet.exe" -targetargs:"test -c %CONFIGURATION% --no-build" -register:user -filter:"+[*]* -[xunit*]*" -output:"coverage.xml" -oldstyle
+- "SET PATH=C:\\Python34;C:\\Python34\\Scripts;%PATH%"
+- pip install codecov
+- codecov -f "coverage.xml"
 artifacts:
 - path: artifacts\**\*.*
 
