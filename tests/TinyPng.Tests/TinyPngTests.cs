@@ -95,6 +95,13 @@ namespace TinyPng.Tests
             Assert.Throws<ArgumentNullException>(() => new TinyPngClient(null));
         }
 
+        [Fact]
+        public void TinyPngClientThrowsWhenNoValidS3ConfigurationSupplied()
+        {
+            Assert.Throws<ArgumentNullException>(() => new TinyPngClient(null));
+            Assert.Throws<ArgumentNullException>(() => new TinyPngClient(null, null));
+        }
+
 
         [Fact]
         public async Task Compression()
@@ -163,9 +170,7 @@ namespace TinyPng.Tests
             var result = await pngx.Compress(Cat);
 
             await Assert.ThrowsAsync<ArgumentNullException>(async () => await pngx.SaveCompressedImageToAmazonS3(null, "bucket/path.jpg"));
-            await Assert.ThrowsAsync<InvalidOperationException>(async () => await pngx.SaveCompressedImageToAmazonS3(result, string.Empty));
-
-
+            await Assert.ThrowsAsync<ArgumentNullException>(async () => await pngx.SaveCompressedImageToAmazonS3(result, string.Empty));
             await Assert.ThrowsAsync<InvalidOperationException>(async () => await pngx.SaveCompressedImageToAmazonS3(result, "bucket/path.jpg"));
 
         }
@@ -186,6 +191,23 @@ namespace TinyPng.Tests
             var sendToAmazon = (await pngx.SaveCompressedImageToAmazonS3(result,
                 new AmazonS3Configuration(ApiKey, ApiAccessKey, "tinypng-test-bucket", "ap-southeast-2"),
                 "path.jpg")).ToString();
+
+            Assert.Equal("https://s3-ap-southeast-2.amazonaws.com/tinypng-test-bucket/path.jpg", sendToAmazon);
+
+        }
+
+        [Fact]
+        public async Task CompressAndStoreToS3WithOptionsPassedIntoConstructor()
+        {
+            var pngx = new TinyPngClient(apiKey, new AmazonS3Configuration(ApiKey, ApiAccessKey, "tinypng-test-bucket", "ap-southeast-2"));
+
+            pngx.httpClient = new HttpClient(new FakeResponseHandler()
+                .Compress()
+                .S3());
+
+            var result = await pngx.Compress(Cat);
+
+            var sendToAmazon = (await pngx.SaveCompressedImageToAmazonS3(result, "path.jpg")).ToString();
 
             Assert.Equal("https://s3-ap-southeast-2.amazonaws.com/tinypng-test-bucket/path.jpg", sendToAmazon);
 
