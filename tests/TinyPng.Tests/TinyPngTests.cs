@@ -88,6 +88,14 @@ namespace TinyPng.Tests
         internal const string CompressedCat = "Resources/compressedcat.jpg";
         internal const string ResizedCat = "Resources/resizedcat.jpg";
 
+
+        [Fact]
+        public void TinyPngClientThrowsWhenNoApiKeySupplied()
+        {
+            Assert.Throws<ArgumentNullException>(() => new TinyPngClient(null));
+        }
+
+
         [Fact]
         public async Task Compression()
         {
@@ -99,7 +107,15 @@ namespace TinyPng.Tests
             Assert.Equal("image/jpeg", result.Input.Type);
             Assert.Equal(400, result.Output.Width);
             Assert.Equal(400, result.Output.Height);
+        }
 
+        [Fact]
+        public async Task CompressionShouldThrowIfNoPathToFile()
+        {
+            var pngx = new TinyPngClient(apiKey);
+            pngx.httpClient = new HttpClient(new FakeResponseHandler().Compress());
+
+            await Assert.ThrowsAsync<ArgumentNullException>(async () => await pngx.Compress(string.Empty));
         }
 
         [Fact]
@@ -145,6 +161,10 @@ namespace TinyPng.Tests
                 .S3());
 
             var result = await pngx.Compress(Cat);
+
+            await Assert.ThrowsAsync<ArgumentNullException>(async () => await pngx.SaveCompressedImageToAmazonS3(null, "bucket/path.jpg"));
+            await Assert.ThrowsAsync<InvalidOperationException>(async () => await pngx.SaveCompressedImageToAmazonS3(result, string.Empty));
+
 
             await Assert.ThrowsAsync<InvalidOperationException>(async () => await pngx.SaveCompressedImageToAmazonS3(result, "bucket/path.jpg"));
 
