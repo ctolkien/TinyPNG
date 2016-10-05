@@ -3,9 +3,6 @@ os: Visual Studio 2015
 configuration: Release
 pull_requests:
   do_not_increment_build_number: true
-environment:
-  CODECOV_TOKEN: 
-    secure: bVt/DVcvyzeJiiyAxWCU4SCTnG1OM3omaApnMKArl0veMjYem04lV3CWDG20iQ4H
 init:
 - ps: $Env:LABEL = $Env:APPVEYOR_BUILD_NUMBER
 - ps: Set DOTNET_SKIP_FIRST_TIME_EXPERIENCE
