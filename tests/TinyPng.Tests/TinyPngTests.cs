@@ -99,7 +99,8 @@ namespace TinyPng.Tests
         public void TinyPngClientThrowsWhenNoValidS3ConfigurationSupplied()
         {
             Assert.Throws<ArgumentNullException>(() => new TinyPngClient(null));
-            Assert.Throws<ArgumentNullException>(() => new TinyPngClient(null, null));
+            Assert.Throws<ArgumentNullException>(() => new TinyPngClient("apiKey", null));
+            Assert.Throws<ArgumentNullException>(() => new TinyPngClient(null, new AmazonS3Configuration("a", "b", "c", "d"));
         }
 
 
@@ -110,6 +111,35 @@ namespace TinyPng.Tests
             pngx.httpClient = new HttpClient(new FakeResponseHandler().Compress());
 
             var result = await pngx.Compress(Cat);
+
+            Assert.Equal("image/jpeg", result.Input.Type);
+            Assert.Equal(400, result.Output.Width);
+            Assert.Equal(400, result.Output.Height);
+        }
+
+        [Fact]
+        public async Task CompressionWithBytes()
+        {
+            var pngx = new TinyPngClient(apiKey);
+            pngx.httpClient = new HttpClient(new FakeResponseHandler().Compress());
+
+            var bytes = File.ReadAllBytes(Cat);
+            var result = await pngx.Compress(bytes);
+
+            Assert.Equal("image/jpeg", result.Input.Type);
+            Assert.Equal(400, result.Output.Width);
+            Assert.Equal(400, result.Output.Height);
+        }
+
+        [Fact]
+        public async Task CompressionWithStreams()
+        {
+            var pngx = new TinyPngClient(apiKey);
+            pngx.httpClient = new HttpClient(new FakeResponseHandler().Compress());
+
+            var fileStream = File.OpenRead(Cat);
+
+            var result = await pngx.Compress(fileStream);
 
             Assert.Equal("image/jpeg", result.Input.Type);
             Assert.Equal(400, result.Output.Width);
@@ -169,6 +199,8 @@ namespace TinyPng.Tests
             var result = await pngx.Compress(Cat);
 
             await Assert.ThrowsAsync<ArgumentNullException>(async () => await pngx.Resize(null, 150, 150));
+            await Assert.ThrowsAsync<ArgumentNullException>(async () => await pngx.Resize(null, null));
+            await Assert.ThrowsAsync<ArgumentNullException>(async () => await pngx.Resize(result, null));
             await Assert.ThrowsAsync<ArgumentOutOfRangeException>(async () => await pngx.Resize(result, 0, 150));
             await Assert.ThrowsAsync<ArgumentOutOfRangeException>(async () => await pngx.Resize(result, 150, 0));
             
