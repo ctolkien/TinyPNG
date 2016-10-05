@@ -281,5 +281,16 @@ namespace TinyPng.Tests
             Assert.Equal("https://s3-ap-southeast-2.amazonaws.com/tinypng-test-bucket/path.jpg", sendToAmazon);
 
         }
+
+        [Fact]
+        public void TinyPngExceptionPopulatesCorrectData()
+        {
+            var e = new TinyPngApiException(200, "status", "title", "message");
+
+            Assert.Equal(200, e.StatusCode);
+            Assert.Equal("status", e.StatusReasonPhrase);
+            Assert.Equal("title", e.ErrorTitle);
+            Assert.Equal("message", e.Message);
+        }
     }
 }
