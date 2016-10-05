@@ -2480,7 +2480,7 @@
           "lib/netstandard1.1/xunit.runner.utility.dotnet.dll": {}
         }
       },
-      "TinyPNG/1.3.0": {
+      "TinyPNG/2.0.0": {
         "type": "project",
         "framework": ".NETStandard,Version=v1.3",
         "dependencies": {
@@ -2492,10 +2492,10 @@
           "System.Text.Encoding": "4.0.11"
         },
         "compile": {
-          "netstandard1.3/TinyPng.dll": {}
+          "netstandard1.3/TinyPNG.dll": {}
         },
         "runtime": {
-          "netstandard1.3/TinyPng.dll": {}
+          "netstandard1.3/TinyPNG.dll": {}
         }
       }
     }
@@ -7480,10 +7480,10 @@
         "xunit.runner.utility.nuspec"
       ]
     },
-    "TinyPNG/1.3.0": {
+    "TinyPNG/2.0.0": {
       "type": "project",
       "path": "../../src/TinyPNG/project.json",
-      "msbuildProject": "../../src/TinyPNG/TinyPng.xproj"
+      "msbuildProject": "../../src/TinyPNG/TinyPNG.xproj"
     }
   },
   "projectFileDependencyGroups": {
