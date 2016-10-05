@@ -342,7 +342,7 @@ namespace TinyPng.Tests
 
             var result = await pngx.Compress(Cat);
 
-            await Assert.ThrowsAsync<ArgumentNullException>(async () => await pngx.SaveCompressedImageToAmazonS3(result, path: string.Empty));
+            await Assert.ThrowsAsync<InvalidOperationException>(async () => await pngx.SaveCompressedImageToAmazonS3(result, path: string.Empty));
 
         }
 
