@@ -158,6 +158,75 @@ namespace TinyPng.Tests
 
         }
 
+        [Fact]
+        public async Task ResizingScaleWidthOperation()
+        {
+            var pngx = new TinyPngClient(apiKey);
+            pngx.httpClient = new HttpClient(new FakeResponseHandler()
+                .Compress()
+                .Resize());
+
+            var result = await pngx.Compress(Cat);
+
+            var resized = await pngx.Resize(result, new ScaleWidthResizeOperation(150));
+
+            var resizedImageByteData = await resized.GetImageByteData();
+
+            Assert.Equal(5970, resizedImageByteData.Length);
+
+        }
+
+        [Fact]
+        public async Task ResizingFitResizeOperation()
+        {
+            var pngx = new TinyPngClient(apiKey);
+            pngx.httpClient = new HttpClient(new FakeResponseHandler()
+                .Compress()
+                .Resize());
+
+            var result = await pngx.Compress(Cat);
+
+            var resized = await pngx.Resize(result, new FitResizeOperation(150, 150));
+
+            var resizedImageByteData = await resized.GetImageByteData();
+
+            Assert.Equal(5970, resizedImageByteData.Length);
+
+        }
+
+        [Fact]
+        public async Task ResizingCoverResizeOperation()
+        {
+            var pngx = new TinyPngClient(apiKey);
+            pngx.httpClient = new HttpClient(new FakeResponseHandler()
+                .Compress()
+                .Resize());
+
+            var result = await pngx.Compress(Cat);
+
+            var resized = await pngx.Resize(result, new CoverResizeOperation(150, 150));
+
+            var resizedImageByteData = await resized.GetImageByteData();
+
+            Assert.Equal(5970, resizedImageByteData.Length);
+
+        }
+
+        [Fact]
+        public async Task ResizingCoverResizeOperationThrowsWithInvalidParams()
+        {
+            var pngx = new TinyPngClient(apiKey);
+            pngx.httpClient = new HttpClient(new FakeResponseHandler()
+                .Compress()
+                .Resize());
+
+            var result = await pngx.Compress(Cat);
+
+            await Assert.ThrowsAsync<ArgumentException>(async () => await pngx.Resize(result, new CoverResizeOperation(0, 150)));
+            await Assert.ThrowsAsync<ArgumentException>(async () => await pngx.Resize(result, new CoverResizeOperation(150, 0)));
+
+        }
+
 
         [Fact]
         public async Task CompressAndStoreToS3ShouldThrowIfS3HasNotBeenConfigured()
