@@ -3,7 +3,7 @@
 | Platform | Status|
 |---------|-------|
 |Windows  | [![Build status](https://img.shields.io/appveyor/ci/soda-digital/tinypng.svg?maxAge=2000)](https://ci.appveyor.com/project/Soda-Digital/tinypng) |
-|Linux/OSX| [![Build Status](https://img.shields.io/travis/ctolkien/TinyPNG.svg?maxAge=2000)](https://travis-ci.org/ctolkien/TinyPNG) |
+|Linux | [![Build Status](https://img.shields.io/travis/ctolkien/TinyPNG.svg?maxAge=2000)](https://travis-ci.org/ctolkien/TinyPNG) |
 
 [![codecov](https://codecov.io/gh/ctolkien/TinyPNG/branch/master/graph/badge.svg)](https://codecov.io/gh/ctolkien/TinyPNG)
 ![Version](https://img.shields.io/nuget/v/tinypng.svg?maxAge=2000)
