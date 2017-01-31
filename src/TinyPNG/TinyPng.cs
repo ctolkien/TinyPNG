@@ -16,7 +16,7 @@ namespace TinyPng
         private const string ApiEndpoint = "https://api.tinify.com/shrink";
 
         public HttpClient httpClient = new HttpClient();
-        private readonly JsonSerializerSettings jsonSettings;
+        internal static JsonSerializerSettings JsonSettings;
 
         /// <summary>
         /// Wrapper for the tinypng.com API
@@ -36,11 +36,11 @@ namespace TinyPng
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("basic", _apiKey);
 
             //configure json settings for camelCase.
-            jsonSettings = new JsonSerializerSettings
+            JsonSettings = new JsonSerializerSettings
             {
                 ContractResolver = new CamelCasePropertyNamesContractResolver()
             };
-            jsonSettings.Converters.Add(new StringEnumConverter { CamelCaseText = true });
+            JsonSettings.Converters.Add(new StringEnumConverter { CamelCaseText = true });
 
         }
 
@@ -120,78 +120,11 @@ namespace TinyPng
 
             if (response.IsSuccessStatusCode)
             {
-                return new TinyPngCompressResponse(response);
+                return new TinyPngCompressResponse(response, httpClient);
             }
 
             var errorMsg = JsonConvert.DeserializeObject<ApiErrorResponse>(await response.Content.ReadAsStringAsync());
             throw new TinyPngApiException((int)response.StatusCode, response.ReasonPhrase, errorMsg.Error, errorMsg.Message);
-        }
-        public async Task<TinyPngImageResponse> Download(TinyPngCompressResponse result)
-        {
-            if (result == null)
-                throw new ArgumentNullException(nameof(result));
-
-            var msg = new HttpRequestMessage(HttpMethod.Get, result.Output.Url);
-
-            var response = await httpClient.SendAsync(msg);
-            if (response.IsSuccessStatusCode)
-            {
-                return new TinyPngImageResponse(response);
-            }
-
-            var errorMsg = JsonConvert.DeserializeObject<ApiErrorResponse>(await response.Content.ReadAsStringAsync());
-            throw new TinyPngApiException((int)response.StatusCode, response.ReasonPhrase, errorMsg.Error, errorMsg.Message);
-        }
-
-
-        /// <summary>
-        /// Uses the TinyPng API to create a resized version of your uploaded image.
-        /// </summary>
-        /// <param name="result">This is the previous result of running a compression <see cref="Compress(string)"/></param>
-        /// <param name="resizeOperation">Supply a strongly typed Resize Operation. See <typeparamref name="CoverResizeOperation"/>, <typeparamref name="FitResizeOperation"/>, <typeparamref name="ScaleHeightResizeOperation"/>, <typeparamref name="ScaleWidthResizeOperation"/></param>
-        /// <returns></returns>
-        public async Task<TinyPngResizeResponse> Resize(TinyPngCompressResponse result, ResizeOperation resizeOperation)
-        {
-            if (result == null)
-                throw new ArgumentNullException(nameof(result));
-            if (resizeOperation == null)
-                throw new ArgumentNullException(nameof(resizeOperation));
-
-            var requestBody = JsonConvert.SerializeObject(new { resize = resizeOperation }, jsonSettings);
-
-            var msg = new HttpRequestMessage(HttpMethod.Post, result.Output.Url);
-            msg.Content = new StringContent(requestBody, System.Text.Encoding.UTF8, "application/json");
-
-            var response = await httpClient.SendAsync(msg);
-            if (response.IsSuccessStatusCode)
-            {
-                return new TinyPngResizeResponse(response);
-            }
-
-            var errorMsg = JsonConvert.DeserializeObject<ApiErrorResponse>(await response.Content.ReadAsStringAsync());
-            throw new TinyPngApiException((int)response.StatusCode, response.ReasonPhrase, errorMsg.Error, errorMsg.Message);
-        }
-
-        /// <summary>
-        /// Uses the TinyPng API to create a resized version of your uploaded image.
-        /// </summary>
-        /// <param name="result">This is the previous result of running a compression <see cref="Compress(string)"/></param>
-        /// <param name="width"></param>
-        /// <param name="height"></param>
-        /// <param name="resizeType"></param>
-        /// <returns></returns>
-        public async Task<TinyPngResizeResponse> Resize(TinyPngCompressResponse result, int width, int height, ResizeType resizeType = ResizeType.Fit)
-        {
-            if (result == null)
-                throw new ArgumentNullException(nameof(result));
-            if (width == 0)
-                throw new ArgumentOutOfRangeException(nameof(width));
-            if (height == 0)
-                throw new ArgumentOutOfRangeException(nameof(height));
-
-            var resizeOp = new ResizeOperation(resizeType, width, height);
-
-            return await Resize(result, resizeOp);
         }
 
 
@@ -213,7 +146,7 @@ namespace TinyPng
 
             amazonSettings.Path = path;
 
-            var amazonSettingsAsJson = JsonConvert.SerializeObject(new { store = amazonSettings }, jsonSettings);
+            var amazonSettingsAsJson = JsonConvert.SerializeObject(new { store = amazonSettings }, JsonSettings);
 
             var msg = new HttpRequestMessage(HttpMethod.Post, result.Output.Url);
             msg.Content = new StringContent(amazonSettingsAsJson, System.Text.Encoding.UTF8, "application/json");
