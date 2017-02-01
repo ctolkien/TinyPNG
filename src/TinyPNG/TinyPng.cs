@@ -7,7 +7,9 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
 using TinyPng.Responses;
+using System.Runtime.CompilerServices;
 
+[assembly:InternalsVisibleTo("TinyPng.Tests")]
 namespace TinyPng
 {
     public class TinyPngClient : IDisposable
@@ -16,9 +18,9 @@ namespace TinyPng
         private const string ApiEndpoint = "https://api.tinify.com/shrink";
 
         /// <summary>
-        /// This is used for testing only. Do not use.
+        /// This is used for testing only.
         /// </summary>
-        public HttpClient httpClient = new HttpClient();
+        internal HttpClient HttpClient = new HttpClient();
         internal static JsonSerializerSettings JsonSettings;
 
         /// <summary>
@@ -36,7 +38,7 @@ namespace TinyPng
             _apiKey = Convert.ToBase64String(authByteArray);
 
             //add auth to the default outgoing headers.
-            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("basic", _apiKey);
+            HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("basic", _apiKey);
 
             //configure json settings for camelCase.
             JsonSettings = new JsonSerializerSettings
@@ -119,11 +121,11 @@ namespace TinyPng
             if (data == null)
                 throw new ArgumentNullException(nameof(data));
 
-            var response = await httpClient.PostAsync(ApiEndpoint, CreateContent(data));
+            var response = await HttpClient.PostAsync(ApiEndpoint, CreateContent(data));
 
             if (response.IsSuccessStatusCode)
             {
-                return new TinyPngCompressResponse(response, httpClient);
+                return new TinyPngCompressResponse(response, HttpClient);
             }
 
             var errorMsg = JsonConvert.DeserializeObject<ApiErrorResponse>(await response.Content.ReadAsStringAsync());
@@ -154,7 +156,7 @@ namespace TinyPng
             var msg = new HttpRequestMessage(HttpMethod.Post, result.Output.Url);
             msg.Content = new StringContent(amazonSettingsAsJson, System.Text.Encoding.UTF8, "application/json");
 
-            var response = await httpClient.SendAsync(msg);
+            var response = await HttpClient.SendAsync(msg);
 
             if (response.IsSuccessStatusCode)
             {
@@ -205,7 +207,7 @@ namespace TinyPng
         {
             if (disposing)
             {
-                httpClient?.Dispose();
+                HttpClient?.Dispose();
             }
         }
         #endregion

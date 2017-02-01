@@ -109,7 +109,7 @@ namespace TinyPng.Tests
         public async Task Compression()
         {
             var pngx = new TinyPngClient(apiKey);
-            pngx.httpClient = new HttpClient(new FakeResponseHandler().Compress());
+            pngx.HttpClient = new HttpClient(new FakeResponseHandler().Compress());
 
             var result = await pngx.Compress(Cat);
 
@@ -122,7 +122,7 @@ namespace TinyPng.Tests
         public async Task CompressionWithBytes()
         {
             var pngx = new TinyPngClient(apiKey);
-            pngx.httpClient = new HttpClient(new FakeResponseHandler().Compress());
+            pngx.HttpClient = new HttpClient(new FakeResponseHandler().Compress());
 
             var bytes = File.ReadAllBytes(Cat);
             var result = await pngx.Compress(bytes);
@@ -137,7 +137,7 @@ namespace TinyPng.Tests
         {
             var pngx = new TinyPngClient(apiKey);
 
-            pngx.httpClient = new HttpClient(new FakeResponseHandler().Compress());
+            pngx.HttpClient = new HttpClient(new FakeResponseHandler().Compress());
             using (var fileStream = File.OpenRead(Cat))
             {
                 var result = await pngx.Compress(fileStream);
@@ -152,7 +152,7 @@ namespace TinyPng.Tests
         public async Task CompressionShouldThrowIfNoPathToFile()
         {
             var pngx = new TinyPngClient(apiKey);
-            pngx.httpClient = new HttpClient(new FakeResponseHandler().Compress());
+            pngx.HttpClient = new HttpClient(new FakeResponseHandler().Compress());
 
             await Assert.ThrowsAsync<ArgumentNullException>(async () => await pngx.Compress(string.Empty));
         }
@@ -162,7 +162,7 @@ namespace TinyPng.Tests
         {
 
             var pngx = new TinyPngClient(apiKey);
-            pngx.httpClient = new HttpClient(new FakeResponseHandler()
+            pngx.HttpClient = new HttpClient(new FakeResponseHandler()
                 .Compress()
                 .Download());
 
@@ -179,7 +179,7 @@ namespace TinyPng.Tests
         public async Task ResizingOperationThrows()
         {
             var pngx = new TinyPngClient(apiKey);
-            pngx.httpClient = new HttpClient(new FakeResponseHandler()
+            pngx.HttpClient = new HttpClient(new FakeResponseHandler()
                 .Compress()
                 .Resize());
 
@@ -195,7 +195,7 @@ namespace TinyPng.Tests
         public async Task ResizingOperation()
         {
             var pngx = new TinyPngClient(apiKey);
-            pngx.httpClient = new HttpClient(new FakeResponseHandler()
+            pngx.HttpClient = new HttpClient(new FakeResponseHandler()
                 .Compress()
                 .Resize());
 
@@ -208,7 +208,7 @@ namespace TinyPng.Tests
         public async Task ResizingScaleHeightOperation()
         {
             var pngx = new TinyPngClient(apiKey);
-            pngx.httpClient = new HttpClient(new FakeResponseHandler()
+            pngx.HttpClient = new HttpClient(new FakeResponseHandler()
                 .Compress()
                 .Resize());
 
@@ -222,7 +222,7 @@ namespace TinyPng.Tests
         public async Task ResizingScaleWidthOperation()
         {
             var pngx = new TinyPngClient(apiKey);
-            pngx.httpClient = new HttpClient(new FakeResponseHandler()
+            pngx.HttpClient = new HttpClient(new FakeResponseHandler()
                 .Compress()
                 .Resize());
 
@@ -237,7 +237,7 @@ namespace TinyPng.Tests
         public async Task ResizingFitResizeOperation()
         {
             var pngx = new TinyPngClient(apiKey);
-            pngx.httpClient = new HttpClient(new FakeResponseHandler()
+            pngx.HttpClient = new HttpClient(new FakeResponseHandler()
                 .Compress()
                 .Resize());
 
@@ -254,7 +254,7 @@ namespace TinyPng.Tests
         {
             var pngx = new TinyPngClient(apiKey);
 
-            pngx.httpClient = new HttpClient(new FakeResponseHandler()
+            pngx.HttpClient = new HttpClient(new FakeResponseHandler()
                 .Compress()
                 .Resize());
 
@@ -270,7 +270,7 @@ namespace TinyPng.Tests
         public async Task ResizingCoverResizeOperationThrowsWithInvalidParams()
         {
             var pngx = new TinyPngClient(apiKey);
-            pngx.httpClient = new HttpClient(new FakeResponseHandler()
+            pngx.HttpClient = new HttpClient(new FakeResponseHandler()
                 .Compress()
                 .Resize());
 
@@ -284,7 +284,7 @@ namespace TinyPng.Tests
         public async Task CompressAndStoreToS3ShouldThrowIfS3HasNotBeenConfigured()
         {
             var pngx = new TinyPngClient(apiKey);
-            pngx.httpClient = new HttpClient(new FakeResponseHandler()
+            pngx.HttpClient = new HttpClient(new FakeResponseHandler()
                 .Compress()
                 .S3());
 
@@ -303,7 +303,7 @@ namespace TinyPng.Tests
         public async Task CompressAndStoreToS3()
         {
             var pngx = new TinyPngClient(apiKey);
-            pngx.httpClient = new HttpClient(new FakeResponseHandler()
+            pngx.HttpClient = new HttpClient(new FakeResponseHandler()
                 .Compress()
                 .S3());
 
@@ -321,7 +321,7 @@ namespace TinyPng.Tests
         public async Task CompressAndStoreToS3Throws()
         {
             var pngx = new TinyPngClient(apiKey);
-            pngx.httpClient = new HttpClient(new FakeResponseHandler()
+            pngx.HttpClient = new HttpClient(new FakeResponseHandler()
                 .Compress()
                 .S3());
 
@@ -336,7 +336,7 @@ namespace TinyPng.Tests
         {
             var pngx = new TinyPngClient(apiKey, new AmazonS3Configuration(ApiKey, ApiAccessKey, "tinypng-test-bucket", "ap-southeast-2"));
 
-            pngx.httpClient = new HttpClient(new FakeResponseHandler()
+            pngx.HttpClient = new HttpClient(new FakeResponseHandler()
                 .Compress()
                 .S3());
 
