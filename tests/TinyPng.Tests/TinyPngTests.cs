@@ -137,7 +137,6 @@ namespace TinyPng.Tests
         {
             var pngx = new TinyPngClient(apiKey);
 
-
             pngx.httpClient = new HttpClient(new FakeResponseHandler().Compress());
             using (var fileStream = File.OpenRead(Cat))
             {
@@ -161,16 +160,17 @@ namespace TinyPng.Tests
         [Fact]
         public async Task CompressionAndDownload()
         {
-            throw new NotImplementedException();
 
-            //var pngx = new TinyPngClient(apiKey);
-            //pngx.httpClient = new HttpClient(new FakeResponseHandler()
-            //    .Compress()
-            //    .Download());
+            var pngx = new TinyPngClient(apiKey);
+            pngx.httpClient = new HttpClient(new FakeResponseHandler()
+                .Compress()
+                .Download());
 
-            //var downloadResult = await pngx.Compress(Cat).GetImageByteData();
+            var downloadResult = await pngx.Compress(Cat)
+                .Download()
+                .GetImageByteData();
 
-            //Assert.Equal(16646, downloadResult.Length);
+            Assert.Equal(16646, downloadResult.Length);
         }
 
 

@@ -15,6 +15,9 @@ namespace TinyPng
         private readonly string _apiKey;
         private const string ApiEndpoint = "https://api.tinify.com/shrink";
 
+        /// <summary>
+        /// This is used for testing only. Do not use.
+        /// </summary>
         public HttpClient httpClient = new HttpClient();
         internal static JsonSerializerSettings JsonSettings;
 
