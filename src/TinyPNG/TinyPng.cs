@@ -20,7 +20,7 @@ namespace TinyPng
         /// <summary>
         /// This is used for testing only.
         /// </summary>
-        internal HttpClient HttpClient = new HttpClient();
+        internal static HttpClient HttpClient = new HttpClient();
         internal static JsonSerializerSettings JsonSettings;
 
         /// <summary>
