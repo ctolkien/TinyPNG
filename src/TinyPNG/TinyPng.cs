@@ -17,9 +17,6 @@ namespace TinyPng
         private readonly string _apiKey;
         private const string ApiEndpoint = "https://api.tinify.com/shrink";
 
-        /// <summary>
-        /// This is used for testing only.
-        /// </summary>
         internal static HttpClient HttpClient = new HttpClient();
         internal static JsonSerializerSettings JsonSettings;
 
@@ -80,7 +77,7 @@ namespace TinyPng
         }
 
         /// <summary>
-        /// Compress file
+        /// Compress a file on disk
         /// </summary>
         /// <param name="pathToFile">Path to file on disk</param>
         /// <returns>TinyPngApiResult, <see cref="TinyPngApiResult"/></returns>
@@ -112,7 +109,7 @@ namespace TinyPng
         }
 
         /// <summary>
-        /// Compress stream
+        /// Compress a stream
         /// </summary>
         /// <param name="data"></param>
         /// <returns></returns>
