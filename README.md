@@ -28,9 +28,19 @@ Install via Nuget
 ```csharp
 using (var png = new TinyPngClient("yourSecretApiKey")) 
 {
-    await png.Compress("cat.jpg");
+    var result = await png.Compress("cat.jpg");
+    
+    //URL to your compressed version
+    result.Output.Url;
 }
 ```
+
+## Upgrading from V2
+
+The API has changed from V2, primarily you no longer need to await each individual
+step of using the TinyPNG api, you can now chain appropriate calls together as
+the extension methods now operate on `Task<T>`.
+
 
 ## Compressing Images
 
@@ -38,15 +48,17 @@ using (var png = new TinyPngClient("yourSecretApiKey"))
 //create an instance of the TinyPngClient
 using (var png = new TinyPngClient("yourSecretApiKey")) 
 {
-    //compress an image
-    var result = await png.Compress("pathToFile or byte array or stream");
-
+    //Create a task to compress an image.
     //this gives you the information about your image as stored by TinyPNG
-    //they don't give you the actual bits as you may want to chain this with a resize
-    //operation without caring for the originally sied image. For that, we need to:
-    var compressedImage = await png.Download(result);
+    //they don't give you the actual bits (as you may want to chain this with a resize
+    //operation without caring for the originally sized image).
+    var compressImageTask = png.Compress("pathToFile or byte array or stream");
 
-    //get the image data as a byte array
+    //If you want to actually save this compressed image off
+    //it will need to be downloaded 
+    var compressedImage = await compressImageTask.Download();
+
+    //you can then get the bytes
     var bytes = await compressedImage.GetImageByteData();
 
     //get a stream instead
@@ -55,14 +67,18 @@ using (var png = new TinyPngClient("yourSecretApiKey"))
     //or just save to disk
     await compressedImage.SaveImageToDisk("pathToSaveImage");
 
-    //async turtle all the things!
-    await (await png.Download(await png.Compress("path"))).SaveImageToDisk("savedPath");
+    //Putting it all together
+    await png.Compress("path")
+        .Download()
+        .SaveImageToDisk("savedPath");
 
 }
 ```
 
 Further details about the result of the compression are also available on the `Input` and `Output` properties of a `Compress` operation. Some examples:
 ```csharp
+
+    var result = await png.Compress("pathToFile or byte array or stream");
 
     //old size
     result.Input.Size;
@@ -80,11 +96,16 @@ Further details about the result of the compression are also available on the `I
 ```csharp
 using (var png = new TinyPngClient("yourSecretApiKey")) 
 {
-    var result = await png.Compress("pathToFile or byte array or stream");
+    var compressImageTask = png.Compress("pathToFile or byte array or stream");
     
-    var resizedImage = await png.Resize(result, width, height, ResizeType);
+    var resizedImageTask = compressImageTask.Resize(width, height);
 
-    await resizedImage.SaveImageToDisk("pathToSaveImage");
+    await resizedImageTask.SaveImageToDisk("pathToSaveImage");
+
+    //altogether now....
+    await png.Compress("pathToFile")
+        .Resize(width, height)
+        .SaveImageToDisk("pathToSaveImage");
 }
 
 ```
@@ -98,12 +119,12 @@ depending on the type of resize you want to do.
 ```csharp
 using (var png = new TinyPngClient("yourSecretApiKey")) 
 {
-    var result = await png.Compress("pathToFile or byte array or stream");
+    var compressTask = png.Compress("pathToFile or byte array or stream");
     
-    await png.Resize(result, new ScaleWidthResizeOperation(width));
-    await png.Resize(result, new ScaleHeightResizeOperation(width));
-    await png.Resize(result, new FitResizeOperation(width, height));
-    await png.Resize(result, new CoverResizeOperation(width, height));
+    await compressTask.Resize(new ScaleWidthResizeOperation(width));
+    await compressTask.Resize(new ScaleHeightResizeOperation(width));
+    await compressTask.Resize(new FitResizeOperation(width, height));
+    await compressTask.Resize(new CoverResizeOperation(width, height));
 }
 
 ```

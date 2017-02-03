@@ -1,7 +1,6 @@
 ﻿using System.Net.Http;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 
 namespace TinyPng.Responses
 {
@@ -11,15 +10,11 @@ namespace TinyPng.Responses
         public TinyPngApiOutput Output { get; private set; }
         public TinyPngApiResult ApiResult { get; private set; }
 
-        private readonly JsonSerializerSettings jsonSettings;
+        internal readonly HttpClient HttpClient;
 
-        public TinyPngCompressResponse(HttpResponseMessage msg) : base(msg)
+        public TinyPngCompressResponse(HttpResponseMessage msg, HttpClient httpClient) : base(msg)
         {
-            //configure json settings for camelCase.
-            jsonSettings = new JsonSerializerSettings
-            {
-                ContractResolver = new CamelCasePropertyNamesContractResolver()
-            };
+            HttpClient = httpClient;
 
             //this is a cute trick to handle async in a ctor and avoid deadlocks
             ApiResult = Task.Run(() => Deserialize(msg)).GetAwaiter().GetResult();
@@ -29,7 +24,7 @@ namespace TinyPng.Responses
         }
         private async Task<TinyPngApiResult> Deserialize(HttpResponseMessage response)
         {
-            return JsonConvert.DeserializeObject<TinyPngApiResult>(await response.Content.ReadAsStringAsync(), jsonSettings);
+            return JsonConvert.DeserializeObject<TinyPngApiResult>(await response.Content.ReadAsStringAsync(), TinyPngClient.JsonSettings);
         }
     }
 }
