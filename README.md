@@ -32,9 +32,15 @@ using (var png = new TinyPngClient("yourSecretApiKey"))
     
     //URL to your compressed version
     result.Output.Url;
-
 }
 ```
+
+## Upgrading from V2
+
+The API has changed from V2, primarily you no longer need to await each individual
+step of using the TinyPNG api, you can now chain appropriate calls together as
+the extension methods now operate on `Task<T>`.
+
 
 ## Compressing Images
 
