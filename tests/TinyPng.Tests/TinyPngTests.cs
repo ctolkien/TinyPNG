@@ -300,6 +300,12 @@ namespace TinyPng.Tests
 
 
         [Fact]
+        public void CompressAndStoreToS3ShouldThrowIfNoApiKeyProvided()
+        {
+            Assert.Throws<ArgumentNullException>(() =>  new TinyPngClient(string.Empty, new AmazonS3Configuration("a", "b", "c", "d")));
+        }
+
+        [Fact]
         public async Task CompressAndStoreToS3ShouldThrowIfS3HasNotBeenConfigured()
         {
             var pngx = new TinyPngClient(apiKey);
@@ -344,7 +350,11 @@ namespace TinyPng.Tests
 
             var result = await pngx.Compress(Cat);
 
+            await Assert.ThrowsAsync<ArgumentNullException>(async () => await pngx.SaveCompressedImageToAmazonS3(result, null, string.Empty));
+            
+            //S3 configuration has not been set
             await Assert.ThrowsAsync<InvalidOperationException>(async () => await pngx.SaveCompressedImageToAmazonS3(result, path: string.Empty));
+            
         }
 
         [Fact]
