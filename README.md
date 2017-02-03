@@ -28,7 +28,11 @@ Install via Nuget
 ```csharp
 using (var png = new TinyPngClient("yourSecretApiKey")) 
 {
-    await png.Compress("cat.jpg");
+    var result = await png.Compress("cat.jpg");
+    
+    //URL to your compressed version
+    result.Output.Url;
+
 }
 ```
 
