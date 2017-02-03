@@ -39,6 +39,20 @@ namespace TinyPng.Tests
             fakeResponse.AddFakePostResponse(new Uri("https://api.tinify.com/shrink"), compressResponseMessage);
             return fakeResponse;
         }
+
+        public static FakeResponseHandler CompressAndFail(this FakeResponseHandler fakeResponse)
+        {
+            var errorApiObject = new TinyPngApiException(400, "reason", "title", "message");
+
+            var compressResponseMessage = new HttpResponseMessage
+            {
+                StatusCode = System.Net.HttpStatusCode.BadRequest,
+                Content = new StringContent(JsonConvert.SerializeObject(errorApiObject))
+            };
+            fakeResponse.AddFakePostResponse(new Uri("https://api.tinify.com/shrink"), compressResponseMessage);
+            return fakeResponse;
+        }
+
         public static FakeResponseHandler Download(this FakeResponseHandler fakeResponse)
         {
             var compressedCatStream = File.OpenRead(TinyPngTests.CompressedCat);
@@ -155,6 +169,15 @@ namespace TinyPng.Tests
             TinyPngClient.HttpClient = new HttpClient(new FakeResponseHandler().Compress());
 
             await Assert.ThrowsAsync<ArgumentNullException>(async () => await pngx.Compress(string.Empty));
+        }
+
+        [Fact]
+        public async Task CompressionShouldThrowIfNoNonSuccessStatusCode()
+        {
+            var pngx = new TinyPngClient(apiKey);
+            TinyPngClient.HttpClient = new HttpClient(new FakeResponseHandler().CompressAndFail());
+
+            await Assert.ThrowsAsync<TinyPngApiException>(async () => await pngx.Compress(Cat));
         }
 
         [Fact]
