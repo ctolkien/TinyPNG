@@ -6,7 +6,6 @@
     <VersionPrefix>1.1.3</VersionPrefix>
     <Authors>Chad Tolkien</Authors>
     <TargetFrameworks>net45;netstandard1.3</TargetFrameworks>
-    <NetStandardImplicitPackageVersion>1.6.0</NetStandardImplicitPackageVersion>
     <AssemblyName>TinyPNG</AssemblyName>
     <PackageId>TinyPNG</PackageId>
     <PackageTags>tinypng;images;compression</PackageTags>
