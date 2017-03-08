@@ -12,5 +12,5 @@ before_install:
   - export DOTNET_SKIP_FIRST_TIME_EXPERIENCE=1 
 script:
   - dotnet restore -v Minimal
-  - dotnet build src/TinyPng/ -c Release -f netstandard1.3
+  - dotnet build src/TinyPNG/TinyPNG.csproj -c Release -f netstandard1.3
   - dotnet test tests/TinyPng.Tests/TinyPng.Tests.csproj
