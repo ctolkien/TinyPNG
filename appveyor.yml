@@ -10,7 +10,7 @@ build_script:
 - dotnet build -c %CONFIGURATION%
 - dotnet pack -c %CONFIGURATION% -o .\artifacts 
 test_script:
-- cmd: dotnet test -c %CONFIGURATION% --no-build .\tests\TinyPng.Tests\
+- cmd: dotnet test -c %CONFIGURATION% --no-build .\tests\TinyPng.Tests\TinyPng.Tests.csproj
 artifacts:
 - path: artifacts\**\*.*
 configuration: Release
