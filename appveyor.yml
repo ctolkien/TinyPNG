@@ -12,7 +12,7 @@ build_script:
 test_script:
 - cmd: dotnet test -c %CONFIGURATION% --no-build .\tests\TinyPng.Tests\TinyPng.Tests.csproj
 artifacts:
-- path: .\src\artifacts\**\*.*
+- path: .\src\TinyPng\artifacts\**\*.*
 configuration: Release
 deploy:
 - provider: NuGet
