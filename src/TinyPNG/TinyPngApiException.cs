@@ -4,10 +4,10 @@ namespace TinyPng
 {
     public class TinyPngApiException : Exception
     {
-        public int StatusCode { get; private set; }
-        public string StatusReasonPhrase { get; private set; }
-        public string ErrorTitle { get; private set; }
-        public string ErrorMessage { get; private set; }
+        public int StatusCode { get; }
+        public string StatusReasonPhrase { get; }
+        public string ErrorTitle { get; }
+        public string ErrorMessage { get; }
 
 
         public TinyPngApiException(int statusCode, string statusReasonPhrase, string errorTitle, string errorMessage)
@@ -27,7 +27,7 @@ namespace TinyPng
         {
             get
             {
-                return $"Api Service returned a non-success status code when attempting an operation on an image: {StatusCode} - {StatusReasonPhrase}. {ErrorTitle}, {ErrorMessage} ";
+                return $"Api Service returned a non-success status code when attempting an operation on an image: {StatusCode} - {StatusReasonPhrase}. {ErrorTitle}, {ErrorMessage}";
             }
         }
 
