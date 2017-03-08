@@ -11,6 +11,6 @@
     <PackageReference Include="xunit" Version="2.2.0" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\**" CopyToOutputDirectory="Always" />
+    <None Include="Resources\**" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 </Project>
