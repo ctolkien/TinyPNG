@@ -14,8 +14,7 @@ namespace TinyPng.Responses
 
         protected TinyPngResponse(HttpResponseMessage msg)
         {
-            IEnumerable<string> compressionCountHeaders;
-            if (msg.Headers.TryGetValues("Compression-Count", out compressionCountHeaders))
+            if (msg.Headers.TryGetValues("Compression-Count", out IEnumerable<string> compressionCountHeaders))
             {
                 int.TryParse(compressionCountHeaders.First(), out compressionCount);
             }

@@ -55,11 +55,7 @@ namespace TinyPng
         {
             if (string.IsNullOrEmpty(apiKey))
                 throw new ArgumentNullException(nameof(apiKey));
-
-            if (amazonConfiguration == null)
-                throw new ArgumentNullException(nameof(amazonConfiguration));
-
-            AmazonS3Configuration = amazonConfiguration;
+            AmazonS3Configuration = amazonConfiguration ?? throw new ArgumentNullException(nameof(amazonConfiguration));
         }
 
         /// <summary>
@@ -150,9 +146,10 @@ namespace TinyPng
 
             var amazonSettingsAsJson = JsonConvert.SerializeObject(new { store = amazonSettings }, JsonSettings);
 
-            var msg = new HttpRequestMessage(HttpMethod.Post, result.Output.Url);
-            msg.Content = new StringContent(amazonSettingsAsJson, System.Text.Encoding.UTF8, "application/json");
-
+            var msg = new HttpRequestMessage(HttpMethod.Post, result.Output.Url)
+            {
+                Content = new StringContent(amazonSettingsAsJson, System.Text.Encoding.UTF8, "application/json")
+            };
             var response = await HttpClient.SendAsync(msg);
 
             if (response.IsSuccessStatusCode)

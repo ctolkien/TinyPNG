@@ -23,13 +23,8 @@ namespace TinyPng
             Data.Add(nameof(StatusReasonPhrase), StatusReasonPhrase);
         }
 
-        public override string Message
-        {
-            get
-            {
-                return $"Api Service returned a non-success status code when attempting an operation on an image: {StatusCode} - {StatusReasonPhrase}. {ErrorTitle}, {ErrorMessage}";
-            }
-        }
+        public override string Message => 
+            $"Api Service returned a non-success status code when attempting an operation on an image: {StatusCode} - {StatusReasonPhrase}. {ErrorTitle}, {ErrorMessage}";
 
     }
 }

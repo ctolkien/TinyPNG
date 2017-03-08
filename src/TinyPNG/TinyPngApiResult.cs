@@ -1,6 +1,5 @@
 ﻿namespace TinyPng
 {
-
     public class TinyPngApiResult
     {
         public TinyPngApiInput Input { get; set; }

@@ -2,6 +2,7 @@
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
+using TinyPng.ResizeOperations;
 using TinyPng.Responses;
 
 namespace TinyPng
@@ -26,9 +27,10 @@ namespace TinyPng
 
             var requestBody = JsonConvert.SerializeObject(new { resize = resizeOperation }, TinyPngClient.JsonSettings);
 
-            var msg = new HttpRequestMessage(HttpMethod.Post, compressResponse.Output.Url);
-            msg.Content = new StringContent(requestBody, System.Text.Encoding.UTF8, "application/json");
-
+            var msg = new HttpRequestMessage(HttpMethod.Post, compressResponse.Output.Url)
+            {
+                Content = new StringContent(requestBody, System.Text.Encoding.UTF8, "application/json")
+            };
             var response = await compressResponse.HttpClient.SendAsync(msg);
             if (response.IsSuccessStatusCode)
             {

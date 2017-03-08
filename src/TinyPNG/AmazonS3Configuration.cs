@@ -2,7 +2,7 @@
 
 namespace TinyPng
 {
-    public class AmazonS3Configuration 
+    public class AmazonS3Configuration
     {
         [JsonProperty("service")]
         public const string Service = "s3";

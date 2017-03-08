@@ -21,7 +21,9 @@ namespace TinyPng.Tests
             _FakePostResponses.Add(uri, responseMessage);
         }
 
+#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
         protected async override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, System.Threading.CancellationToken cancellationToken)
+#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
         {
             if (request.Method == HttpMethod.Get && _FakeGetResponses.ContainsKey(request.RequestUri))
             {
