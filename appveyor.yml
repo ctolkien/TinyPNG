@@ -13,8 +13,6 @@ build_script:
 - dotnet restore -v Minimal
 - dotnet build -c %CONFIGURATION%
 - dotnet pack -c %CONFIGURATION% .\src\TinyPng\TinyPNG.csproj -o .\artifacts 
-test_script:
-- cmd: dotnet test -c %CONFIGURATION% --no-build .\tests\TinyPng.Tests\TinyPng.Tests.csproj
 artifacts:
 - path: .\src\TinyPng\artifacts\**\*.*
 before_test:
