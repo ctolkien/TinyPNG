@@ -1,16 +1,11 @@
-﻿
+
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26114.2
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{5ED84B55-25DF-4301-A587-B2F1AFA56085}"
-	ProjectSection(SolutionItems) = preProject
-		global.json = global.json
-	EndProjectSection
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TinyPNG", "src\TinyPNG\TinyPNG.csproj", "{52901FDB-68CE-4192-8B2B-3BD1773261F3}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "TinyPNG", "src\TinyPNG\TinyPNG.xproj", "{52901FDB-68CE-4192-8B2B-3BD1773261F3}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "TinyPng.Tests", "tests\TinyPng.Tests\TinyPng.Tests.xproj", "{DBA34C0E-C2A8-4D42-8770-FADC6251E93D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TinyPng.Tests", "tests\TinyPng.Tests\TinyPng.Tests.csproj", "{DBA34C0E-C2A8-4D42-8770-FADC6251E93D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

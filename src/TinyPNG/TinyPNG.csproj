@@ -1,0 +1,29 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <Copyright>Copyright 2016 Chad Tolkien</Copyright>
+    <AssemblyTitle>TinyPNG</AssemblyTitle>
+    <VersionPrefix>1.1.3</VersionPrefix>
+    <Authors>Chad Tolkien</Authors>
+    <TargetFrameworks>net45;netstandard1.3</TargetFrameworks>
+    <NetStandardImplicitPackageVersion>1.6.0</NetStandardImplicitPackageVersion>
+    <AssemblyName>TinyPNG</AssemblyName>
+    <PackageId>TinyPNG</PackageId>
+    <PackageTags>tinypng;images;compression</PackageTags>
+    <PackageReleaseNotes>Support for .NET Core 1.0</PackageReleaseNotes>
+    <PackageIconUrl>https://raw.githubusercontent.com/ctolkien/TinyPNG/master/icon.png</PackageIconUrl>
+    <PackageProjectUrl>https://github.com/ctolkien/TinyPNG</PackageProjectUrl>
+    <PackageLicenseUrl>http://opensource.org/licenses/MIT</PackageLicenseUrl>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/ctolkien/TinyPNG</RepositoryUrl>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="9.0.1" />
+  </ItemGroup>
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net45' ">
+    <Reference Include="System.Net.Http" />
+  </ItemGroup>
+
+
+</Project>
