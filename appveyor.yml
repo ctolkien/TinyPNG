@@ -26,8 +26,6 @@ after_test:
 - pip install codecov
 - cd ../..
 - codecov -f "coverage.xml" -X gcov
-artifacts:
-- path: artifacts\**\*.*
 deploy:
 - provider: NuGet
   api_key:
