@@ -15,6 +15,7 @@
     <PackageLicenseUrl>http://opensource.org/licenses/MIT</PackageLicenseUrl>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/ctolkien/TinyPNG</RepositoryUrl>
+    <DebugType>full</DebugType>
   </PropertyGroup>
 
   <ItemGroup>
