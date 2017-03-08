@@ -1,2 +1,4 @@
 language: csharp
+notifications:
+  email: never
 solution: TinyPNG.sln
