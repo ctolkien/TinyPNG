@@ -1,4 +1,16 @@
-language: csharp
+languge: null #this doesn't work, uses ruby by default
 notifications:
   email: never
-solution: TinyPNG.sln
+sudo: required
+dist: trusty
+before_install:
+  - sudo apt-get install libunwind8
+  - wget https://dot.net/v1/dotnet-install.sh
+  - chmod a+x dotnet-install.sh
+  - ./dotnet-install.sh --verbose
+  - PATH=/home/travis/.dotnet:$PATH
+  - export DOTNET_SKIP_FIRST_TIME_EXPERIENCE=1 
+script:
+  - dotnet restore -v Minimal
+  - dotnet build src/TinyPng/ -c Release -f netstandard1.3
+  - dotnet test tests/TinyPng.Tests/TinyPng.Tests.csproj
