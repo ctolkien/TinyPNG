@@ -1,15 +1,27 @@
-languge: null #this doesn't work, uses ruby by default
-notifications:
-  email: never
+languge: csharp
 sudo: required
 dist: trusty
+notifications:
+  email: never
+addons:
+  apt:
+    packages:
+#    - gettext
+#    - libcurl4-openssl-dev
+#    - libicu-dev
+#    - libssl-dev
+    - libunwind8
+#    - zlib1g  
+env:
+  global:
+    - DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+    - DOTNET_CLI_TELEMETRY_OPTOUT: 1
+mono: none
 before_install:
-  - sudo apt-get install libunwind8
   - wget https://dot.net/v1/dotnet-install.sh
   - chmod a+x dotnet-install.sh
   - ./dotnet-install.sh --verbose
   - PATH=/home/travis/.dotnet:$PATH
-  - export DOTNET_SKIP_FIRST_TIME_EXPERIENCE=1 
 script:
   - dotnet restore -v Minimal
   - dotnet build src/TinyPNG/TinyPNG.csproj -c Release -f netstandard1.3
