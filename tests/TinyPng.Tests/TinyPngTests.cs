@@ -45,6 +45,17 @@ namespace TinyPng.Tests
         }
 
         [Fact]
+        public async Task CompressionCount()
+        {
+            var pngx = new TinyPngClient(apiKey);
+            TinyPngClient.HttpClient = new HttpClient(new FakeResponseHandler().Compress());
+
+            var result = await pngx.Compress(Cat);
+
+            Assert.Equal(99, result.CompressionCount);
+        }
+
+        [Fact]
         public async Task CompressionWithBytes()
         {
             var pngx = new TinyPngClient(apiKey);
