@@ -64,6 +64,18 @@ namespace TinyPng.Tests
             return fakeResponse;
         }
 
+        public static FakeResponseHandler DownloadAndFail(this FakeResponseHandler fakeResponse)
+        {
+            var outputResponseMessage = new HttpResponseMessage
+            {
+                Content = new StringContent(JsonConvert.SerializeObject(new Responses.ApiErrorResponse { Error = "Stuff's on fire yo!", Message = "This is the error message"  })),
+                StatusCode = System.Net.HttpStatusCode.InternalServerError
+            };
+
+            fakeResponse.AddFakeGetResponse(new Uri("https://api.tinify.com/output"), outputResponseMessage);
+            return fakeResponse;
+        }
+
         public static FakeResponseHandler Resize(this FakeResponseHandler fakeResponse)
         {
             var resizedCatStream = File.OpenRead(TinyPngTests.ResizedCat);

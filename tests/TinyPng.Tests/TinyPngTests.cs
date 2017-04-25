@@ -182,6 +182,21 @@ namespace TinyPng.Tests
                 .Download());
 
             await Assert.ThrowsAsync<ArgumentNullException>(async () => await pngx.Compress((string)null).Download());
+
+            Task<Responses.TinyPngCompressResponse> nullCompressResponse = null;
+            await Assert.ThrowsAsync<ArgumentNullException>(async () => await nullCompressResponse.Download());
+        }
+
+        [Fact]
+        public async Task DownloadingOperationThrowsOnNonSuccessStatusCode()
+        {
+            var pngx = new TinyPngClient(apiKey);
+            TinyPngClient.HttpClient = new HttpClient(new FakeResponseHandler()
+                .Compress()
+                .DownloadAndFail());
+
+            await Assert.ThrowsAsync<TinyPngApiException>(async () => await pngx.Compress(Cat).Download());
+
         }
 
         [Fact]
