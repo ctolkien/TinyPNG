@@ -7,9 +7,9 @@ namespace TinyPng
         [JsonProperty("service")]
         public const string Service = "s3";
 
-        public AmazonS3Configuration(string awsAccessKeyId, 
-            string awsSecretAccessKey, 
-            string defaultBucket, 
+        public AmazonS3Configuration(string awsAccessKeyId,
+            string awsSecretAccessKey,
+            string defaultBucket,
             string defaultRegion)
         {
             AwsAccessKeyId = awsAccessKeyId;

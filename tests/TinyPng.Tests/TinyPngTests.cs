@@ -320,6 +320,21 @@ namespace TinyPng.Tests
         }
 
         [Fact]
+        public async Task CompressAndStoreToS3FooBar()
+        {
+            var pngx = new TinyPngClient(apiKey);
+            TinyPngClient.HttpClient = new HttpClient(new FakeResponseHandler()
+                .Compress()
+                .S3AndFail());
+
+            var result = await pngx.Compress(Cat);
+
+            await Assert.ThrowsAsync<TinyPngApiException>(async () =>
+                await pngx.SaveCompressedImageToAmazonS3(result,
+                new AmazonS3Configuration(ApiKey, ApiAccessKey, "tinypng-test-bucket", "ap-southeast-2"), "path"));
+        }
+
+        [Fact]
         public async Task CompressAndStoreToS3Throws()
         {
             var pngx = new TinyPngClient(apiKey);
@@ -364,6 +379,14 @@ namespace TinyPng.Tests
             Assert.Equal(StatusReasonPhrase, e.StatusReasonPhrase);
             Assert.Equal(ErrorTitle, e.ErrorTitle);
             Assert.Equal(msg, e.Message);
+        }
+
+        [Fact]
+        public void CallingDisposeDoesNotBlowUpTheWorld()
+        {
+            var pngx = new TinyPngClient(apiKey);
+
+            pngx.Dispose();
         }
     }
 }
