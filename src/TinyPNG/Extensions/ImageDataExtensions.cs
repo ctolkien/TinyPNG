@@ -22,7 +22,7 @@ namespace TinyPng
         /// </summary>
         /// <param name="result">The result from compress</param>
         /// <returns>Byte array of the image data</returns>
-        public async static Task<byte[]> GetImageByteData(this TinyPngImageResponse result) 
+        public async static Task<byte[]> GetImageByteData(this TinyPngImageResponse result)
         {
             return await result.HttpResponseMessage.Content.ReadAsByteArrayAsync();
         }
@@ -43,7 +43,7 @@ namespace TinyPng
         /// </summary>
         /// <param name="result">The result from compress</param>
         /// <returns>Stream of compressed image data</returns>
-        public async static Task<Stream> GetImageStreamData(TinyPngImageResponse result) 
+        public async static Task<Stream> GetImageStreamData(TinyPngImageResponse result)
         {
             return await result.HttpResponseMessage.Content.ReadAsStreamAsync();
         }

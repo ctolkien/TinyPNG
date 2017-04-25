@@ -64,6 +64,18 @@ namespace TinyPng.Tests
             return fakeResponse;
         }
 
+        public static FakeResponseHandler DownloadAndFail(this FakeResponseHandler fakeResponse)
+        {
+            var outputResponseMessage = new HttpResponseMessage
+            {
+                Content = new StringContent(JsonConvert.SerializeObject(new Responses.ApiErrorResponse { Error = "Stuff's on fire yo!", Message = "This is the error message"  })),
+                StatusCode = System.Net.HttpStatusCode.InternalServerError
+            };
+
+            fakeResponse.AddFakeGetResponse(new Uri("https://api.tinify.com/output"), outputResponseMessage);
+            return fakeResponse;
+        }
+
         public static FakeResponseHandler Resize(this FakeResponseHandler fakeResponse)
         {
             var resizedCatStream = File.OpenRead(TinyPngTests.ResizedCat);
@@ -86,6 +98,19 @@ namespace TinyPng.Tests
                 StatusCode = System.Net.HttpStatusCode.OK
             };
             amazonMessage.Headers.Add("Location", "https://s3-ap-southeast-2.amazonaws.com/tinypng-test-bucket/path.jpg");
+
+            fakeResponse.AddFakePostResponse(new Uri("https://api.tinify.com/output"), amazonMessage);
+            return fakeResponse;
+        }
+
+        public static FakeResponseHandler S3AndFail(this FakeResponseHandler fakeResponse)
+        {
+            var amazonMessage = new HttpResponseMessage
+            {
+                Content = new StringContent(JsonConvert.SerializeObject(new Responses.ApiErrorResponse { Error = "Stuff's on fire yo!", Message = "This is the error message" })),
+                StatusCode = System.Net.HttpStatusCode.BadRequest
+            };
+            //amazonMessage.Headers.Add("Location", "https://s3-ap-southeast-2.amazonaws.com/tinypng-test-bucket/path.jpg");
 
             fakeResponse.AddFakePostResponse(new Uri("https://api.tinify.com/output"), amazonMessage);
             return fakeResponse;

@@ -14,6 +14,7 @@ namespace TinyPng.Tests
         internal const string Cat = "Resources/cat.jpg";
         internal const string CompressedCat = "Resources/compressedcat.jpg";
         internal const string ResizedCat = "Resources/resizedcat.jpg";
+        internal const string SavedCatPath = "Resources/savedcat.jpg";
 
         [Fact]
         public void TinyPngClientThrowsWhenNoApiKeySupplied()
@@ -41,6 +42,17 @@ namespace TinyPng.Tests
             Assert.Equal("image/jpeg", result.Input.Type);
             Assert.Equal(400, result.Output.Width);
             Assert.Equal(400, result.Output.Height);
+        }
+
+        [Fact]
+        public async Task CompressionCount()
+        {
+            var pngx = new TinyPngClient(apiKey);
+            TinyPngClient.HttpClient = new HttpClient(new FakeResponseHandler().Compress());
+
+            var result = await pngx.Compress(Cat);
+
+            Assert.Equal(99, result.CompressionCount);
         }
 
         [Fact]
@@ -94,7 +106,6 @@ namespace TinyPng.Tests
         [Fact]
         public async Task CompressionAndDownload()
         {
-
             var pngx = new TinyPngClient(apiKey);
             TinyPngClient.HttpClient = new HttpClient(new FakeResponseHandler()
                 .Compress()
@@ -108,6 +119,42 @@ namespace TinyPng.Tests
         }
 
         [Fact]
+        public async Task CompressionAndDownloadAndGetUnderlyingStream()
+        {
+            var pngx = new TinyPngClient(apiKey);
+            TinyPngClient.HttpClient = new HttpClient(new FakeResponseHandler()
+                .Compress()
+                .Download());
+
+            var downloadResult = await pngx.Compress(Cat)
+                .Download()
+                .GetImageStreamData();
+
+            Assert.Equal(16646, downloadResult.Length);
+        }
+
+        [Fact]
+        public async Task CompressionAndDownloadAndWriteToDisk()
+        {
+            var pngx = new TinyPngClient(apiKey);
+            TinyPngClient.HttpClient = new HttpClient(new FakeResponseHandler()
+                .Compress()
+                .Download());
+            try
+            {
+                await pngx.Compress(Cat)
+                .Download()
+                .SaveImageToDisk(SavedCatPath);
+            }
+            finally
+            {
+                //try cleanup any saved file
+                File.Delete(SavedCatPath);
+            }
+
+        }
+
+        [Fact]
         public async Task ResizingOperationThrows()
         {
             var pngx = new TinyPngClient(apiKey);
@@ -118,8 +165,38 @@ namespace TinyPng.Tests
             await Assert.ThrowsAsync<ArgumentNullException>(async () => await pngx.Compress((string)null).Resize(150, 150));
             await Assert.ThrowsAsync<ArgumentNullException>(async () => await pngx.Compress((string)null).Resize(null));
             await Assert.ThrowsAsync<ArgumentNullException>(async () => await pngx.Compress(Cat).Resize(null));
+
+            Task<Responses.TinyPngCompressResponse> nullCompressResponse = null;
+            await Assert.ThrowsAsync<ArgumentNullException>(async () => await nullCompressResponse.Resize(150, 150));
+
             await Assert.ThrowsAsync<ArgumentOutOfRangeException>(async () => await pngx.Compress(Cat).Resize(0, 150));
             await Assert.ThrowsAsync<ArgumentOutOfRangeException>(async () => await pngx.Compress(Cat).Resize(150, 0));
+        }
+
+        [Fact]
+        public async Task DownloadingOperationThrows()
+        {
+            var pngx = new TinyPngClient(apiKey);
+            TinyPngClient.HttpClient = new HttpClient(new FakeResponseHandler()
+                .Compress()
+                .Download());
+
+            await Assert.ThrowsAsync<ArgumentNullException>(async () => await pngx.Compress((string)null).Download());
+
+            Task<Responses.TinyPngCompressResponse> nullCompressResponse = null;
+            await Assert.ThrowsAsync<ArgumentNullException>(async () => await nullCompressResponse.Download());
+        }
+
+        [Fact]
+        public async Task DownloadingOperationThrowsOnNonSuccessStatusCode()
+        {
+            var pngx = new TinyPngClient(apiKey);
+            TinyPngClient.HttpClient = new HttpClient(new FakeResponseHandler()
+                .Compress()
+                .DownloadAndFail());
+
+            await Assert.ThrowsAsync<TinyPngApiException>(async () => await pngx.Compress(Cat).Download());
+
         }
 
         [Fact]
@@ -243,6 +320,21 @@ namespace TinyPng.Tests
         }
 
         [Fact]
+        public async Task CompressAndStoreToS3FooBar()
+        {
+            var pngx = new TinyPngClient(apiKey);
+            TinyPngClient.HttpClient = new HttpClient(new FakeResponseHandler()
+                .Compress()
+                .S3AndFail());
+
+            var result = await pngx.Compress(Cat);
+
+            await Assert.ThrowsAsync<TinyPngApiException>(async () =>
+                await pngx.SaveCompressedImageToAmazonS3(result,
+                new AmazonS3Configuration(ApiKey, ApiAccessKey, "tinypng-test-bucket", "ap-southeast-2"), "path"));
+        }
+
+        [Fact]
         public async Task CompressAndStoreToS3Throws()
         {
             var pngx = new TinyPngClient(apiKey);
@@ -253,7 +345,7 @@ namespace TinyPng.Tests
             var result = await pngx.Compress(Cat);
 
             await Assert.ThrowsAsync<ArgumentNullException>(async () => await pngx.SaveCompressedImageToAmazonS3(result, null, string.Empty));
-            
+
             //S3 configuration has not been set
             await Assert.ThrowsAsync<InvalidOperationException>(async () => await pngx.SaveCompressedImageToAmazonS3(result, path: string.Empty));
         }
@@ -287,6 +379,14 @@ namespace TinyPng.Tests
             Assert.Equal(StatusReasonPhrase, e.StatusReasonPhrase);
             Assert.Equal(ErrorTitle, e.ErrorTitle);
             Assert.Equal(msg, e.Message);
+        }
+
+        [Fact]
+        public void CallingDisposeDoesNotBlowUpTheWorld()
+        {
+            var pngx = new TinyPngClient(apiKey);
+
+            pngx.Dispose();
         }
     }
 }

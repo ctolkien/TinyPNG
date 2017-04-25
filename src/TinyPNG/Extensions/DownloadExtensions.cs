@@ -22,7 +22,7 @@ namespace TinyPng
             var compressResult = await compressResponse;
 
             return await Download(compressResult);
-            
+
         }
 
         /// <summary>
