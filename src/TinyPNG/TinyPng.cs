@@ -14,10 +14,9 @@ namespace TinyPng
 {
     public class TinyPngClient : IDisposable
     {
-        private readonly string _apiKey;
         private const string ApiEndpoint = "https://api.tinify.com/shrink";
 
-        internal static HttpClient HttpClient = new HttpClient();
+        internal static HttpClient HttpClient;
         internal static JsonSerializerSettings JsonSettings;
 
         /// <summary>
@@ -29,13 +28,7 @@ namespace TinyPng
             if (string.IsNullOrEmpty(apiKey))
                 throw new ArgumentNullException(nameof(apiKey));
 
-            //configure basic auth api key formatting.
-            var auth = $"api:{apiKey}";
-            var authByteArray = System.Text.Encoding.ASCII.GetBytes(auth);
-            _apiKey = Convert.ToBase64String(authByteArray);
-
-            //add auth to the default outgoing headers.
-            HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("basic", _apiKey);
+            ConfigureHttpClient(apiKey);
 
             //configure json settings for camelCase.
             JsonSettings = new JsonSerializerSettings
@@ -44,6 +37,22 @@ namespace TinyPng
             };
             JsonSettings.Converters.Add(new StringEnumConverter { CamelCaseText = true });
 
+        }
+
+        private static void ConfigureHttpClient(string apiKey)
+        {
+            //configure basic auth api key formatting.
+            var auth = $"api:{apiKey}";
+            var authByteArray = System.Text.Encoding.ASCII.GetBytes(auth);
+            var apiKeyEncoded = Convert.ToBase64String(authByteArray);
+
+            if (HttpClient == null)
+            {
+                HttpClient = new HttpClient();
+            }
+
+            //add auth to the default outgoing headers.
+            HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("basic", apiKeyEncoded);
         }
 
         /// <summary>
@@ -202,6 +211,7 @@ namespace TinyPng
             if (disposing)
             {
                 HttpClient?.Dispose();
+                HttpClient = null;
             }
         }
         #endregion

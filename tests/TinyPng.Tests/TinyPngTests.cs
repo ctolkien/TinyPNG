@@ -45,6 +45,32 @@ namespace TinyPng.Tests
         }
 
         [Fact]
+        public async Task CanBeCalledMultipleTimesWihtoutExploding()
+        {
+            using (var pngx = new TinyPngClient(apiKey))
+            {
+                //TinyPngClient.HttpClient = new HttpClient(new FakeResponseHandler().Compress());
+
+                var result = await pngx.Compress(Cat);
+
+                Assert.Equal("image/jpeg", result.Input.Type);
+                Assert.Equal(400, result.Output.Width);
+                Assert.Equal(400, result.Output.Height);
+            }
+
+            using (var pngx = new TinyPngClient(apiKey))
+            {
+                //TinyPngClient.HttpClient = new HttpClient(new FakeResponseHandler().Compress());
+
+                var result = await pngx.Compress(Cat);
+
+                Assert.Equal("image/jpeg", result.Input.Type);
+                Assert.Equal(400, result.Output.Width);
+                Assert.Equal(400, result.Output.Height);
+            }
+        }
+
+        [Fact]
         public async Task CompressionCount()
         {
             var pngx = new TinyPngClient(apiKey);
@@ -281,7 +307,7 @@ namespace TinyPng.Tests
         [Fact]
         public void CompressAndStoreToS3ShouldThrowIfNoApiKeyProvided()
         {
-            Assert.Throws<ArgumentNullException>(() =>  new TinyPngClient(string.Empty, new AmazonS3Configuration("a", "b", "c", "d")));
+            Assert.Throws<ArgumentNullException>(() => new TinyPngClient(string.Empty, new AmazonS3Configuration("a", "b", "c", "d")));
         }
 
         [Fact]
