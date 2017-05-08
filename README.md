@@ -24,6 +24,12 @@ Install via Nuget
     Install-Package TinyPNG
 ```
 
+Install via `dotnet`
+
+```
+    dotnet add package TinyPNG
+```
+
 ## Quickstart
 ```csharp
 using (var png = new TinyPngClient("yourSecretApiKey")) 
