@@ -49,7 +49,7 @@ namespace TinyPng.Tests
         {
             using (var pngx = new TinyPngClient(apiKey))
             {
-                //TinyPngClient.HttpClient = new HttpClient(new FakeResponseHandler().Compress());
+                TinyPngClient.HttpClient = new HttpClient(new FakeResponseHandler().Compress());
 
                 var result = await pngx.Compress(Cat);
 
@@ -60,7 +60,7 @@ namespace TinyPng.Tests
 
             using (var pngx = new TinyPngClient(apiKey))
             {
-                //TinyPngClient.HttpClient = new HttpClient(new FakeResponseHandler().Compress());
+                TinyPngClient.HttpClient = new HttpClient(new FakeResponseHandler().Compress());
 
                 var result = await pngx.Compress(Cat);
 
