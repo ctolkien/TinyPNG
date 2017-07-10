@@ -2,6 +2,6 @@
 {
     public class ScaleWidthResizeOperation : ResizeOperation
     {
-        public ScaleWidthResizeOperation(int width) : base (ResizeType.Scale, width, 0) { }
+        public ScaleWidthResizeOperation(int width) : base (ResizeType.Scale, width, null) { }
     }
 }

@@ -9,7 +9,7 @@ namespace TinyPng.Tests
 {
     public class TinyPngTests
     {
-        const string apiKey = "lolwat";
+        const string apiKey = "mRkbLrjAbbXSV3yYetH_LZ7EVPfV6Jul";
 
         internal const string Cat = "Resources/cat.jpg";
         internal const string CompressedCat = "Resources/compressedcat.jpg";

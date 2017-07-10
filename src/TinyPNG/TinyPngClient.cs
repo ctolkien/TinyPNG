@@ -33,7 +33,8 @@ namespace TinyPng
             //configure json settings for camelCase.
             JsonSettings = new JsonSerializerSettings
             {
-                ContractResolver = new CamelCasePropertyNamesContractResolver()
+                ContractResolver = new CamelCasePropertyNamesContractResolver(),
+                NullValueHandling = NullValueHandling.Ignore
             };
             JsonSettings.Converters.Add(new StringEnumConverter { CamelCaseText = true });
         }

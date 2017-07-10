@@ -9,8 +9,15 @@
             Height = height;
         }
 
-        public int Width { get; }
-        public int Height { get; }
+        internal ResizeOperation(ResizeType type, int? width, int? height)
+        {
+            Method = type;
+            Width = width;
+            Height = height;
+        }
+
+        public int? Width { get; }
+        public int? Height { get; }
         public ResizeType Method { get; }
     }
 
