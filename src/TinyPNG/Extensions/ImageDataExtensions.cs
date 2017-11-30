@@ -66,7 +66,7 @@ namespace TinyPng
         /// <param name="result">The result from compress</param>
         /// <param name="filePath">The path to store the file</param>
         /// <returns></returns>
-        public async static Task SaveImageToDisk(TinyPngImageResponse result, string filePath)
+        public async static Task SaveImageToDisk(this TinyPngImageResponse result, string filePath)
         {
             var byteData = await result.GetImageByteData();
             File.WriteAllBytes(filePath, byteData);
