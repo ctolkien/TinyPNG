@@ -2,35 +2,28 @@ variables:
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
   BuildConfiguration: "Release"
 
-
-pool:
-  vmImage: 'ubuntu-latest'
-
-
 trigger: 
   - master
-stages:
-- stage: Build
-  jobs:
-    - job: "Build"
-      displayName: "Building .NET Application"
-      strategy:
-        matrix: 
-          Windows:
-            vmImage: 'windows-2019'
-          Linux:
-            vmImage: 'ubuntu-latest'
-      steps:
-        - task: DotNetCoreInstaller@0
-          displayName: "Use .NET Core sdk 2.2.100"
-          inputs:
-            version: 2.2.100
+jobs:
+  - job: "Build"
+    displayName: "Building .NET Application"
+    strategy:
+      matrix: 
+        Windows:
+          vmImage: 'windows-2019'
+        Linux:
+          vmImage: 'ubuntu-latest'
+    steps:
+      - task: DotNetCoreInstaller@0
+        displayName: "Use .NET Core sdk 2.2.100"
+        inputs:
+          version: 2.2.100
 
-        - script: dotnet publish --configuration $(BuildConfiguration) --output $(build.artifactstagingdirectory)
-          displayName: "dotnet publish"
+      - script: dotnet publish --configuration $(BuildConfiguration) --output $(build.artifactstagingdirectory)
+        displayName: "dotnet publish"
 
-        - task: PublishPipelineArtifact@0
-          displayName: "Publish Artifact"
-          inputs:
-            targetPath: "$(build.artifactstagingdirectory)"
-            ArtifactName: "build"
+      - task: PublishPipelineArtifact@0
+        displayName: "Publish Artifact"
+        inputs:
+          targetPath: "$(build.artifactstagingdirectory)"
+          ArtifactName: "build"
