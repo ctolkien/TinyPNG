@@ -8,16 +8,10 @@ trigger:
 pr:
 - master
 jobs:
-  - job: "Build"
+  - job: "BuildWindows"
     displayName: "Building .NET Application"
-    strategy:
-      matrix: 
-        Windows:
-          imageToUse: 'windows-2019'
-        Linux:
-          imageToUse: 'ubuntu-latest'
     pool:
-      vmImage: imageToUse
+      vmImage: 'windows-2019'
     steps:
       - task: DotNetCoreInstaller@0
         displayName: "Use .NET Core sdk 2.2.100"
@@ -32,3 +26,21 @@ jobs:
         inputs:
           targetPath: "$(build.artifactstagingdirectory)"
           ArtifactName: "build"
+  - job: "BuildLinux"
+    displayName: "Building .NET Application"
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+      - task: DotNetCoreInstaller@0
+        displayName: "Use .NET Core sdk 2.2.100"
+        inputs:
+          version: 2.2.100
+
+      - script: dotnet publish --configuration $(BuildConfiguration) --output $(build.artifactstagingdirectory)
+        displayName: "dotnet publish"
+
+#      - task: PublishPipelineArtifact@0
+#        displayName: "Publish Artifact"
+#        inputs:
+#          targetPath: "$(build.artifactstagingdirectory)"
+#          ArtifactName: "build"          
