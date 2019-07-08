@@ -2,17 +2,22 @@ variables:
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
   BuildConfiguration: "Release"
 
+
 trigger: 
   - master
+pr:
+- master
 jobs:
   - job: "Build"
     displayName: "Building .NET Application"
     strategy:
       matrix: 
         Windows:
-          vmImage: 'windows-2019'
+          imageToUse: 'windows-2019'
         Linux:
-          vmImage: 'ubuntu-latest'
+          imageToUse: 'ubuntu-latest'
+    pool:
+      vmImage: imageToUse
     steps:
       - task: DotNetCoreInstaller@0
         displayName: "Use .NET Core sdk 2.2.100"
