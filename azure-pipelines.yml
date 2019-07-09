@@ -13,14 +13,13 @@ jobs:
     pool:
       vmImage: 'windows-2019'
     steps:
-      - task: DotNetCoreInstaller@0
+      - task: DotNetCoreInstaller@1
         displayName: "Use .NET Core sdk 2.2.100"
         inputs:
           version: 2.2.100
-
-      - script: dotnet publish --configuration $(BuildConfiguration) --output $(build.artifactstagingdirectory)
-        displayName: "dotnet publish"
-
+      - task: DotNetCoreCLI@2
+        inputs:
+          command: publish    
       - task: PublishPipelineArtifact@0
         displayName: "Publish Artifact"
         inputs:
