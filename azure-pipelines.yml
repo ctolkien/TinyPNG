@@ -18,9 +18,13 @@ jobs:
         inputs:
           version: 2.2.100
       - task: DotNetCoreCLI@2
+        displayName: 'Test'
         inputs:
-          command: build
+          command: test
+          
+          publishTestResults: true
       - task: DotNetCoreCLI@2
+        displayName:  'Pack'
         inputs:
           command: pack
       - task: PublishPipelineArtifact@1
