@@ -19,7 +19,10 @@ jobs:
           version: 2.2.100
       - task: DotNetCoreCLI@2
         inputs:
-          command: build    
+          command: build
+      - task: DotNetCoreCLI@2
+        inputs:
+          command: pack
       - task: PublishPipelineArtifact@1
         displayName: "Publish Artifact"
         inputs:
