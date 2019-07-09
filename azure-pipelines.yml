@@ -28,21 +28,19 @@ jobs:
         inputs:
           targetPath: "$(build.artifactstagingdirectory)"
           ArtifactName: "build"
-#  - job: "BuildLinux"
-#    displayName: "Building .NET Application"
-#    pool:
-#      vmImage: 'ubuntu-latest'
-#    steps:
-#      - task: DotNetCoreInstaller@0
-#        displayName: "Use .NET Core sdk 2.2.100"
-#        inputs:
-#          version: 2.2.100
+  - job: "BuildLinux"
+    displayName: "Building .NET Application"
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+      - task: DotNetCoreInstaller@1
+        displayName: "Use .NET Core sdk 2.2.100"
+        inputs:
+          version: 2.2.100
+      - task: DotNetCoreCLI@2
+        inputs:
+          command: build
+      - task: DotNetCoreCLI@2
+        inputs:
+          command: build
 
-#      - script: dotnet publish --configuration $(BuildConfiguration) --output $(build.artifactstagingdirectory)
-#        displayName: "dotnet publish"
-
-#      - task: PublishPipelineArtifact@0
-#        displayName: "Publish Artifact"
-#        inputs:
-#          targetPath: "$(build.artifactstagingdirectory)"
-#          ArtifactName: "build"          
