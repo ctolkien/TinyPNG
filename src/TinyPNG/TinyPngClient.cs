@@ -8,6 +8,7 @@ using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
 using TinyPng.Responses;
 using System.Runtime.CompilerServices;
+using System.Text;
 
 [assembly:InternalsVisibleTo("TinyPng.Tests")]
 namespace TinyPng
@@ -79,6 +80,12 @@ namespace TinyPng
             return new StreamContent(source);
         }
 
+        private HttpContent CreateContent(string source)
+        {
+            var stringPayload = JsonConvert.SerializeObject(new {source = new {url = source}}, JsonSettings);
+            return new StringContent(stringPayload, Encoding.UTF8, "application/json");
+        }
+
         /// <summary>
         /// Compress a file on disk
         /// </summary>
@@ -122,6 +129,22 @@ namespace TinyPng
                 throw new ArgumentNullException(nameof(data));
 
             var response = await HttpClient.PostAsync(ApiEndpoint, CreateContent(data)).ConfigureAwait(false);
+
+            if (response.IsSuccessStatusCode)
+            {
+                return new TinyPngCompressResponse(response, HttpClient);
+            }
+
+            var errorMsg = JsonConvert.DeserializeObject<ApiErrorResponse>(await response.Content.ReadAsStringAsync().ConfigureAwait(false));
+            throw new TinyPngApiException((int)response.StatusCode, response.ReasonPhrase, errorMsg.Error, errorMsg.Message);
+        }
+        
+        public async Task<TinyPngCompressResponse> CompressFromUrl(string url)
+        {
+            if (string.IsNullOrEmpty(url))
+                throw new ArgumentNullException(nameof(url));
+
+            var response = await HttpClient.PostAsync(ApiEndpoint, CreateContent(url)).ConfigureAwait(false);
 
             if (response.IsSuccessStatusCode)
             {
