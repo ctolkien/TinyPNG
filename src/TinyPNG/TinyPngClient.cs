@@ -1,53 +1,57 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using Newtonsoft.Json.Serialization;
+using System;
 using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
-using Newtonsoft.Json.Serialization;
-using TinyPng.Responses;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading.Tasks;
+using TinyPng.Responses;
 
 [assembly:InternalsVisibleTo("TinyPng.Tests")]
 namespace TinyPng
 {
-    public class TinyPngClient : IDisposable
+    public class TinyPngClient
     {
         private const string ApiEndpoint = "https://api.tinify.com/shrink";
 
-        internal static HttpClient HttpClient;
-        internal static JsonSerializerSettings JsonSettings;
+        private readonly HttpClient HttpClient;
+        internal static readonly JsonSerializerSettings JsonSettings;
 
+        static TinyPngClient()
+        {
+            //configure json settings for camelCase.
+            JsonSettings = new JsonSerializerSettings
+                           {
+                               ContractResolver = new CamelCasePropertyNamesContractResolver(),
+                               NullValueHandling = NullValueHandling.Ignore
+                           };
+            JsonSettings.Converters.Add(new StringEnumConverter {NamingStrategy = new CamelCaseNamingStrategy()});
+        }
+        
         /// <summary>
         /// Wrapper for the tinypng.com API
         /// </summary>
         /// <param name="apiKey">Your tinypng.com API key, signup here: https://tinypng.com/developers </param>
-        public TinyPngClient(string apiKey)
+        /// <param name="httpClient">HttpClient for requests (optional) </param>
+        public TinyPngClient(string apiKey, HttpClient httpClient = null)
         {
             if (string.IsNullOrEmpty(apiKey))
                 throw new ArgumentNullException(nameof(apiKey));
 
+            HttpClient = httpClient ?? new HttpClient();
+            
             ConfigureHttpClient(apiKey);
-
-            //configure json settings for camelCase.
-            JsonSettings = new JsonSerializerSettings
-            {
-                ContractResolver = new CamelCasePropertyNamesContractResolver(),
-                NullValueHandling = NullValueHandling.Ignore
-            };
-            JsonSettings.Converters.Add(new StringEnumConverter { NamingStrategy = new CamelCaseNamingStrategy() });
         }
 
-        private static void ConfigureHttpClient(string apiKey)
+        private void ConfigureHttpClient(string apiKey)
         {
             //configure basic auth api key formatting.
             var auth = $"api:{apiKey}";
-            var authByteArray = System.Text.Encoding.ASCII.GetBytes(auth);
+            var authByteArray = Encoding.ASCII.GetBytes(auth);
             var apiKeyEncoded = Convert.ToBase64String(authByteArray);
-
-            HttpClient = HttpClient ?? new HttpClient();
 
             //add auth to the default outgoing headers.
             HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("basic", apiKeyEncoded);
@@ -58,10 +62,13 @@ namespace TinyPng
         /// </summary>
         /// <param name="apiKey">Your tinypng.com API key, signup here: https://tinypng.com/developers </param>
         /// <param name="amazonConfiguration">Configures defaults to use for storing images on Amazon S3</param>
-        public TinyPngClient(string apiKey, AmazonS3Configuration amazonConfiguration) : this(apiKey)
+        /// <param name="httpClient">HttpClient for requests (optional) </param>
+        public TinyPngClient(string apiKey, AmazonS3Configuration amazonConfiguration, HttpClient httpClient = null)
+            : this(apiKey, httpClient)
         {
             if (string.IsNullOrEmpty(apiKey))
                 throw new ArgumentNullException(nameof(apiKey));
+            
             AmazonS3Configuration = amazonConfiguration ?? throw new ArgumentNullException(nameof(amazonConfiguration));
         }
 
@@ -218,22 +225,5 @@ namespace TinyPng
 
             return SaveCompressedImageToAmazonS3(result, amazonSettings, path);
         }
-
-        #region IDisposable Support
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                HttpClient?.Dispose();
-                HttpClient = null;
-            }
-        }
-        #endregion
     }
 }
