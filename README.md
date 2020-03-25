@@ -14,7 +14,7 @@ This is a .NET wrapper around the [TinyPNG.com](http://tinypng.com) image compre
 
 * Supports .Net Core and full .Net Framework
 * Non-blocking async turtles all the way down
-* `Byte[]`, `Stream` and `File` API's available
+* `Byte[]`, `Stream`, `File` and `Url` API's available
 
 ## Installation
 

@@ -5,11 +5,11 @@
     <AssemblyTitle>TinyPNG</AssemblyTitle>
     <VersionPrefix>3.2.0</VersionPrefix>
     <Authors>Chad Tolkien</Authors>
-    <TargetFrameworks>net45;netstandard1.3</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0</TargetFrameworks>
     <AssemblyName>TinyPNG</AssemblyName>
     <PackageId>TinyPNG</PackageId>
     <PackageTags>tinypng;images;compression;jpg;png</PackageTags>
-    <PackageReleaseNotes>Support for netstandard 1.3</PackageReleaseNotes>
+    <PackageReleaseNotes>Support for netstandard 2.0</PackageReleaseNotes>
     <PackageIconUrl>https://raw.githubusercontent.com/ctolkien/TinyPNG/master/icon.png</PackageIconUrl>
     <PackageProjectUrl>https://github.com/ctolkien/TinyPNG</PackageProjectUrl>
     <PackageLicenseUrl>http://opensource.org/licenses/MIT</PackageLicenseUrl>
@@ -22,10 +22,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="9.0.1" />
-  </ItemGroup>
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net45' ">
-    <Reference Include="System.Net.Http" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
   </ItemGroup>
 
 

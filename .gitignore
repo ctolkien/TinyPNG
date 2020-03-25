@@ -198,3 +198,6 @@ FakesAssemblies/
 
 #VS Code
 .vscode
+
+#Rider
+.idea

@@ -37,7 +37,7 @@ namespace TinyPng
                 ContractResolver = new CamelCasePropertyNamesContractResolver(),
                 NullValueHandling = NullValueHandling.Ignore
             };
-            JsonSettings.Converters.Add(new StringEnumConverter { CamelCaseText = true });
+            JsonSettings.Converters.Add(new StringEnumConverter { NamingStrategy = new CamelCaseNamingStrategy() });
         }
 
         private static void ConfigureHttpClient(string apiKey)
