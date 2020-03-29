@@ -4,9 +4,9 @@ variables:
 
 
 trigger: 
-  - master
+  - compress-from-url
 pr:
-- master
+- compress-from-url
 jobs:
   - job: "BuildWindows"
     displayName: "Building .NET Application"
@@ -14,9 +14,9 @@ jobs:
       vmImage: 'windows-2019'
     steps:
       - task: DotNetCoreInstaller@1
-        displayName: "Use .NET Core sdk 2.2.100"
+        displayName: "Use .NET Core sdk 3.1.201"
         inputs:
-          version: 2.2.100
+          version: 3.1.201
       - task: DotNetCoreCLI@2
         displayName: 'Test'
         inputs:
@@ -38,9 +38,9 @@ jobs:
       vmImage: 'ubuntu-latest'
     steps:
       - task: DotNetCoreInstaller@1
-        displayName: "Use .NET Core sdk 2.2.100"
+        displayName: "Use .NET Core sdk 3.1.201"
         inputs:
-          version: 2.2.100
+          version: 3.1.201
       - task: DotNetCoreCLI@2
         inputs:
           command: build
