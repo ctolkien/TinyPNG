@@ -9,14 +9,13 @@ namespace TinyPng
 {
     public static class ResizeExtensions
     {
-
         /// <summary>
         /// Uses the TinyPng API to create a resized version of your uploaded image.
         /// </summary>
         /// <param name="result">This is the previous result of running a compression <see cref="TinyPngClient.CompressAsync"/></param>
         /// <param name="resizeOperation">Supply a strongly typed Resize Operation. See <typeparamref name="CoverResizeOperation"/>, <typeparamref name="FitResizeOperation"/>, <typeparamref name="ScaleHeightResizeOperation"/>, <typeparamref name="ScaleWidthResizeOperation"/></param>
         /// <returns></returns>
-        public async static Task<TinyPngResizeResponse> Resize(this Task<TinyPngCompressResponse> result, ResizeOperation resizeOperation)
+        public static async Task<TinyPngResizeResponse> ResizeAsync(this Task<TinyPngCompressResponse> result, ResizeOperation resizeOperation)
         {
             if (result == null)
                 throw new ArgumentNullException(nameof(result));
@@ -49,7 +48,7 @@ namespace TinyPng
         /// <param name="height"></param>
         /// <param name="resizeType"></param>
         /// <returns></returns>
-        public async static Task<TinyPngResizeResponse> Resize(this Task<TinyPngCompressResponse> result, int width, int height, ResizeType resizeType = ResizeType.Fit)
+        public static async Task<TinyPngResizeResponse> ResizeAsync(this Task<TinyPngCompressResponse> result, int width, int height, ResizeType resizeType = ResizeType.Fit)
         {
             if (result == null)
                 throw new ArgumentNullException(nameof(result));
@@ -60,9 +59,7 @@ namespace TinyPng
 
             var resizeOp = new ResizeOperation(resizeType, width, height);
 
-            return await Resize(result, resizeOp);
+            return await ResizeAsync(result, resizeOp);
         }
-
-
     }
 }

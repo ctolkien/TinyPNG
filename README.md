@@ -32,13 +32,11 @@ Install via `dotnet`
 
 ## Quickstart
 ```csharp
-using (var png = new TinyPngClient("yourSecretApiKey")) 
-{
-    var result = await png.Compress("cat.jpg");
+    var png = new TinyPngClient("yourSecretApiKey");
+    var result = await png.CompressAsync("cat.jpg");
     
     //URL to your compressed version
     result.Output.Url;
-}
 ```
 
 ## Upgrading from V2
@@ -51,69 +49,65 @@ the extension methods now operate on `Task<T>`.
 ## Compressing Images
 
 ```csharp
-//create an instance of the TinyPngClient
-using (var png = new TinyPngClient("yourSecretApiKey")) 
-{
-    //Create a task to compress an image.
-    //this gives you the information about your image as stored by TinyPNG
-    //they don't give you the actual bits (as you may want to chain this with a resize
-    //operation without caring for the originally sized image).
-    var compressImageTask = png.Compress("pathToFile or byte array or stream");
+    // create an instance of the TinyPngClient
+    var png = new TinyPngClient("yourSecretApiKey");
+    
+    // Create a task to compress an image.
+    // this gives you the information about your image as stored by TinyPNG
+    // they don't give you the actual bits (as you may want to chain this with a resize
+    // operation without caring for the originally sized image).
+    var compressImageTask = png.CompressAsync("pathToFile or byte array or stream");
+    // or
+    var compressFromUrlImageTask = png.CompressFromUrlAsync("image url");
 
-    //If you want to actually save this compressed image off
-    //it will need to be downloaded 
-    var compressedImage = await compressImageTask.Download();
-
-    //you can then get the bytes
-    var bytes = await compressedImage.GetImageByteData();
-
-    //get a stream instead
-    var stream  = await compressedImage.GetImageStreamData()
-
-    //or just save to disk
-    await compressedImage.SaveImageToDisk("pathToSaveImage");
-
-    //Putting it all together
-    await png.Compress("path")
-        .Download()
-        .SaveImageToDisk("savedPath");
-
-}
+    // If you want to actually save this compressed image off
+    // it will need to be downloaded 
+    var compressedImage = await compressImageTask.DownloadAsync();
+    
+    // you can then get the bytes
+    var bytes = await compressedImage.GetImageByteDataAsync();
+    
+    // get a stream instead
+    var stream = await compressedImage.GetImageStreamDataAsync();
+    
+    // or just save to disk
+    await compressedImage.SaveImageToDiskAsync("pathToSaveImage");
+    
+    // Putting it all together
+    await png.CompressAsync("path")
+             .DownloadAsync()
+             .SaveImageToDiskAsync("savedPath");
 ```
 
 Further details about the result of the compression are also available on the `Input` and `Output` properties of a `Compress` operation. Some examples:
 ```csharp
-
-    var result = await png.Compress("pathToFile or byte array or stream");
-
-    //old size
+    var result = await png.CompressAsync("pathToFile or byte array or stream");
+    
+    // old size
     result.Input.Size;
     
-    //new size
+    // new size
     result.Output.Size;
-
-    //URL of the compressed Image
+    
+    // URL of the compressed Image
     result.Output.Url; 
-
 ```
 
 ## Resizing Images
 
 ```csharp
-using (var png = new TinyPngClient("yourSecretApiKey")) 
-{
-    var compressImageTask = png.Compress("pathToFile or byte array or stream");
+    var png = new TinyPngClient("yourSecretApiKey");
     
-    var resizedImageTask = compressImageTask.Resize(width, height);
-
-    await resizedImageTask.SaveImageToDisk("pathToSaveImage");
-
-    //altogether now....
-    await png.Compress("pathToFile")
-        .Resize(width, height)
-        .SaveImageToDisk("pathToSaveImage");
-}
-
+    var compressImageTask = png.CompressAsync("pathToFile or byte array or stream");
+    
+    var resizedImageTask = compressImageTask.ResizeAsync(width, height);
+    
+    await resizedImageTask.SaveImageToDiskAsync("pathToSaveImage");
+    
+    // altogether now....
+    await png.CompressAsync("pathToFile")
+             .ResizeAsync(width, height)
+             .SaveImageToDiskAsync("pathToSaveImage");
 ```
 
 ### Resize Operations
@@ -123,19 +117,17 @@ TinyPNG. We also include strongly typed resize operations,
 depending on the type of resize you want to do. 
 
 ```csharp
-using (var png = new TinyPngClient("yourSecretApiKey")) 
-{
-    var compressTask = png.Compress("pathToFile or byte array or stream");
+    var png = new TinyPngClient("yourSecretApiKey");
     
-    await compressTask.Resize(new ScaleWidthResizeOperation(width));
-    await compressTask.Resize(new ScaleHeightResizeOperation(width));
-    await compressTask.Resize(new FitResizeOperation(width, height));
-    await compressTask.Resize(new CoverResizeOperation(width, height));
-}
-
+    var compressTask = png.CompressAsync("pathToFile or byte array or stream");
+    
+    await compressTask.ResizeAsync(new ScaleWidthResizeOperation(width));
+    await compressTask.ResizeAsync(new ScaleHeightResizeOperation(width));
+    await compressTask.ResizeAsync(new FitResizeOperation(width, height));
+    await compressTask.ResizeAsync(new CoverResizeOperation(width, height));
 ```
 
-The same `Byte[]`, `Stream` and `File` path API's are available from the result of the `Resize()` method.
+The same `Byte[]`, `Stream`, `File` and `Url` path API's are available from the result of the `Resize()` method.
 
 ## Amazon S3 Storage
 
@@ -145,38 +137,32 @@ the appropriate S3 access.
 If you're going to be storing images for most requests onto S3, then you can pass in an `AmazonS3Configuration` object to the constructor.
 
 ```csharp
-using (var png = new TinyPngClient("yourSecretApiKey", 
-    new AmazonS3Configuration("awsAccessKeyId", "awsSecretAccessKey", "bucket", "region"))) 
-{
-    var compressedCat = await png.Compress("cat.jpg");
-    var s3Uri = await png.SaveCompressedImageToAmazonS3(compressedCat, "file-name.png");
-
-    //if you'd like to override the particular bucket or region
-    //an image is being stored to from what is specified in the AmazonS3Configuration:
-    var s3UriInNewSpot = await png.SaveCompressedImageToAmazonS3(
-        compressedCat, 
-        "file-name.png", 
-        bucketOverride: "different-bucket", 
+    var png = new TinyPngClient("yourSecretApiKey",
+        new AmazonS3Configuration("awsAccessKeyId", "awsSecretAccessKey", "bucket", "region"));
+    
+    var compressedCat = await png.CompressAsync("cat.jpg");
+    var s3Uri = await png.SaveCompressedImageToAmazonS3Async(compressedCat, "file-name.png");
+    
+    // If you'd like to override the particular bucket or region
+    // an image is being stored to from what is specified in the AmazonS3Configuration:
+    var s3UriInNewSpot = await png.SaveCompressedImageToAmazonS3Async(
+        compressedCat,
+        "file-name.png",
+        bucketOverride: "different-bucket",
         regionOverride: "different-region");
-
-}
-
 ```
 
-You can also pass a `AmazonS3Configuration` object directly into calls to `SaveCompressedImageToAmazonS3`
+You can also pass a `AmazonS3Configuration` object directly into calls to `SaveCompressedImageToAmazonS3Async`
 
 ```csharp
-using (var png = new TinyPngClient("yourSecretApiKey")) 
-{
-    var compressedCat = await png.Compress("cat.jpg");
-    var s3Uri = await png.SaveCompressedImageToAmazonS3(compressedCat, 
+    var png = new TinyPngClient("yourSecretApiKey");
+    var compressedCat = await png.CompressAsync("cat.jpg");
+    var s3Uri = await png.SaveCompressedImageToAmazonS3Async(compressedCat,
         new AmazonS3Configuration(
-            "awsAccessKeyId", 
-            "awsSecretAccessKey", 
-            "bucket", 
+            "awsAccessKeyId",
+            "awsSecretAccessKey",
+            "bucket",
             "region"), "file-name.png");
-}
-
 ```
 
 
@@ -186,6 +172,15 @@ You can get a read on the number of compression operations you've performed by i
 on the result of any operation you've performed. This is useful for keeping tabs on your API usage.
 
 ```csharp
-var compressedCat = await png.Compress("cat.jpg");
-compressedCat.CompressionCount; // = 5
+    var compressedCat = await png.CompressAsync("cat.jpg");
+    compressedCat.CompressionCount; // = 5
+```
+
+## HttpClient
+
+TinyPngClient can take HttpClient, which can be controlled from outside the lib
+
+```csharp
+    var httpClient = new HttpClient();
+    var png = new TinyPngClient("yourSecretApiKey", httpClient);
 ```

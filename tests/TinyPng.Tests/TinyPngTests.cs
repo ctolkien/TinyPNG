@@ -144,8 +144,8 @@ namespace TinyPng.Tests
             var pngx = new TinyPngClient(apiKey, new HttpClient(new FakeResponseHandler().Compress().Download()));
 
             var downloadResult = await pngx.CompressAsync(Cat)
-                .Download()
-                .GetImageByteData();
+                .DownloadAsync()
+                .GetImageByteDataAsync();
 
             Assert.Equal(16646, downloadResult.Length);
         }
@@ -156,8 +156,8 @@ namespace TinyPng.Tests
             var pngx = new TinyPngClient(apiKey, new HttpClient(new FakeResponseHandler().Compress().Download()));
 
             var downloadResult = await pngx.CompressAsync(Cat)
-                .Download()
-                .GetImageStreamData();
+                .DownloadAsync()
+                .GetImageStreamDataAsync();
 
             Assert.Equal(16646, downloadResult.Length);
         }
@@ -169,8 +169,8 @@ namespace TinyPng.Tests
             try
             {
                 await pngx.CompressAsync(Cat)
-                .Download()
-                .SaveImageToDisk(SavedCatPath);
+                .DownloadAsync()
+                .SaveImageToDiskAsync(SavedCatPath);
             }
             finally
             {
@@ -184,15 +184,15 @@ namespace TinyPng.Tests
         {
             var pngx = new TinyPngClient(apiKey, new HttpClient(new FakeResponseHandler().Compress().Resize()));
 
-            Assert.ThrowsAsync<ArgumentNullException>(async () => await pngx.CompressAsync((string)null).Resize(150, 150));
-            Assert.ThrowsAsync<ArgumentNullException>(async () => await pngx.CompressAsync((string)null).Resize(null));
-            Assert.ThrowsAsync<ArgumentNullException>(async () => await pngx.CompressAsync(Cat).Resize(null));
+            Assert.ThrowsAsync<ArgumentNullException>(async () => await pngx.CompressAsync((string)null).ResizeAsync(150, 150));
+            Assert.ThrowsAsync<ArgumentNullException>(async () => await pngx.CompressAsync((string)null).ResizeAsync(null));
+            Assert.ThrowsAsync<ArgumentNullException>(async () => await pngx.CompressAsync(Cat).ResizeAsync(null));
 
             Task<Responses.TinyPngCompressResponse> nullCompressResponse = null;
-            Assert.ThrowsAsync<ArgumentNullException>(async () => await nullCompressResponse.Resize(150, 150));
+            Assert.ThrowsAsync<ArgumentNullException>(async () => await nullCompressResponse.ResizeAsync(150, 150));
 
-            Assert.ThrowsAsync<ArgumentOutOfRangeException>(async () => await pngx.CompressAsync(Cat).Resize(0, 150));
-            Assert.ThrowsAsync<ArgumentOutOfRangeException>(async () => await pngx.CompressAsync(Cat).Resize(150, 0));
+            Assert.ThrowsAsync<ArgumentOutOfRangeException>(async () => await pngx.CompressAsync(Cat).ResizeAsync(0, 150));
+            Assert.ThrowsAsync<ArgumentOutOfRangeException>(async () => await pngx.CompressAsync(Cat).ResizeAsync(150, 0));
         }
         
         [Fact]
@@ -200,10 +200,10 @@ namespace TinyPng.Tests
         {
             var pngx = new TinyPngClient(apiKey, new HttpClient(new FakeResponseHandler().Compress().Download()));
 
-            Assert.ThrowsAsync<ArgumentNullException>(async () => await pngx.CompressAsync((string)null).Download());
+            Assert.ThrowsAsync<ArgumentNullException>(async () => await pngx.CompressAsync((string)null).DownloadAsync());
 
             Task<Responses.TinyPngCompressResponse> nullCompressResponse = null;
-            Assert.ThrowsAsync<ArgumentNullException>(async () => await nullCompressResponse.Download());
+            Assert.ThrowsAsync<ArgumentNullException>(async () => await nullCompressResponse.DownloadAsync());
         }
         
         [Fact]
@@ -211,7 +211,7 @@ namespace TinyPng.Tests
         {
             var pngx = new TinyPngClient(apiKey, new HttpClient(new FakeResponseHandler().Compress().DownloadAndFail()));
 
-            Assert.ThrowsAsync<TinyPngApiException>(async () => await pngx.CompressAsync(Cat).Download());
+            Assert.ThrowsAsync<TinyPngApiException>(async () => await pngx.CompressAsync(Cat).DownloadAsync());
         }
         
         [Fact]
@@ -219,7 +219,7 @@ namespace TinyPng.Tests
         {
             var pngx = new TinyPngClient(apiKey, new HttpClient(new FakeResponseHandler().Compress().Resize()));
 
-            var resizedImageByteData = await pngx.CompressAsync(Cat).Resize(150, 150).GetImageByteData();
+            var resizedImageByteData = await pngx.CompressAsync(Cat).ResizeAsync(150, 150).GetImageByteDataAsync();
 
             Assert.Equal(5970, resizedImageByteData.Length);
         }
@@ -229,7 +229,7 @@ namespace TinyPng.Tests
         {
             var pngx = new TinyPngClient(apiKey, new HttpClient(new FakeResponseHandler().Compress().Resize()));
 
-            var resizedImageByteData = await pngx.CompressAsync(Cat).Resize(new ScaleHeightResizeOperation(150)).GetImageByteData();
+            var resizedImageByteData = await pngx.CompressAsync(Cat).ResizeAsync(new ScaleHeightResizeOperation(150)).GetImageByteDataAsync();
 
             Assert.Equal(5970, resizedImageByteData.Length);
         }
@@ -239,7 +239,7 @@ namespace TinyPng.Tests
         {
             var pngx = new TinyPngClient(apiKey, new HttpClient(new FakeResponseHandler().Compress().Resize()));
 
-            var resizedImageByteData = await pngx.CompressAsync(Cat).Resize(new ScaleWidthResizeOperation(150)).GetImageByteData();
+            var resizedImageByteData = await pngx.CompressAsync(Cat).ResizeAsync(new ScaleWidthResizeOperation(150)).GetImageByteDataAsync();
 
             Assert.Equal(5970, resizedImageByteData.Length);
         }
@@ -251,7 +251,7 @@ namespace TinyPng.Tests
 
             var result = await pngx.CompressAsync(Cat);
 
-            var resizedImageByteData = await pngx.CompressAsync(Cat).Resize(new FitResizeOperation(150, 150)).GetImageByteData();
+            var resizedImageByteData = await pngx.CompressAsync(Cat).ResizeAsync(new FitResizeOperation(150, 150)).GetImageByteDataAsync();
 
             Assert.Equal(5970, resizedImageByteData.Length);
         }
@@ -261,7 +261,7 @@ namespace TinyPng.Tests
         {
             var pngx = new TinyPngClient(apiKey, new HttpClient(new FakeResponseHandler().Compress().Resize()));
 
-            var resizedImageByteData = await pngx.CompressAsync(Cat).Resize(new CoverResizeOperation(150, 150)).GetImageByteData();
+            var resizedImageByteData = await pngx.CompressAsync(Cat).ResizeAsync(new CoverResizeOperation(150, 150)).GetImageByteDataAsync();
 
             Assert.Equal(5970, resizedImageByteData.Length);
         }
@@ -271,8 +271,8 @@ namespace TinyPng.Tests
         {
             var pngx = new TinyPngClient(apiKey, new HttpClient(new FakeResponseHandler().Compress().Resize()));
 
-            Assert.ThrowsAsync<ArgumentException>(async () => await pngx.CompressAsync(Cat).Resize(new CoverResizeOperation(0, 150)));
-            Assert.ThrowsAsync<ArgumentException>(async () => await pngx.CompressAsync(Cat).Resize(new CoverResizeOperation(150, 0)));
+            Assert.ThrowsAsync<ArgumentException>(async () => await pngx.CompressAsync(Cat).ResizeAsync(new CoverResizeOperation(0, 150)));
+            Assert.ThrowsAsync<ArgumentException>(async () => await pngx.CompressAsync(Cat).ResizeAsync(new CoverResizeOperation(150, 0)));
         }
         
         [Fact]

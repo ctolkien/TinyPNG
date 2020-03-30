@@ -11,10 +11,10 @@ namespace TinyPng
         /// </summary>
         /// <param name="result">The result from compress</param>
         /// <returns>Byte array of the image data</returns>
-        public async static Task<byte[]> GetImageByteData<T>(this Task<T> result) where T: TinyPngImageResponse
+        public static async Task<byte[]> GetImageByteDataAsync<T>(this Task<T> result) where T: TinyPngImageResponse
         {
             var imageResponse = await result;
-            return await GetImageByteData(imageResponse);
+            return await GetImageByteDataAsync(imageResponse);
         }
 
         /// <summary>
@@ -22,7 +22,7 @@ namespace TinyPng
         /// </summary>
         /// <param name="result">The result from compress</param>
         /// <returns>Byte array of the image data</returns>
-        public async static Task<byte[]> GetImageByteData(this TinyPngImageResponse result)
+        public static async Task<byte[]> GetImageByteDataAsync(this TinyPngImageResponse result)
         {
             return await result.HttpResponseMessage.Content.ReadAsByteArrayAsync();
         }
@@ -32,10 +32,10 @@ namespace TinyPng
         /// </summary>
         /// <param name="result">The result from compress</param>
         /// <returns>Stream of compressed image data</returns>
-        public async static Task<Stream> GetImageStreamData<T>(this Task<T> result) where T : TinyPngImageResponse
+        public static async Task<Stream> GetImageStreamDataAsync<T>(this Task<T> result) where T : TinyPngImageResponse
         {
             var imageResponse = await result;
-            return await GetImageStreamData(imageResponse);
+            return await GetImageStreamDataAsync(imageResponse);
         }
 
         /// <summary>
@@ -43,7 +43,7 @@ namespace TinyPng
         /// </summary>
         /// <param name="result">The result from compress</param>
         /// <returns>Stream of compressed image data</returns>
-        public async static Task<Stream> GetImageStreamData(TinyPngImageResponse result)
+        public static async Task<Stream> GetImageStreamDataAsync(this TinyPngImageResponse result)
         {
             return await result.HttpResponseMessage.Content.ReadAsStreamAsync();
         }
@@ -54,10 +54,10 @@ namespace TinyPng
         /// <param name="result">The result from compress</param>
         /// <param name="filePath">The path to store the file</param>
         /// <returns></returns>
-        public async static Task SaveImageToDisk<T>(this Task<T> result, string filePath) where T : TinyPngImageResponse
+        public static async Task SaveImageToDiskAsync<T>(this Task<T> result, string filePath) where T : TinyPngImageResponse
         {
             var response = await result;
-            await SaveImageToDisk(response, filePath);
+            await SaveImageToDiskAsync(response, filePath);
         }
 
         /// <summary>
@@ -66,12 +66,10 @@ namespace TinyPng
         /// <param name="result">The result from compress</param>
         /// <param name="filePath">The path to store the file</param>
         /// <returns></returns>
-        public async static Task SaveImageToDisk(this TinyPngImageResponse result, string filePath)
+        public static async Task SaveImageToDiskAsync(this TinyPngImageResponse result, string filePath)
         {
-            var byteData = await result.GetImageByteData();
+            var byteData = await result.GetImageByteDataAsync();
             File.WriteAllBytes(filePath, byteData);
         }
-
-
     }
 }
