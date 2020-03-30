@@ -13,7 +13,7 @@ namespace TinyPng
         /// <summary>
         /// Uses the TinyPng API to create a resized version of your uploaded image.
         /// </summary>
-        /// <param name="result">This is the previous result of running a compression <see cref="TinyPngClient.Compress(string)"/></param>
+        /// <param name="result">This is the previous result of running a compression <see cref="TinyPngClient.CompressAsync"/></param>
         /// <param name="resizeOperation">Supply a strongly typed Resize Operation. See <typeparamref name="CoverResizeOperation"/>, <typeparamref name="FitResizeOperation"/>, <typeparamref name="ScaleHeightResizeOperation"/>, <typeparamref name="ScaleWidthResizeOperation"/></param>
         /// <returns></returns>
         public async static Task<TinyPngResizeResponse> Resize(this Task<TinyPngCompressResponse> result, ResizeOperation resizeOperation)
@@ -44,7 +44,7 @@ namespace TinyPng
         /// <summary>
         /// Uses the TinyPng API to create a resized version of your uploaded image.
         /// </summary>
-        /// <param name="result">This is the previous result of running a compression <see cref="TinyPngClient.Compress(string)"/></param>
+        /// <param name="result">This is the previous result of running a compression <see cref="TinyPngClient.CompressAsync"/></param>
         /// <param name="width"></param>
         /// <param name="height"></param>
         /// <param name="resizeType"></param>

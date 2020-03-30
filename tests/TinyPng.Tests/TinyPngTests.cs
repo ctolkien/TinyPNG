@@ -1,13 +1,12 @@
-﻿using NUnit.Framework;
-using System;
+﻿using System;
 using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
 using TinyPng.ResizeOperations;
+using Xunit;
 
 namespace TinyPng.Tests
 {
-    [TestFixture]
     public class TinyPngTests
     {
         const string apiKey = "lolwat";
@@ -17,13 +16,13 @@ namespace TinyPng.Tests
         internal const string ResizedCat = "Resources/resizedcat.jpg";
         internal const string SavedCatPath = "Resources/savedcat.jpg";
         
-        [Test]
+        [Fact]
         public void TinyPngClientThrowsWhenNoApiKeySupplied()
         {
             Assert.Throws<ArgumentNullException>(() => new TinyPngClient(null));
         }
         
-        [Test]
+        [Fact]
         public void TinyPngClientThrowsWhenNoValidS3ConfigurationSupplied()
         {
             Assert.Throws<ArgumentNullException>(() => new TinyPngClient(null));
@@ -32,124 +31,144 @@ namespace TinyPng.Tests
             Assert.Throws<ArgumentNullException>(() => new TinyPngClient(null, new AmazonS3Configuration("a", "b", "c", "d")));
         }
         
-        [Test]
+        [Fact]
         public async Task Compression()
         {
             var pngx = new TinyPngClient(apiKey, new HttpClient(new FakeResponseHandler().Compress()));
 
-            var result = await pngx.Compress(Cat);
+            var result = await pngx.CompressAsync(Cat);
 
-            Assert.AreEqual("image/jpeg", result.Input.Type);
-            Assert.AreEqual(400, result.Output.Width);
-            Assert.AreEqual(400, result.Output.Height);
+            Assert.Equal("image/jpeg", result.Input.Type);
+            Assert.Equal(400, result.Output.Width);
+            Assert.Equal(400, result.Output.Height);
         }
 
-        [Test]
-        public async Task CanBeCalledMultipleTimesWihtoutExploding()
+        [Fact]
+        public async Task CanBeCalledMultipleTimesWithoutExploding()
         {
             var pngx1 = new TinyPngClient(apiKey, new HttpClient(new FakeResponseHandler().Compress()));
 
-            var result1 = await pngx1.Compress(Cat);
+            var result1 = await pngx1.CompressAsync(Cat);
 
-            Assert.AreEqual("image/jpeg", result1.Input.Type);
-            Assert.AreEqual(400, result1.Output.Width);
-            Assert.AreEqual(400, result1.Output.Height);
+            Assert.Equal("image/jpeg", result1.Input.Type);
+            Assert.Equal(400, result1.Output.Width);
+            Assert.Equal(400, result1.Output.Height);
 
             
             var pngx2 = new TinyPngClient(apiKey, new HttpClient(new FakeResponseHandler().Compress()));
 
-            var result2 = await pngx2.Compress(Cat);
+            var result2 = await pngx2.CompressAsync(Cat);
 
-            Assert.AreEqual("image/jpeg", result2.Input.Type);
-            Assert.AreEqual(400, result2.Output.Width);
-            Assert.AreEqual(400, result2.Output.Height);
+            Assert.Equal("image/jpeg", result2.Input.Type);
+            Assert.Equal(400, result2.Output.Width);
+            Assert.Equal(400, result2.Output.Height);
         }
 
-        [Test]
+        [Fact]
         public async Task CompressionCount()
         {
             var pngx = new TinyPngClient(apiKey, new HttpClient(new FakeResponseHandler().Compress()));
 
-            var result = await pngx.Compress(Cat);
+            var result = await pngx.CompressAsync(Cat);
 
-            Assert.AreEqual(99, result.CompressionCount);
+            Assert.Equal(99, result.CompressionCount);
         }
         
-        [Test]
+        [Fact]
         public async Task CompressionWithBytes()
         {
             var pngx = new TinyPngClient(apiKey, new HttpClient(new FakeResponseHandler().Compress()));
 
-            var bytes = File.ReadAllBytes(Cat);
-            var result = await pngx.Compress(bytes);
+            var bytes = await File.ReadAllBytesAsync(Cat);
+            
+            var result = await pngx.CompressAsync(bytes);
 
-            Assert.AreEqual("image/jpeg", result.Input.Type);
-            Assert.AreEqual(400, result.Output.Width);
-            Assert.AreEqual(400, result.Output.Height);
+            Assert.Equal("image/jpeg", result.Input.Type);
+            Assert.Equal(400, result.Output.Width);
+            Assert.Equal(400, result.Output.Height);
         }
         
-        [Test]
+        [Fact]
         public async Task CompressionWithStreams()
         {
             var pngx = new TinyPngClient(apiKey, new HttpClient(new FakeResponseHandler().Compress()));
 
-            using (var fileStream = File.OpenRead(Cat))
-            {
-                var result = await pngx.Compress(fileStream);
+            await using var fileStream = File.OpenRead(Cat);
+            
+            var result = await pngx.CompressAsync(fileStream);
 
-                Assert.AreEqual("image/jpeg", result.Input.Type);
-                Assert.AreEqual(400, result.Output.Width);
-                Assert.AreEqual(400, result.Output.Height);
-            }
+            Assert.Equal("image/jpeg", result.Input.Type);
+            Assert.Equal(400, result.Output.Width);
+            Assert.Equal(400, result.Output.Height);
         }
         
-        [Test]
+        [Fact]
+        public async Task CompressionFromUrl()
+        {
+            var pngx = new TinyPngClient(apiKey, new HttpClient(new FakeResponseHandler().Compress()));
+
+            var result = await pngx.CompressFromUrlAsync("https://sample.com/image.jpg");
+
+            Assert.Equal("image/jpeg", result.Input.Type);
+            Assert.Equal(400, result.Output.Width);
+            Assert.Equal(400, result.Output.Height);
+        }
+        
+        [Fact]
         public void CompressionShouldThrowIfNoPathToFile()
         {
             var pngx = new TinyPngClient(apiKey, new HttpClient(new FakeResponseHandler().Compress()));
 
-            Assert.ThrowsAsync<ArgumentNullException>(async () => await pngx.Compress(string.Empty));
+            Assert.ThrowsAsync<ArgumentNullException>(async () => await pngx.CompressAsync(string.Empty));
         }
         
-        [Test]
+        [Fact]
+        public void CompressionShouldThrowIfNoUrlToFile()
+        {
+            var pngx = new TinyPngClient(apiKey, new HttpClient(new FakeResponseHandler().Compress()));
+
+            Assert.ThrowsAsync<ArgumentNullException>(async () => await pngx.CompressFromUrlAsync(string.Empty));
+        }
+        
+        [Fact]
         public void CompressionShouldThrowIfNoNonSuccessStatusCode()
         {
             var pngx = new TinyPngClient(apiKey, new HttpClient(new FakeResponseHandler().CompressAndFail()));
 
-            Assert.ThrowsAsync<TinyPngApiException>(async () => await pngx.Compress(Cat));
+            Assert.ThrowsAsync<TinyPngApiException>(async () => await pngx.CompressAsync(Cat));
         }
         
-        [Test]
+        [Fact]
         public async Task CompressionAndDownload()
         {
             var pngx = new TinyPngClient(apiKey, new HttpClient(new FakeResponseHandler().Compress().Download()));
 
-            var downloadResult = await pngx.Compress(Cat)
+            var downloadResult = await pngx.CompressAsync(Cat)
                 .Download()
                 .GetImageByteData();
 
-            Assert.AreEqual(16646, downloadResult.Length);
+            Assert.Equal(16646, downloadResult.Length);
         }
         
-        [Test]
+        [Fact]
         public async Task CompressionAndDownloadAndGetUnderlyingStream()
         {
             var pngx = new TinyPngClient(apiKey, new HttpClient(new FakeResponseHandler().Compress().Download()));
 
-            var downloadResult = await pngx.Compress(Cat)
+            var downloadResult = await pngx.CompressAsync(Cat)
                 .Download()
                 .GetImageStreamData();
 
-            Assert.AreEqual(16646, downloadResult.Length);
+            Assert.Equal(16646, downloadResult.Length);
         }
         
-        [Test]
+        [Fact]
         public async Task CompressionAndDownloadAndWriteToDisk()
         {
             var pngx = new TinyPngClient(apiKey, new HttpClient(new FakeResponseHandler().Compress().Download()));
             try
             {
-                await pngx.Compress(Cat)
+                await pngx.CompressAsync(Cat)
                 .Download()
                 .SaveImageToDisk(SavedCatPath);
             }
@@ -160,176 +179,176 @@ namespace TinyPng.Tests
             }
         }
         
-        [Test]
+        [Fact]
         public void ResizingOperationThrows()
         {
             var pngx = new TinyPngClient(apiKey, new HttpClient(new FakeResponseHandler().Compress().Resize()));
 
-            Assert.ThrowsAsync<ArgumentNullException>(async () => await pngx.Compress((string)null).Resize(150, 150));
-            Assert.ThrowsAsync<ArgumentNullException>(async () => await pngx.Compress((string)null).Resize(null));
-            Assert.ThrowsAsync<ArgumentNullException>(async () => await pngx.Compress(Cat).Resize(null));
+            Assert.ThrowsAsync<ArgumentNullException>(async () => await pngx.CompressAsync((string)null).Resize(150, 150));
+            Assert.ThrowsAsync<ArgumentNullException>(async () => await pngx.CompressAsync((string)null).Resize(null));
+            Assert.ThrowsAsync<ArgumentNullException>(async () => await pngx.CompressAsync(Cat).Resize(null));
 
             Task<Responses.TinyPngCompressResponse> nullCompressResponse = null;
             Assert.ThrowsAsync<ArgumentNullException>(async () => await nullCompressResponse.Resize(150, 150));
 
-            Assert.ThrowsAsync<ArgumentOutOfRangeException>(async () => await pngx.Compress(Cat).Resize(0, 150));
-            Assert.ThrowsAsync<ArgumentOutOfRangeException>(async () => await pngx.Compress(Cat).Resize(150, 0));
+            Assert.ThrowsAsync<ArgumentOutOfRangeException>(async () => await pngx.CompressAsync(Cat).Resize(0, 150));
+            Assert.ThrowsAsync<ArgumentOutOfRangeException>(async () => await pngx.CompressAsync(Cat).Resize(150, 0));
         }
         
-        [Test]
+        [Fact]
         public void DownloadingOperationThrows()
         {
             var pngx = new TinyPngClient(apiKey, new HttpClient(new FakeResponseHandler().Compress().Download()));
 
-            Assert.ThrowsAsync<ArgumentNullException>(async () => await pngx.Compress((string)null).Download());
+            Assert.ThrowsAsync<ArgumentNullException>(async () => await pngx.CompressAsync((string)null).Download());
 
             Task<Responses.TinyPngCompressResponse> nullCompressResponse = null;
             Assert.ThrowsAsync<ArgumentNullException>(async () => await nullCompressResponse.Download());
         }
         
-        [Test]
+        [Fact]
         public void DownloadingOperationThrowsOnNonSuccessStatusCode()
         {
             var pngx = new TinyPngClient(apiKey, new HttpClient(new FakeResponseHandler().Compress().DownloadAndFail()));
 
-            Assert.ThrowsAsync<TinyPngApiException>(async () => await pngx.Compress(Cat).Download());
+            Assert.ThrowsAsync<TinyPngApiException>(async () => await pngx.CompressAsync(Cat).Download());
         }
         
-        [Test]
+        [Fact]
         public async Task ResizingOperation()
         {
             var pngx = new TinyPngClient(apiKey, new HttpClient(new FakeResponseHandler().Compress().Resize()));
 
-            var resizedImageByteData = await pngx.Compress(Cat).Resize(150, 150).GetImageByteData();
+            var resizedImageByteData = await pngx.CompressAsync(Cat).Resize(150, 150).GetImageByteData();
 
-            Assert.AreEqual(5970, resizedImageByteData.Length);
+            Assert.Equal(5970, resizedImageByteData.Length);
         }
         
-        [Test]
+        [Fact]
         public async Task ResizingScaleHeightOperation()
         {
             var pngx = new TinyPngClient(apiKey, new HttpClient(new FakeResponseHandler().Compress().Resize()));
 
-            var resizedImageByteData = await pngx.Compress(Cat).Resize(new ScaleHeightResizeOperation(150)).GetImageByteData();
+            var resizedImageByteData = await pngx.CompressAsync(Cat).Resize(new ScaleHeightResizeOperation(150)).GetImageByteData();
 
-            Assert.AreEqual(5970, resizedImageByteData.Length);
+            Assert.Equal(5970, resizedImageByteData.Length);
         }
         
-        [Test]
+        [Fact]
         public async Task ResizingScaleWidthOperation()
         {
             var pngx = new TinyPngClient(apiKey, new HttpClient(new FakeResponseHandler().Compress().Resize()));
 
-            var resizedImageByteData = await pngx.Compress(Cat).Resize(new ScaleWidthResizeOperation(150)).GetImageByteData();
+            var resizedImageByteData = await pngx.CompressAsync(Cat).Resize(new ScaleWidthResizeOperation(150)).GetImageByteData();
 
-            Assert.AreEqual(5970, resizedImageByteData.Length);
+            Assert.Equal(5970, resizedImageByteData.Length);
         }
         
-        [Test]
+        [Fact]
         public async Task ResizingFitResizeOperation()
         {
             var pngx = new TinyPngClient(apiKey, new HttpClient(new FakeResponseHandler().Compress().Resize()));
 
-            var result = await pngx.Compress(Cat);
+            var result = await pngx.CompressAsync(Cat);
 
-            var resizedImageByteData = await pngx.Compress(Cat).Resize(new FitResizeOperation(150, 150)).GetImageByteData();
+            var resizedImageByteData = await pngx.CompressAsync(Cat).Resize(new FitResizeOperation(150, 150)).GetImageByteData();
 
-            Assert.AreEqual(5970, resizedImageByteData.Length);
+            Assert.Equal(5970, resizedImageByteData.Length);
         }
         
-        [Test]
+        [Fact]
         public async Task ResizingCoverResizeOperation()
         {
             var pngx = new TinyPngClient(apiKey, new HttpClient(new FakeResponseHandler().Compress().Resize()));
 
-            var resizedImageByteData = await pngx.Compress(Cat).Resize(new CoverResizeOperation(150, 150)).GetImageByteData();
+            var resizedImageByteData = await pngx.CompressAsync(Cat).Resize(new CoverResizeOperation(150, 150)).GetImageByteData();
 
-            Assert.AreEqual(5970, resizedImageByteData.Length);
+            Assert.Equal(5970, resizedImageByteData.Length);
         }
         
-        [Test]
+        [Fact]
         public void ResizingCoverResizeOperationThrowsWithInvalidParams()
         {
             var pngx = new TinyPngClient(apiKey, new HttpClient(new FakeResponseHandler().Compress().Resize()));
 
-            Assert.ThrowsAsync<ArgumentException>(async () => await pngx.Compress(Cat).Resize(new CoverResizeOperation(0, 150)));
-            Assert.ThrowsAsync<ArgumentException>(async () => await pngx.Compress(Cat).Resize(new CoverResizeOperation(150, 0)));
+            Assert.ThrowsAsync<ArgumentException>(async () => await pngx.CompressAsync(Cat).Resize(new CoverResizeOperation(0, 150)));
+            Assert.ThrowsAsync<ArgumentException>(async () => await pngx.CompressAsync(Cat).Resize(new CoverResizeOperation(150, 0)));
         }
         
-        [Test]
+        [Fact]
         public void CompressAndStoreToS3ShouldThrowIfNoApiKeyProvided()
         {
             Assert.Throws<ArgumentNullException>(() => new TinyPngClient(string.Empty, new AmazonS3Configuration("a", "b", "c", "d")));
         }
         
-        [Test]
+        [Fact]
         public async Task CompressAndStoreToS3ShouldThrowIfS3HasNotBeenConfigured()
         {
             var pngx = new TinyPngClient(apiKey, new HttpClient(new FakeResponseHandler().Compress().S3()));
 
-            var result = await pngx.Compress(Cat);
+            var result = await pngx.CompressAsync(Cat);
 
-            Assert.ThrowsAsync<ArgumentNullException>(async () => await pngx.SaveCompressedImageToAmazonS3(null, "bucket/path.jpg"));
-            Assert.ThrowsAsync<InvalidOperationException>(async () => await pngx.SaveCompressedImageToAmazonS3(result, string.Empty));
-            Assert.ThrowsAsync<InvalidOperationException>(async () => await pngx.SaveCompressedImageToAmazonS3(result, "bucket/path.jpg"));
+            await Assert.ThrowsAsync<ArgumentNullException>(async () => await pngx.SaveCompressedImageToAmazonS3Async(null, "bucket/path.jpg"));
+            await Assert.ThrowsAsync<InvalidOperationException>(async () => await pngx.SaveCompressedImageToAmazonS3Async(result, string.Empty));
+            await Assert.ThrowsAsync<InvalidOperationException>(async () => await pngx.SaveCompressedImageToAmazonS3Async(result, "bucket/path.jpg"));
         }
 
         private const string ApiKey = "lolwat";
         private const string ApiAccessKey = "lolwat";
         
-        [Test]
+        [Fact]
         public async Task CompressAndStoreToS3()
         {
             var pngx = new TinyPngClient(apiKey, new HttpClient(new FakeResponseHandler().Compress().S3()));
 
-            var result = await pngx.Compress(Cat);
+            var result = await pngx.CompressAsync(Cat);
 
-            var sendToAmazon = (await pngx.SaveCompressedImageToAmazonS3(result,
+            var sendToAmazon = (await pngx.SaveCompressedImageToAmazonS3Async(result,
                 new AmazonS3Configuration(ApiKey, ApiAccessKey, "tinypng-test-bucket", "ap-southeast-2"),
                 "path.jpg")).ToString();
 
-            Assert.AreEqual("https://s3-ap-southeast-2.amazonaws.com/tinypng-test-bucket/path.jpg", sendToAmazon);
+            Assert.Equal("https://s3-ap-southeast-2.amazonaws.com/tinypng-test-bucket/path.jpg", sendToAmazon);
         }
         
-        [Test]
+        [Fact]
         public async Task CompressAndStoreToS3FooBar()
         {
             var pngx = new TinyPngClient(apiKey, new HttpClient(new FakeResponseHandler().Compress().S3AndFail()));
 
-            var result = await pngx.Compress(Cat);
+            var result = await pngx.CompressAsync(Cat);
 
-            Assert.ThrowsAsync<TinyPngApiException>(async () =>
-                await pngx.SaveCompressedImageToAmazonS3(result,
+            await Assert.ThrowsAsync<TinyPngApiException>(async () =>
+                await pngx.SaveCompressedImageToAmazonS3Async(result,
                 new AmazonS3Configuration(ApiKey, ApiAccessKey, "tinypng-test-bucket", "ap-southeast-2"), "path"));
         }
         
-        [Test]
+        [Fact]
         public async Task CompressAndStoreToS3Throws()
         {
             var pngx = new TinyPngClient(apiKey, new HttpClient(new FakeResponseHandler().Compress().S3()));
 
-            var result = await pngx.Compress(Cat);
+            var result = await pngx.CompressAsync(Cat);
 
-            Assert.ThrowsAsync<ArgumentNullException>(async () => await pngx.SaveCompressedImageToAmazonS3(result, null, string.Empty));
+            await Assert.ThrowsAsync<ArgumentNullException>(async () => await pngx.SaveCompressedImageToAmazonS3Async(result, null, string.Empty));
 
             //S3 configuration has not been set
-            Assert.ThrowsAsync<InvalidOperationException>(async () => await pngx.SaveCompressedImageToAmazonS3(result, path: string.Empty));
+            await Assert.ThrowsAsync<InvalidOperationException>(async () => await pngx.SaveCompressedImageToAmazonS3Async(result, path: string.Empty));
         }
         
-        [Test]
+        [Fact]
         public async Task CompressAndStoreToS3WithOptionsPassedIntoConstructor()
         {
             var pngx = new TinyPngClient(apiKey,
                 new AmazonS3Configuration(ApiKey, ApiAccessKey, "tinypng-test-bucket", "ap-southeast-2"),
                 new HttpClient(new FakeResponseHandler().Compress().S3()));
 
-            var result = await pngx.Compress(Cat);
-            var sendToAmazon = (await pngx.SaveCompressedImageToAmazonS3(result, "path.jpg")).ToString();
+            var result = await pngx.CompressAsync(Cat);
+            var sendToAmazon = (await pngx.SaveCompressedImageToAmazonS3Async(result, "path.jpg")).ToString();
 
-            Assert.AreEqual("https://s3-ap-southeast-2.amazonaws.com/tinypng-test-bucket/path.jpg", sendToAmazon);
+            Assert.Equal("https://s3-ap-southeast-2.amazonaws.com/tinypng-test-bucket/path.jpg", sendToAmazon);
         }
         
-        [Test]
+        [Fact]
         public void TinyPngExceptionPopulatesCorrectData()
         {
             var StatusCode = 200;
@@ -340,10 +359,10 @@ namespace TinyPng.Tests
 
             var msg = $"Api Service returned a non-success status code when attempting an operation on an image: {StatusCode} - {StatusReasonPhrase}. {ErrorTitle}, {ErrorMessage}";
 
-            Assert.AreEqual(StatusCode, e.StatusCode);
-            Assert.AreEqual(StatusReasonPhrase, e.StatusReasonPhrase);
-            Assert.AreEqual(ErrorTitle, e.ErrorTitle);
-            Assert.AreEqual(msg, e.Message);
+            Assert.Equal(StatusCode, e.StatusCode);
+            Assert.Equal(StatusReasonPhrase, e.StatusReasonPhrase);
+            Assert.Equal(ErrorTitle, e.ErrorTitle);
+            Assert.Equal(msg, e.Message);
         }
     }
 }

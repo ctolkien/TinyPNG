@@ -20,6 +20,11 @@ namespace TinyPng
         private readonly HttpClient HttpClient;
         internal static readonly JsonSerializerSettings JsonSettings;
 
+        /// <summary>
+        /// Configures the client to use these AmazonS3 settings when storing images in S3
+        /// </summary>
+        public AmazonS3Configuration AmazonS3Configuration { get; set; }
+        
         static TinyPngClient()
         {
             //configure json settings for camelCase.
@@ -72,40 +77,27 @@ namespace TinyPng
             AmazonS3Configuration = amazonConfiguration ?? throw new ArgumentNullException(nameof(amazonConfiguration));
         }
 
-        /// <summary>
-        /// Configures the client to use these AmazonS3 settings when storing images in S3
-        /// </summary>
-        public AmazonS3Configuration AmazonS3Configuration { get; set; }
+        private static HttpContent CreateContent(byte[] source) => new ByteArrayContent(source);
 
-        private HttpContent CreateContent(byte[] source)
-        {
-            return new ByteArrayContent(source);
-        }
+        private static HttpContent CreateContent(Stream source) => new StreamContent(source);
 
-        private HttpContent CreateContent(Stream source)
-        {
-            return new StreamContent(source);
-        }
-
-        private HttpContent CreateContent(string source)
-        {
-            var stringPayload = JsonConvert.SerializeObject(new {source = new {url = source}}, JsonSettings);
-            return new StringContent(stringPayload, Encoding.UTF8, "application/json");
-        }
+        private static HttpContent CreateContent(string source) => new StringContent(
+            JsonConvert.SerializeObject(new {source = new {url = source}}, JsonSettings),
+            Encoding.UTF8, "application/json");
 
         /// <summary>
         /// Compress a file on disk
         /// </summary>
         /// <param name="pathToFile">Path to file on disk</param>
         /// <returns>TinyPngApiResult, <see cref="TinyPngApiResult"/></returns>
-        public async Task<TinyPngCompressResponse> Compress(string pathToFile)
+        public async Task<TinyPngCompressResponse> CompressAsync(string pathToFile)
         {
             if (string.IsNullOrEmpty(pathToFile))
                 throw new ArgumentNullException(nameof(pathToFile));
 
             using (var file = File.OpenRead(pathToFile))
             {
-                return await Compress(file).ConfigureAwait(false);
+                return await CompressAsync(file).ConfigureAwait(false);
             }
         }
 
@@ -113,50 +105,49 @@ namespace TinyPng
         /// Compress byte array of image
         /// </summary>
         /// <param name="data">Byte array of the data to compress</param>
-        /// <returns></returns>
-        public async Task<TinyPngCompressResponse> Compress(byte[] data)
+        /// <returns>TinyPngApiResult, <see cref="TinyPngApiResult"/></returns>
+        public async Task<TinyPngCompressResponse> CompressAsync(byte[] data)
         {
             if (data == null)
                 throw new ArgumentNullException(nameof(data));
 
             using (var stream = new MemoryStream(data))
             {
-                return await Compress(stream).ConfigureAwait(false);
+                return await CompressAsync(stream).ConfigureAwait(false);
             }
         }
 
         /// <summary>
         /// Compress a stream
         /// </summary>
-        /// <param name="data"></param>
-        /// <returns></returns>
-        public async Task<TinyPngCompressResponse> Compress(Stream data)
+        /// <returns>TinyPngApiResult, <see cref="TinyPngApiResult"/></returns>
+        public Task<TinyPngCompressResponse> CompressAsync(Stream data)
         {
             if (data == null)
                 throw new ArgumentNullException(nameof(data));
-
-            var response = await HttpClient.PostAsync(ApiEndpoint, CreateContent(data)).ConfigureAwait(false);
-
-            if (response.IsSuccessStatusCode)
-            {
-                return new TinyPngCompressResponse(response, HttpClient);
-            }
-
-            var errorMsg = JsonConvert.DeserializeObject<ApiErrorResponse>(await response.Content.ReadAsStringAsync().ConfigureAwait(false));
-            throw new TinyPngApiException((int)response.StatusCode, response.ReasonPhrase, errorMsg.Error, errorMsg.Message);
+            
+            return CompressInternalAsync(CreateContent(data));
         }
-        
-        public async Task<TinyPngCompressResponse> CompressFromUrl(string url)
+
+        /// <summary>
+        /// Compress image from url
+        /// </summary>
+        /// <param name="url">Image url to compress</param>
+        /// <returns>TinyPngApiResult, <see cref="TinyPngApiResult"/></returns>
+        public Task<TinyPngCompressResponse> CompressFromUrlAsync(string url)
         {
             if (string.IsNullOrEmpty(url))
                 throw new ArgumentNullException(nameof(url));
+            
+            return CompressInternalAsync(CreateContent(url));
+        }
 
-            var response = await HttpClient.PostAsync(ApiEndpoint, CreateContent(url)).ConfigureAwait(false);
+        private async Task<TinyPngCompressResponse> CompressInternalAsync(HttpContent contentData)
+        {
+            var response = await HttpClient.PostAsync(ApiEndpoint, contentData).ConfigureAwait(false);
 
             if (response.IsSuccessStatusCode)
-            {
                 return new TinyPngCompressResponse(response, HttpClient);
-            }
 
             var errorMsg = JsonConvert.DeserializeObject<ApiErrorResponse>(await response.Content.ReadAsStringAsync().ConfigureAwait(false));
             throw new TinyPngApiException((int)response.StatusCode, response.ReasonPhrase, errorMsg.Error, errorMsg.Message);
@@ -169,7 +160,7 @@ namespace TinyPng
         /// <param name="amazonSettings">The settings for the amazon connection</param>
         /// <param name="path">The path and bucket to store in: bucket/file.png format</param>
         /// <returns></returns>
-        public async Task<Uri> SaveCompressedImageToAmazonS3(TinyPngCompressResponse result, AmazonS3Configuration amazonSettings, string path)
+        public async Task<Uri> SaveCompressedImageToAmazonS3Async(TinyPngCompressResponse result, AmazonS3Configuration amazonSettings, string path)
         {
             if (result == null)
                 throw new ArgumentNullException(nameof(result));
@@ -205,7 +196,7 @@ namespace TinyPng
         /// <param name="bucketOverride">Optional: To override the previously configured bucket</param>
         /// <param name="regionOverride">Optional: To override the previously configured region</param>
         /// <returns></returns>
-        public Task<Uri> SaveCompressedImageToAmazonS3(TinyPngCompressResponse result, string path, string bucketOverride = "", string regionOverride = "")
+        public Task<Uri> SaveCompressedImageToAmazonS3Async(TinyPngCompressResponse result, string path, string bucketOverride = "", string regionOverride = "")
         {
             if (result == null)
                 throw new ArgumentNullException(nameof(result));
@@ -223,7 +214,7 @@ namespace TinyPng
             if (!string.IsNullOrEmpty(bucketOverride))
                 amazonSettings.Bucket = bucketOverride;
 
-            return SaveCompressedImageToAmazonS3(result, amazonSettings, path);
+            return SaveCompressedImageToAmazonS3Async(result, amazonSettings, path);
         }
     }
 }
