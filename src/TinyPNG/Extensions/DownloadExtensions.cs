@@ -17,14 +17,14 @@ namespace TinyPng
         /// <param name="compressResponse"></param>
         /// <param name="metadata"></param>
         /// <returns></returns>
-        public static async Task<TinyPngImageResponse> DownloadAsync(this Task<TinyPngCompressResponse> compressResponse, PreserveMetadata metadata = PreserveMetadata.None)
+        public static async Task<TinyPngImageResponse> Download(this Task<TinyPngCompressResponse> compressResponse, PreserveMetadata metadata = PreserveMetadata.None)
         {
             if (compressResponse == null)
                 throw new ArgumentNullException(nameof(compressResponse));
 
             var compressResult = await compressResponse;
 
-            return await DownloadAsync(compressResult, metadata);
+            return await Download(compressResult, metadata);
         }
 
         /// <summary>
@@ -33,7 +33,7 @@ namespace TinyPng
         /// <param name="compressResponse"></param>
         /// <param name="metadata"></param>
         /// <returns></returns>
-        public static async Task<TinyPngImageResponse> DownloadAsync(this TinyPngCompressResponse compressResponse, PreserveMetadata metadata = PreserveMetadata.None)
+        public static async Task<TinyPngImageResponse> Download(this TinyPngCompressResponse compressResponse, PreserveMetadata metadata = PreserveMetadata.None)
         {
             if (compressResponse == null)
                 throw new ArgumentNullException(nameof(compressResponse));
