@@ -4,7 +4,7 @@ variables:
 
 
 trigger: 
-  - compress-from-url
+  - master
 pr:
 - compress-from-url
 jobs:
@@ -47,4 +47,3 @@ jobs:
       - task: DotNetCoreCLI@2
         inputs:
           command: build
-
