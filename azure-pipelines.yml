@@ -6,7 +6,7 @@ variables:
 trigger: 
   - master
 pr:
-- compress-from-url
+- master
 jobs:
   - job: "BuildWindows"
     displayName: "Building .NET Application"
