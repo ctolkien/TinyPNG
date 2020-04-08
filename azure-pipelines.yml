@@ -47,7 +47,7 @@ jobs:
         inputs:
           command: build
   
-  - job: "Nuget Publish"
+  - job: "NugetPublish"
     dependsOn: "BuildWindows"
     condition:  and(succeeded(), eq(variables['build.sourceBranch'], 'refs/heads/release'))
     displayName: "Publish to Nuget"
