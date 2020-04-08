@@ -1,28 +1,27 @@
 variables:
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
   BuildConfiguration: "Release"
-
-
+  DotNetVersion: 3.1.201
 trigger: 
   - master
 pr:
 - master
 jobs:
   - job: "BuildWindows"
-    displayName: "Building .NET Application"
+    displayName: "Windows - Building .NET Application"
     pool:
       vmImage: 'windows-2019'
     steps:
       - task: DotNetCoreInstaller@1
-        displayName: "Use .NET Core sdk 3.1.201"
+        displayName: "Use .NET Core SDK"
         inputs:
-          version: 3.1.201
+          version: $(DotNetVersion)
       - task: DotNetCoreCLI@2
-        displayName: 'Test'
+        displayName: 'Test Windows'
         inputs:
           command: test
-          
           publishTestResults: true
+          codeCoverageEnabled: true
       - task: DotNetCoreCLI@2
         displayName:  'Pack'
         inputs:
@@ -33,17 +32,32 @@ jobs:
           targetPath: "$(build.artifactstagingdirectory)"
           ArtifactName: "build"
   - job: "BuildLinux"
-    displayName: "Building .NET Application"
+    displayName: "Linux - Building .NET Application"
     pool:
       vmImage: 'ubuntu-latest'
     steps:
       - task: DotNetCoreInstaller@1
-        displayName: "Use .NET Core sdk 3.1.201"
+        displayName: "Use .NET Core SDK"
         inputs:
-          version: 3.1.201
+          version: $(DotNetVersion)
+      - task: DotNetCoreCLI@2
+        inputs:
+          displayName: 'Test Linux'
+          command: test
       - task: DotNetCoreCLI@2
         inputs:
           command: build
-      - task: DotNetCoreCLI@2
-        inputs:
-          command: build
+  
+  - job: "NugetPublish"
+    dependsOn: "BuildWindows"
+    condition:  and(succeeded(), eq(variables['build.sourceBranch'], 'refs/heads/release'))
+    displayName: "Publish to Nuget"
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+    - task: NuGetCommand@2
+      inputs:
+        command: 'push'
+        packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;!$(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg'
+        nuGetFeedType: 'external'
+        publishFeedCredentials: 'NuGet' 

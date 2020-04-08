@@ -1,16 +1,15 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26403.7
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30002.166
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TinyPNG", "src\TinyPNG\TinyPNG.csproj", "{52901FDB-68CE-4192-8B2B-3BD1773261F3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TinyPNG", "src\TinyPNG\TinyPNG.csproj", "{52901FDB-68CE-4192-8B2B-3BD1773261F3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TinyPng.Tests", "tests\TinyPng.Tests\TinyPng.Tests.csproj", "{DBA34C0E-C2A8-4D42-8770-FADC6251E93D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TinyPng.Tests", "tests\TinyPng.Tests\TinyPng.Tests.csproj", "{DBA34C0E-C2A8-4D42-8770-FADC6251E93D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{466E1CAF-57A2-4370-91C7-455AAC8E4D2E}"
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
-		.travis.yml = .travis.yml
-		appveyor.yml = appveyor.yml
+		azure-pipelines.yml = azure-pipelines.yml
 		README.md = README.md
 	EndProjectSection
 EndProject
@@ -31,5 +30,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {54A4A777-ED82-4D34-A6E1-AACC3E946A40}
 	EndGlobalSection
 EndGlobal

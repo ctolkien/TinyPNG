@@ -1,28 +1,33 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Copyright>Copyright 2016 Chad Tolkien</Copyright>
+    <Copyright>Copyright 2016 Chad Tolkien &amp; Contributors</Copyright>
     <AssemblyTitle>TinyPNG</AssemblyTitle>
-    <VersionPrefix>3.2.0</VersionPrefix>
+    <VersionPrefix>3.3.0</VersionPrefix>
     <Authors>Chad Tolkien</Authors>
     <TargetFrameworks>netstandard2.0</TargetFrameworks>
     <AssemblyName>TinyPNG</AssemblyName>
     <PackageId>TinyPNG</PackageId>
     <PackageTags>tinypng;images;compression;jpg;png</PackageTags>
-    <PackageReleaseNotes>Support for netstandard 2.0</PackageReleaseNotes>
     <PackageIconUrl>https://raw.githubusercontent.com/ctolkien/TinyPNG/master/icon.png</PackageIconUrl>
     <PackageProjectUrl>https://github.com/ctolkien/TinyPNG</PackageProjectUrl>
     <PackageLicenseUrl>http://opensource.org/licenses/MIT</PackageLicenseUrl>
     <PackageReleaseNotes>
+      * 3.3 - Support for netstandard 2.0. Added compress from URL feature thanks to @d-ugarov
       * 3.1 - Fixed bug to do with disposed HttpClient
     </PackageReleaseNotes>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/ctolkien/TinyPNG</RepositoryUrl>
-    <DebugType>full</DebugType>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+
+    <!-- Source link support-->
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All"/>
   </ItemGroup>
 
 
