@@ -21,6 +21,7 @@ jobs:
         inputs:
           command: test
           publishTestResults: true
+          codeCoverageEnabled: true
       - task: DotNetCoreCLI@2
         displayName:  'Pack'
         inputs:
