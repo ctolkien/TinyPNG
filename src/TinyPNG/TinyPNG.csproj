@@ -1,9 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Copyright>Copyright 2016 Chad Tolkien</Copyright>
+    <Copyright>Copyright 2016 Chad Tolkien &amp; Contributors</Copyright>
     <AssemblyTitle>TinyPNG</AssemblyTitle>
-    <VersionPrefix>3.2.0</VersionPrefix>
+    <VersionPrefix>3.3.0</VersionPrefix>
     <Authors>Chad Tolkien</Authors>
     <TargetFrameworks>netstandard2.0</TargetFrameworks>
     <AssemblyName>TinyPNG</AssemblyName>
@@ -14,6 +14,7 @@
     <PackageProjectUrl>https://github.com/ctolkien/TinyPNG</PackageProjectUrl>
     <PackageLicenseUrl>http://opensource.org/licenses/MIT</PackageLicenseUrl>
     <PackageReleaseNotes>
+      * 3.3 - Added compress from URL feature thanks to @d-ugarov
       * 3.1 - Fixed bug to do with disposed HttpClient
     </PackageReleaseNotes>
     <RepositoryType>git</RepositoryType>

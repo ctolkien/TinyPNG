@@ -1,11 +1,6 @@
 # TinyPng for .Net
 
-| Platform | Status|
-|---------|-------|
-|Windows  | [![Build status](https://img.shields.io/appveyor/ci/soda-digital/tinypng.svg?maxAge=2000)](https://ci.appveyor.com/project/Soda-Digital/tinypng) |
-|Linux | [![Build Status](https://img.shields.io/travis/ctolkien/TinyPNG.svg?maxAge=2000)](https://travis-ci.org/ctolkien/TinyPNG) |
-
-[![codecov](https://codecov.io/gh/ctolkien/TinyPNG/branch/master/graph/badge.svg)](https://codecov.io/gh/ctolkien/TinyPNG)
+[![Build Status](https://dev.azure.com/chadtolkien/TinyPNG/_apis/build/status/ctolkien.TinyPNG?branchName=master)](https://dev.azure.com/chadtolkien/TinyPNG/_build/latest?definitionId=2&branchName=master)
 ![Version](https://img.shields.io/nuget/v/tinypng.svg?maxAge=2000)
 [![license](https://img.shields.io/github/license/ctolkien/TinyPNG.svg?maxAge=2592000)]()
 
@@ -57,7 +52,7 @@ the extension methods now operate on `Task<T>`.
     // they don't give you the actual bits (as you may want to chain this with a resize
     // operation without caring for the originally sized image).
     var compressImageTask = png.Compress("pathToFile or byte array or stream");
-    // or
+    // or `CompressFromUrl` if compressing from a remotely hosted image.
     var compressFromUrlImageTask = png.CompressFromUrl("image url");
 
     // If you want to actually save this compressed image off
@@ -122,7 +117,7 @@ depending on the type of resize you want to do.
     var compressTask = png.Compress("pathToFile or byte array or stream");
     
     await compressTask.Resize(new ScaleWidthResizeOperation(width));
-    await compressTask.Resize(new ScaleHeightResizeOperation(width));
+    await compressTask.Resize(new ScaleHeightResizeOperation(height));
     await compressTask.Resize(new FitResizeOperation(width, height));
     await compressTask.Resize(new CoverResizeOperation(width, height));
 ```

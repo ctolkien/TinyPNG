@@ -2,14 +2,13 @@ variables:
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
   BuildConfiguration: "Release"
 
-
 trigger: 
   - master
 pr:
 - master
 jobs:
   - job: "BuildWindows"
-    displayName: "Building .NET Application"
+    displayName: "Windows - Building .NET Application"
     pool:
       vmImage: 'windows-2019'
     steps:
@@ -18,10 +17,9 @@ jobs:
         inputs:
           version: 3.1.201
       - task: DotNetCoreCLI@2
-        displayName: 'Test'
+        displayName: 'Test Windows'
         inputs:
           command: test
-          
           publishTestResults: true
       - task: DotNetCoreCLI@2
         displayName:  'Pack'
@@ -33,7 +31,7 @@ jobs:
           targetPath: "$(build.artifactstagingdirectory)"
           ArtifactName: "build"
   - job: "BuildLinux"
-    displayName: "Building .NET Application"
+    displayName: "Linux - Building .NET Application"
     pool:
       vmImage: 'ubuntu-latest'
     steps:
@@ -43,7 +41,8 @@ jobs:
           version: 3.1.201
       - task: DotNetCoreCLI@2
         inputs:
-          command: build
+          displayName: 'Test Linux'
+          command: test
       - task: DotNetCoreCLI@2
         inputs:
           command: build
