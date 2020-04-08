@@ -1,7 +1,7 @@
 variables:
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
   BuildConfiguration: "Release"
-
+  DotNetVersion: 3.1.201
 trigger: 
   - master
 pr:
@@ -13,9 +13,9 @@ jobs:
       vmImage: 'windows-2019'
     steps:
       - task: DotNetCoreInstaller@1
-        displayName: "Use .NET Core sdk 3.1.201"
+        displayName: "Use .NET Core SDK"
         inputs:
-          version: 3.1.201
+          version: $(DotNetVersion)
       - task: DotNetCoreCLI@2
         displayName: 'Test Windows'
         inputs:
@@ -36,9 +36,9 @@ jobs:
       vmImage: 'ubuntu-latest'
     steps:
       - task: DotNetCoreInstaller@1
-        displayName: "Use .NET Core sdk 3.1.201"
+        displayName: "Use .NET Core SDK"
         inputs:
-          version: 3.1.201
+          version: $(DotNetVersion)
       - task: DotNetCoreCLI@2
         inputs:
           displayName: 'Test Linux'
@@ -46,3 +46,17 @@ jobs:
       - task: DotNetCoreCLI@2
         inputs:
           command: build
+  
+  - job: "Nuget Publish"
+    dependsOn: "BuildWindows"
+    condition:  and(succeeded(), eq(variables['build.sourceBranch'], 'refs/heads/release'))
+    displayName: "Publish to Nuget"
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+    - task: NuGetCommand@2
+      inputs:
+        command: 'push'
+        packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;!$(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg'
+        nuGetFeedType: 'external'
+        publishFeedCredentials: 'NuGet' 
