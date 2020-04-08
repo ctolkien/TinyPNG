@@ -7,7 +7,6 @@ using TinyPng.Responses;
 
 namespace TinyPng
 {
-
     public static class DownloadExtensions
     {
         private const string JpegType = "image/jpeg";
@@ -18,7 +17,7 @@ namespace TinyPng
         /// <param name="compressResponse"></param>
         /// <param name="metadata"></param>
         /// <returns></returns>
-        public async static Task<TinyPngImageResponse> Download(this Task<TinyPngCompressResponse> compressResponse, PreserveMetadata metadata = PreserveMetadata.None)
+        public static async Task<TinyPngImageResponse> Download(this Task<TinyPngCompressResponse> compressResponse, PreserveMetadata metadata = PreserveMetadata.None)
         {
             if (compressResponse == null)
                 throw new ArgumentNullException(nameof(compressResponse));
@@ -26,7 +25,6 @@ namespace TinyPng
             var compressResult = await compressResponse;
 
             return await Download(compressResult, metadata);
-
         }
 
         /// <summary>
@@ -35,7 +33,7 @@ namespace TinyPng
         /// <param name="compressResponse"></param>
         /// <param name="metadata"></param>
         /// <returns></returns>
-        public async static Task<TinyPngImageResponse> Download(TinyPngCompressResponse compressResponse, PreserveMetadata metadata = PreserveMetadata.None)
+        public static async Task<TinyPngImageResponse> Download(this TinyPngCompressResponse compressResponse, PreserveMetadata metadata = PreserveMetadata.None)
         {
             if (compressResponse == null)
                 throw new ArgumentNullException(nameof(compressResponse));
@@ -82,7 +80,7 @@ namespace TinyPng
                 preserve.Add("location");
             }
 
-            string json = JsonConvert.SerializeObject(new { preserve });
+            var json = JsonConvert.SerializeObject(new { preserve });
 
             return new StringContent(json, System.Text.Encoding.UTF8, "application/json");
         }
