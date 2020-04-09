@@ -68,7 +68,7 @@ jobs:
               targetType: 'inline'
               script: |
                 cd $(Pipeline.Workspace)
-                ls -recurse            
+                get-childitem -recurse            
           - task: 'UseDotNet@2'
             displayName: "Install .NET Core SDK"
             inputs:
