@@ -22,7 +22,6 @@ jobs:
         inputs:
           command: test
           publishTestResults: true
-          codeCoverageEnabled: true
       - task: DotNetCoreCLI@2
         displayName:  'Pack'
         inputs:
@@ -42,23 +41,27 @@ jobs:
         inputs:
           version: $(DotNetVersion)
       - task: DotNetCoreCLI@2
+        displayName: 'Test Linux'
         inputs:
-          displayName: 'Test Linux'
           command: test
       - task: DotNetCoreCLI@2
         inputs:
           command: build
   
-  - job: "NugetPublish"
+  - deployment: "NugetPublish"
     dependsOn: "BuildWindows"
     condition:  and(succeeded(), eq(variables['build.sourceBranch'], 'refs/heads/release'))
     displayName: "Publish to Nuget"
+    environment: "NuGet"
     pool:
       vmImage: 'ubuntu-latest'
-    steps:
-    - task: NuGetCommand@2
-      inputs:
-        command: 'push'
-        packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;!$(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg'
-        nuGetFeedType: 'external'
-        publishFeedCredentials: 'NuGet' 
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - task: NuGetCommand@2
+            inputs:
+              command: 'push'
+              packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;$(Build.ArtifactStagingDirectory)/**/*.snupkg;'
+              nuGetFeedType: 'external'
+              publishFeedCredentials: 'NuGet' 
