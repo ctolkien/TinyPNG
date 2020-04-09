@@ -63,18 +63,8 @@ jobs:
       runOnce:
         deploy:
           steps:
-          - task: PowerShell@2
-            inputs:
-              targetType: 'inline'
-              script: |
-                cd $(Pipeline.Workspace)
-                get-childitem -recurse            
-          - task: 'UseDotNet@2'
-            displayName: "Install .NET Core SDK"
-            inputs:
-              packageType: 'sdk'
-              version: '$(DotNetVersion)'            
           - task: NuGetCommand@2
+            displayName: "Push to NuGet"
             inputs:
               command: 'push'
               packagesToPush: '$(Pipeline.Workspace)/**/*.nupkg;'
