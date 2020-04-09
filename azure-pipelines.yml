@@ -62,6 +62,6 @@ jobs:
             - task: DotNetCoreCLI@2
               inputs:
                 command: 'push'
-                packagesToPush: '$(Build.ArtifactStagingDirectory)/*.nupkg;$(Build.ArtifactStagingDirectory)/*.snupkg'
+                packagesToPush: '$(Pipeline.Workspace)/*.nupkg;$(Pipeline.Workspace)/*.snupkg'
                 nuGetFeedType: 'external'
                 publishFeedCredentials: 'NuGet'
