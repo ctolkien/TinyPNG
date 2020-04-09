@@ -4,6 +4,7 @@ variables:
   DotNetVersion: 3.1.201
 trigger: 
   - master
+  - release
 pr:
 - master
 jobs:
