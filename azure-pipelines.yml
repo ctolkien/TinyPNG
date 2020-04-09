@@ -1,7 +1,8 @@
 variables:
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
   BuildConfiguration: "Release"
-  DotNetVersion: 3.1.201
+  DotNetVersion: 3.x
+
 trigger: 
   - master
   - release
@@ -13,10 +14,10 @@ jobs:
     pool:
       vmImage: 'windows-2019'
     steps:
-      - task: DotNetCoreInstaller@1
-        displayName: "Use .NET Core SDK"
+      - task: UseDotNet@2
         inputs:
-          version: $(DotNetVersion)
+          packageType: 'sdk'
+          version: '$(DotNetVersion)'
       - task: DotNetCoreCLI@2
         displayName: 'Test Windows'
         inputs:
@@ -36,10 +37,10 @@ jobs:
     pool:
       vmImage: 'ubuntu-latest'
     steps:
-      - task: DotNetCoreInstaller@1
-        displayName: "Use .NET Core SDK"
+      - task: UseDotNet@2
         inputs:
-          version: $(DotNetVersion)
+          packageType: 'sdk'
+          version: '$(DotNetVersion)'
       - task: DotNetCoreCLI@2
         displayName: 'Test Linux'
         inputs:
@@ -59,9 +60,13 @@ jobs:
       runOnce:
         deploy:
           steps:
-            - task: DotNetCoreCLI@2
-              inputs:
-                command: 'push'
-                packagesToPush: '$(Pipeline.Workspace)/*.nupkg;$(Pipeline.Workspace)/*.snupkg'
-                nuGetFeedType: 'external'
-                publishFeedCredentials: 'NuGet'
+          - task: UseDotNet@2
+            inputs:
+              packageType: 'sdk'
+              version: '$(DotNetVersion)'            
+          - task: DotNetCoreCLI@2
+            inputs:
+              command: 'push'
+              packagesToPush: '$(Pipeline.Workspace)/*.nupkg;$(Pipeline.Workspace)/*.snupkg'
+              nuGetFeedType: 'external'
+              publishFeedCredentials: 'NuGet'
