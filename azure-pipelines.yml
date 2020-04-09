@@ -58,7 +58,7 @@ jobs:
     displayName: "Publish to Nuget"
     environment: "NuGet"
     pool:
-      vmImage: 'ubuntu-latest'
+      vmImage: 'windows-2019'
     strategy:
       runOnce:
         deploy:
@@ -74,10 +74,9 @@ jobs:
             inputs:
               packageType: 'sdk'
               version: '$(DotNetVersion)'            
-          - task: DotNetCoreCLI@2
-            displayName: "Push to NuGet"
+          - task: NuGetCommand@2
             inputs:
               command: 'push'
-              packagesToPush: '$(Pipeline.Workspace)/build/*.nupkg;'
+              packagesToPush: '$(Pipeline.Workspace)/**/*.nupkg;'
               nuGetFeedType: 'external'
-              publishFeedCredentials: 'NuGet'
+              publishFeedCredentials: 'NuGet' 
