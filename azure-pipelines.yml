@@ -2,6 +2,7 @@ variables:
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
   BuildConfiguration: "Release"
   DotNetVersion: 3.x
+  ProjectName: "TinyPNG.csproj"
 
 trigger: 
   - master
@@ -15,6 +16,7 @@ jobs:
       vmImage: 'windows-2019'
     steps:
       - task: UseDotNet@2
+        displayName: "Install .NET Core SDK"
         inputs:
           packageType: 'sdk'
           version: '$(DotNetVersion)'
@@ -24,9 +26,15 @@ jobs:
           command: test
           publishTestResults: true
       - task: DotNetCoreCLI@2
+        displayName: 'Build Windows'
+        inputs:
+          command: 'build'
+          projects: '$(ProjectName)'
+      - task: DotNetCoreCLI@2
         displayName:  'Pack'
         inputs:
           command: pack
+          packagesToPack: '$(ProjectName)'
       - task: PublishPipelineArtifact@1
         displayName: "Publish Artifact"
         inputs:
@@ -38,6 +46,7 @@ jobs:
       vmImage: 'ubuntu-latest'
     steps:
       - task: UseDotNet@2
+        displayName: "Install .NET Core SDK"
         inputs:
           packageType: 'sdk'
           version: '$(DotNetVersion)'
@@ -46,11 +55,12 @@ jobs:
         inputs:
           command: test
       - task: DotNetCoreCLI@2
+        displayName: 'Build Linux'
         inputs:
           command: build
   
   - deployment: "NugetPublish"
-    dependsOn: "BuildWindows"
+    dependsOn: ["BuildWindows", "BuildLinux"]
     condition:  and(succeeded(), eq(variables['build.sourceBranch'], 'refs/heads/release'))
     displayName: "Publish to Nuget"
     environment: "NuGet"
@@ -60,11 +70,13 @@ jobs:
       runOnce:
         deploy:
           steps:
-          - task: UseDotNet@2
+          - task: 'UseDotNet@2'
+            displayName: "Install .NET Core SDK"
             inputs:
               packageType: 'sdk'
               version: '$(DotNetVersion)'            
           - task: DotNetCoreCLI@2
+            displayName: "Push to NuGet"
             inputs:
               command: 'push'
               packagesToPush: '$(Pipeline.Workspace)/*.nupkg;$(Pipeline.Workspace)/*.snupkg'
