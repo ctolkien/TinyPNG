@@ -2,7 +2,6 @@ variables:
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
   BuildConfiguration: "Release"
   DotNetVersion: 3.x
-  ProjectName: "TinyPNG.csproj"
 
 trigger: 
   - master
@@ -26,15 +25,9 @@ jobs:
           command: test
           publishTestResults: true
       - task: DotNetCoreCLI@2
-        displayName: 'Build Windows'
-        inputs:
-          command: 'build'
-          projects: '$(ProjectName)'
-      - task: DotNetCoreCLI@2
         displayName:  'Pack'
         inputs:
           command: pack
-          packagesToPack: '$(ProjectName)'
       - task: PublishPipelineArtifact@1
         displayName: "Publish Artifact"
         inputs:
