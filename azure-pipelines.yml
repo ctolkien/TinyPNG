@@ -63,6 +63,12 @@ jobs:
       runOnce:
         deploy:
           steps:
+          - task: PowerShell@2
+            inputs:
+              targetType: 'inline'
+              script: |
+                cd $(Pipeline.Workspace)
+                ls -recurse            
           - task: 'UseDotNet@2'
             displayName: "Install .NET Core SDK"
             inputs:
@@ -72,6 +78,6 @@ jobs:
             displayName: "Push to NuGet"
             inputs:
               command: 'push'
-              packagesToPush: '$(System.ArtifactsDirectory)/**/*.nupkg;$(System.ArtifactsDirectory)/**/*.snupkg'
+              packagesToPush: '$(Pipeline.Workspace)/build/*.nupkg;$(Pipeline.Workspace)/build/*.snupkg'
               nuGetFeedType: 'external'
               publishFeedCredentials: 'NuGet'
