@@ -59,9 +59,9 @@ jobs:
       runOnce:
         deploy:
           steps:
-          - task: NuGetCommand@2
-            inputs:
-              command: 'push'
-              packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;$(Build.ArtifactStagingDirectory)/**/*.snupkg;'
-              nuGetFeedType: 'external'
-              publishFeedCredentials: 'NuGet' 
+            - task: DotNetCoreCLI@2
+              inputs:
+                command: 'push'
+                packagesToPush: '$(Build.ArtifactStagingDirectory)/*.nupkg;$(Build.ArtifactStagingDirectory)/*.snupkg'
+                nuGetFeedType: 'external'
+                publishFeedCredentials: 'NuGet'
