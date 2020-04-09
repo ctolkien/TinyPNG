@@ -78,6 +78,6 @@ jobs:
             displayName: "Push to NuGet"
             inputs:
               command: 'push'
-              packagesToPush: '$(Pipeline.Workspace)/build/*.nupkg;$(Pipeline.Workspace)/build/*.snupkg'
+              packagesToPush: '$(Pipeline.Workspace)/build/*.nupkg;'
               nuGetFeedType: 'external'
               publishFeedCredentials: 'NuGet'
