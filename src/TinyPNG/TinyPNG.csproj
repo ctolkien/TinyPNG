@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Copyright>Copyright 2016 Chad Tolkien &amp; Contributors</Copyright>
     <AssemblyTitle>TinyPNG</AssemblyTitle>
-    <VersionPrefix>3.3.0</VersionPrefix>
+    <VersionPrefix>3.3.1</VersionPrefix>
     <Authors>Chad Tolkien</Authors>
     <TargetFrameworks>netstandard2.0</TargetFrameworks>
     <AssemblyName>TinyPNG</AssemblyName>
@@ -17,7 +17,7 @@
       * 3.1 - Fixed bug to do with disposed HttpClient
     </PackageReleaseNotes>
     <RepositoryType>git</RepositoryType>
-    <RepositoryUrl>https://github.com/ctolkien/TinyPNG</RepositoryUrl>
+    <RepositoryUrl>https://github.com/ctolkien/TinyPNG.git</RepositoryUrl>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
