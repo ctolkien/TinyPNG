@@ -21,7 +21,7 @@
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-    
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
   </PropertyGroup>
   
   <!-- Deterministic builds -->
