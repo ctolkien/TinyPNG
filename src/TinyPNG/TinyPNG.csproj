@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Copyright>Copyright 2016 Chad Tolkien &amp; Contributors</Copyright>
     <AssemblyTitle>TinyPNG</AssemblyTitle>
-    <VersionPrefix>3.3.2</VersionPrefix>
+    <VersionPrefix>3.3.3</VersionPrefix>
     <Authors>Chad Tolkien</Authors>
     <TargetFrameworks>netstandard2.0</TargetFrameworks>
     <AssemblyName>TinyPNG</AssemblyName>
