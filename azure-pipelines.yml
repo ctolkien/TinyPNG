@@ -28,6 +28,7 @@ jobs:
         displayName:  'Pack'
         inputs:
           command: pack
+          arguments: '-c $(buildConfiguration) -o $(Build.ArtifactStagingDirectory)'
       - task: PublishPipelineArtifact@1
         displayName: "Publish Artifact"
         inputs:

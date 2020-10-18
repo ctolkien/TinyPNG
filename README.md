@@ -1,13 +1,13 @@
-# TinyPng for .Net
+# TinyPng for .NET
 
 [![Build Status](https://dev.azure.com/chadtolkien/TinyPNG/_apis/build/status/ctolkien.TinyPNG?branchName=master)](https://dev.azure.com/chadtolkien/TinyPNG/_build/latest?definitionId=2&branchName=master)
-![Version](https://img.shields.io/nuget/v/tinypng.svg?maxAge=2000)
+![Version(https://www.nuget.org/packages/TinyPNG/)](https://img.shields.io/nuget/v/tinypng.svg?maxAge=2000)
 [![license](https://img.shields.io/github/license/ctolkien/TinyPNG.svg?maxAge=2592000)]()
 
 
 This is a .NET wrapper around the [TinyPNG.com](http://tinypng.com) image compression service. This is not an official TinyPNG.com product.
 
-* Supports .Net Core and full .Net Framework
+* Supports .NET Core and full .Net Framework
 * Non-blocking async turtles all the way down
 * `Byte[]`, `Stream`, `File` and `Url` API's available
 
@@ -27,7 +27,7 @@ Install via `dotnet`
 
 ## Quickstart
 ```csharp
-    var png = new TinyPngClient("yourSecretApiKey");
+    using var png = new TinyPngClient("yourSecretApiKey");
     var result = await png.Compress("cat.jpg");
     
     //URL to your compressed version
@@ -45,7 +45,7 @@ the extension methods now operate on `Task<T>`.
 
 ```csharp
     // create an instance of the TinyPngClient
-    var png = new TinyPngClient("yourSecretApiKey");
+    using var png = new TinyPngClient("yourSecretApiKey");
     
     // Create a task to compress an image.
     // this gives you the information about your image as stored by TinyPNG
@@ -91,7 +91,7 @@ Further details about the result of the compression are also available on the `I
 ## Resizing Images
 
 ```csharp
-    var png = new TinyPngClient("yourSecretApiKey");
+    using var png = new TinyPngClient("yourSecretApiKey");
     
     var compressImageTask = png.Compress("pathToFile or byte array or stream");
     
@@ -112,7 +112,7 @@ TinyPNG. We also include strongly typed resize operations,
 depending on the type of resize you want to do. 
 
 ```csharp
-    var png = new TinyPngClient("yourSecretApiKey");
+    using var png = new TinyPngClient("yourSecretApiKey");
     
     var compressTask = png.Compress("pathToFile or byte array or stream");
     
@@ -132,7 +132,7 @@ the appropriate S3 access.
 If you're going to be storing images for most requests onto S3, then you can pass in an `AmazonS3Configuration` object to the constructor.
 
 ```csharp
-    var png = new TinyPngClient("yourSecretApiKey",
+    using var png = new TinyPngClient("yourSecretApiKey",
         new AmazonS3Configuration("awsAccessKeyId", "awsSecretAccessKey", "bucket", "region"));
     
     var compressedCat = await png.Compress("cat.jpg");
@@ -150,7 +150,7 @@ If you're going to be storing images for most requests onto S3, then you can pas
 You can also pass a `AmazonS3Configuration` object directly into calls to `SaveCompressedImageToAmazonS3`
 
 ```csharp
-    var png = new TinyPngClient("yourSecretApiKey");
+    using var png = new TinyPngClient("yourSecretApiKey");
     var compressedCat = await png.Compress("cat.jpg");
     var s3Uri = await png.SaveCompressedImageToAmazonS3(compressedCat,
         new AmazonS3Configuration(
@@ -173,7 +173,7 @@ on the result of any operation you've performed. This is useful for keeping tabs
 
 ## HttpClient
 
-TinyPngClient can take HttpClient, which can be controlled from outside the lib
+TinyPngClient can take HttpClient, which can be controlled from outside the library.
 
 ```csharp
     var httpClient = new HttpClient();
