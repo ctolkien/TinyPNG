@@ -10,6 +10,7 @@
     <PackageId>TinyPNG</PackageId>
     <PackageTags>tinypng;images;compression;jpg;png</PackageTags>
     <PackageIconUrl>https://raw.githubusercontent.com/ctolkien/TinyPNG/master/icon.png</PackageIconUrl>
+    <PackageDescription>This is a .NET Standard wrapper around the http://tinypng.com image compression service.</PackageDescription >
     <PackageProjectUrl>https://github.com/ctolkien/TinyPNG</PackageProjectUrl>
     <PackageLicenseUrl>http://opensource.org/licenses/MIT</PackageLicenseUrl>
     <PackageReleaseNotes>
