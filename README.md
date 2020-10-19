@@ -5,7 +5,7 @@
 [![license](https://img.shields.io/github/license/ctolkien/TinyPNG.svg?maxAge=2592000)]()
 
 
-This is a .NET wrapper around the [TinyPNG.com](http://tinypng.com) image compression service. This is not an official TinyPNG.com product.
+This is a .NET Standard wrapper around the [TinyPNG.com](http://tinypng.com) image compression service. This is not an official TinyPNG.com product.
 
 * Supports .NET Core and full .Net Framework
 * Non-blocking async turtles all the way down
