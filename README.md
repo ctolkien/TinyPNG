@@ -45,7 +45,7 @@ the extension methods now operate on `Task<T>`.
 
 ```csharp
     // create an instance of the TinyPngClient
-    using var png = new TinyPngClient("yourSecretApiKey");
+    var png = new TinyPngClient("yourSecretApiKey");
     
     // Create a task to compress an image.
     // this gives you the information about your image as stored by TinyPNG
