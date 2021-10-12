@@ -22,10 +22,10 @@ jobs:
     - name: Test
       run: dotnet test --no-build --verbosity normal
     - name: Pack
-      run: dotnet pack --configuration release
+      run: dotnet pack --configuration release --output ${{ github.workspace}}/artifact/
     - uses: actions/upload-artifact@v2
       with:
         name: tinypng
-        path: TinyPNG/src/TinyPNG/bin/Release/*
+        path: ${{ github.workspace}}/artifact/
         if-no-files-found: error
 
