@@ -27,4 +27,5 @@ jobs:
       with:
         name: tinypng
         path: TinyPNG/src/TinyPNG/bin/Release/*
+        if-no-files-found: error
 
