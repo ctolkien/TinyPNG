@@ -26,8 +26,10 @@ jobs:
     - uses: actions/upload-artifact@v2
       with:
         name: tinypng
-        path: |
-          ${{ github.workspace}}/artifact/*.nupkg
-          ${{ github.workspace}}/artifact/*.snupkg
+        path: ${{ github.workspace}}/artifact/
         if-no-files-found: error
+    - name: Push
+      run: dotnet nuget push ${{ github.workspace}}/artifact/ --source https://nuget.pkg.github.com/ctolkien/index.json --api-key ${GITHUB_TOKEN}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}        
 
