@@ -29,7 +29,7 @@ jobs:
         path: ${{ github.workspace}}/artifact/
         if-no-files-found: error
     - name: Push
-      run: dotnet nuget push ${{ github.workspace}}/artifact/ --source https://nuget.pkg.github.com/ctolkien/index.json --api-key ${GITHUB_TOKEN}
+      run: dotnet nuget push ${{ github.workspace}}/artifact/*.nupkg --source https://nuget.pkg.github.com/ctolkien/index.json --api-key ${GITHUB_TOKEN}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}        
 
