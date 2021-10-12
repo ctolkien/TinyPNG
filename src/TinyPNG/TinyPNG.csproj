@@ -10,7 +10,7 @@
     <PackageId>TinyPNG</PackageId>
     <PackageTags>tinypng;images;compression;jpg;png</PackageTags>
     <PackageIconUrl>https://raw.githubusercontent.com/ctolkien/TinyPNG/master/icon.png</PackageIconUrl>
-    <PackageDescription>This is a .NET Standard wrapper around the http://tinypng.com image compression service.</PackageDescription >
+    <PackageDescription>This is a .NET Standard wrapper around the http://tinypng.com image compression service.</PackageDescription>
     <PackageProjectUrl>https://github.com/ctolkien/TinyPNG</PackageProjectUrl>
     <PackageLicenseUrl>http://opensource.org/licenses/MIT</PackageLicenseUrl>
     <PackageReleaseNotes>
@@ -31,10 +31,10 @@
   </PropertyGroup>
   
   <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
 
     <!-- Source link support -->
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All"/>
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
 
   </ItemGroup>
 
