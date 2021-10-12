@@ -26,5 +26,5 @@ jobs:
     - uses: actions/upload-artifact@v2
       with:
         name: tinypng
-        path: src/bin/Release/*.s?nupkg
+        path: TinyPNG/src/bin/Release/*.s?nupkg
 
