@@ -23,5 +23,8 @@ jobs:
       run: dotnet test --no-build --verbosity normal
     - name: Pack
       run: dotnet pack --configuration release
-
+    - uses: actions/upload-artifact@v2
+      with:
+      name: tinypng
+      path: src/bin/Release/*.s?nupkg
 
