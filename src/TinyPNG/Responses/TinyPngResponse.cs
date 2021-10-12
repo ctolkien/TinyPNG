@@ -8,7 +8,7 @@ namespace TinyPng.Responses
     {
         public HttpResponseMessage HttpResponseMessage { get; }
 
-        private int compressionCount;
+        private readonly int compressionCount;
 
         public int CompressionCount => compressionCount;
 

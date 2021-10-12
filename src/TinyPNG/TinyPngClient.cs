@@ -77,8 +77,6 @@ namespace TinyPng
             AmazonS3Configuration = amazonConfiguration ?? throw new ArgumentNullException(nameof(amazonConfiguration));
         }
 
-        private static HttpContent CreateContent(byte[] source) => new ByteArrayContent(source);
-
         private static HttpContent CreateContent(Stream source) => new StreamContent(source);
 
         private static HttpContent CreateContent(string source) => new StringContent(

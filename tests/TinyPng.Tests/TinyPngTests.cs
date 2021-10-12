@@ -249,8 +249,6 @@ namespace TinyPng.Tests
         {
             var pngx = new TinyPngClient(apiKey, new HttpClient(new FakeResponseHandler().Compress().Resize()));
 
-            var result = await pngx.Compress(Cat);
-
             var resizedImageByteData = await pngx.Compress(Cat).Resize(new FitResizeOperation(150, 150)).GetImageByteData();
 
             Assert.Equal(5970, resizedImageByteData.Length);
