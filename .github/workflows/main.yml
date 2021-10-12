@@ -26,6 +26,8 @@ jobs:
     - uses: actions/upload-artifact@v2
       with:
         name: tinypng
-        path: ${{ github.workspace}}/artifact/
+        path: |
+          ${{ github.workspace}}/artifact/*.nupkg
+          ${{ github.workspace}}/artifact/*.snupkg
         if-no-files-found: error
 
