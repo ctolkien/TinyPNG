@@ -1,6 +1,5 @@
 # TinyPng for .NET
 
-[![Build Status](https://dev.azure.com/chadtolkien/TinyPNG/_apis/build/status/ctolkien.TinyPNG?branchName=master)](https://dev.azure.com/chadtolkien/TinyPNG/_build/latest?definitionId=2&branchName=master)
 ![Version(https://www.nuget.org/packages/TinyPNG/)](https://img.shields.io/nuget/v/tinypng.svg?maxAge=2000)
 [![license](https://img.shields.io/github/license/ctolkien/TinyPNG.svg?maxAge=2592000)]()
 
