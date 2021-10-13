@@ -4,7 +4,7 @@
 [![license](https://img.shields.io/github/license/ctolkien/TinyPNG.svg?maxAge=2592000)]()
 
 
-This is a .NET Standard wrapper around the [TinyPNG.com](http://tinypng.com) image compression service. This is not an official TinyPNG.com product.
+This is a .NET Standard wrapper around the [TinyPNG.com](https://tinypng.com) image compression service. This is not an official TinyPNG.com product.
 
 * Supports .NET Core and full .NET Framework
 * Non-blocking async turtles all the way down
@@ -36,7 +36,7 @@ Install via `dotnet`
 ## Upgrading from V2
 
 The API has changed from V2, primarily you no longer need to await each individual
-step of using the TinyPNG api, you can now chain appropriate calls together as
+step of using the TinyPNG API, you can now chain appropriate calls together as
 the extension methods now operate on `Task<T>`.
 
 
