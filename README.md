@@ -6,7 +6,7 @@
 
 This is a .NET Standard wrapper around the [TinyPNG.com](http://tinypng.com) image compression service. This is not an official TinyPNG.com product.
 
-* Supports .NET Core and full .Net Framework
+* Supports .NET Core and full .NET Framework
 * Non-blocking async turtles all the way down
 * `Byte[]`, `Stream`, `File` and `Url` API's available
 
