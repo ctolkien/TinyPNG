@@ -9,10 +9,10 @@
     <AssemblyName>TinyPNG</AssemblyName>
     <PackageId>TinyPNG</PackageId>
     <PackageTags>tinypng;images;compression;jpg;png</PackageTags>
-    <PackageIconUrl>https://raw.githubusercontent.com/ctolkien/TinyPNG/master/icon.png</PackageIconUrl>
+    <PackageIcon>icon.png</PackageIcon>
     <PackageDescription>This is a .NET Standard wrapper around the http://tinypng.com image compression service.</PackageDescription>
     <PackageProjectUrl>https://github.com/ctolkien/TinyPNG</PackageProjectUrl>
-    <PackageLicenseUrl>http://opensource.org/licenses/MIT</PackageLicenseUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageReleaseNotes>
 * 3.3 - Support for netstandard 2.0. Added compress from URL feature thanks to @d-ugarov
 * 3.1 - Fixed bug to do with disposed HttpClient
@@ -24,12 +24,16 @@
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
   </PropertyGroup>
-  
+
   <!-- Deterministic builds -->
   <PropertyGroup Condition="'$(TF_BUILD)' == 'true'">
     <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
   </PropertyGroup>
-  
+
+  <ItemGroup>
+    <None Include="../../icon.png" Pack="true" PackagePath="" />
+  </ItemGroup>
+
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
 
