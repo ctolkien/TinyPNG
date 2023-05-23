@@ -1,6 +1,6 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Net.Http;
+using System.Text.Json;
 using System.Threading.Tasks;
 using TinyPng.ResizeOperations;
 using TinyPng.Responses;
@@ -18,25 +18,31 @@ namespace TinyPng
         public static async Task<TinyPngResizeResponse> Resize(this Task<TinyPngCompressResponse> result, ResizeOperation resizeOperation)
         {
             if (result == null)
+            {
                 throw new ArgumentNullException(nameof(result));
+            }
+
             if (resizeOperation == null)
+            {
                 throw new ArgumentNullException(nameof(resizeOperation));
+            }
 
-            var compressResponse = await result;
+            TinyPngCompressResponse compressResponse = await result;
 
-            var requestBody = JsonConvert.SerializeObject(new { resize = resizeOperation }, TinyPngClient.JsonSettings);
+            string requestBody = JsonSerializer.Serialize(new { resize = resizeOperation }, TinyPngClient.JsonOptions);
 
-            var msg = new HttpRequestMessage(HttpMethod.Post, compressResponse.Output.Url)
+            HttpRequestMessage msg = new(HttpMethod.Post, compressResponse.Output.Url)
             {
                 Content = new StringContent(requestBody, System.Text.Encoding.UTF8, "application/json")
             };
-            var response = await compressResponse.HttpClient.SendAsync(msg);
+
+            HttpResponseMessage response = await compressResponse.HttpClient.SendAsync(msg);
             if (response.IsSuccessStatusCode)
             {
                 return new TinyPngResizeResponse(response);
             }
 
-            var errorMsg = JsonConvert.DeserializeObject<ApiErrorResponse>(await response.Content.ReadAsStringAsync());
+            ApiErrorResponse errorMsg = await JsonSerializer.DeserializeAsync<ApiErrorResponse>(await response.Content.ReadAsStreamAsync(), TinyPngClient.JsonOptions);
             throw new TinyPngApiException((int)response.StatusCode, response.ReasonPhrase, errorMsg.Error, errorMsg.Message);
         }
 
@@ -47,19 +53,29 @@ namespace TinyPng
         /// <param name="width"></param>
         /// <param name="height"></param>
         /// <param name="resizeType"></param>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
         /// <returns></returns>
         public static async Task<TinyPngResizeResponse> Resize(this Task<TinyPngCompressResponse> result, int width, int height, ResizeType resizeType = ResizeType.Fit)
         {
             if (result == null)
+            {
                 throw new ArgumentNullException(nameof(result));
+            }
+
             if (width == 0)
-                throw new ArgumentOutOfRangeException(nameof(width));
+            {
+                throw new ArgumentOutOfRangeException(nameof(width), "Width cannot be 0");
+            }
+
             if (height == 0)
-                throw new ArgumentOutOfRangeException(nameof(height));
+            {
+                throw new ArgumentOutOfRangeException(nameof(height), "Height cannot be 0");
+            }
 
-            var resizeOp = new ResizeOperation(resizeType, width, height);
+            ResizeOperation resizeOp = new(resizeType, width, height);
 
-            return await Resize(result, resizeOp);
+            return await result.Resize(resizeOp);
         }
     }
 }

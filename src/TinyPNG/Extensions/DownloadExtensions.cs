@@ -1,9 +1,9 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 using TinyPng.Responses;
+using System.Text.Json;
 
 namespace TinyPng
 {
@@ -32,6 +32,7 @@ namespace TinyPng
         /// </summary>
         /// <param name="compressResponse"></param>
         /// <param name="metadata"></param>
+        /// <exception cref="InvalidOperationException">Thrown if you attempt to preserve metadata on an unsupported filetype</exception>
         /// <returns></returns>
         public static async Task<TinyPngImageResponse> Download(this TinyPngCompressResponse compressResponse, PreserveMetadata metadata = PreserveMetadata.None)
         {
@@ -50,7 +51,7 @@ namespace TinyPng
                 return new TinyPngImageResponse(response);
             }
 
-            var errorMsg = JsonConvert.DeserializeObject<ApiErrorResponse>(await response.Content.ReadAsStringAsync());
+            var errorMsg = await JsonSerializer.DeserializeAsync<ApiErrorResponse>(await response.Content.ReadAsStreamAsync());
             throw new TinyPngApiException((int)response.StatusCode, response.ReasonPhrase, errorMsg.Error, errorMsg.Message);
         }
 
@@ -80,7 +81,7 @@ namespace TinyPng
                 preserve.Add("location");
             }
 
-            var json = JsonConvert.SerializeObject(new { preserve });
+            var json = JsonSerializer.Serialize(new { preserve });
 
             return new StringContent(json, System.Text.Encoding.UTF8, "application/json");
         }

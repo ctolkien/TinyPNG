@@ -1,6 +1,6 @@
 ﻿using System.Net.Http;
+using System.Text.Json;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 
 namespace TinyPng.Responses
 {
@@ -24,7 +24,7 @@ namespace TinyPng.Responses
         }
         private async Task<TinyPngApiResult> Deserialize(HttpResponseMessage response)
         {
-            return JsonConvert.DeserializeObject<TinyPngApiResult>(await response.Content.ReadAsStringAsync(), TinyPngClient.JsonSettings);
+            return await JsonSerializer.DeserializeAsync<TinyPngApiResult>(await response.Content.ReadAsStreamAsync(), TinyPngClient.JsonOptions);
         }
     }
 }

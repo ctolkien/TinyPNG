@@ -1,16 +1,15 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
-using Newtonsoft.Json.Serialization;
-using System;
+﻿using System;
 using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using TinyPng.Responses;
 
-[assembly:InternalsVisibleTo("TinyPng.Tests")]
+
+[assembly: InternalsVisibleTo("TinyPng.Tests")]
 namespace TinyPng
 {
     public class TinyPngClient
@@ -18,24 +17,26 @@ namespace TinyPng
         private const string ApiEndpoint = "https://api.tinify.com/shrink";
 
         private readonly HttpClient HttpClient;
-        internal static readonly JsonSerializerSettings JsonSettings;
+        internal static readonly JsonSerializerOptions JsonOptions;
 
         /// <summary>
         /// Configures the client to use these AmazonS3 settings when storing images in S3
         /// </summary>
         public AmazonS3Configuration AmazonS3Configuration { get; set; }
-        
+
         static TinyPngClient()
         {
             //configure json settings for camelCase.
-            JsonSettings = new JsonSerializerSettings
-                           {
-                               ContractResolver = new CamelCasePropertyNamesContractResolver(),
-                               NullValueHandling = NullValueHandling.Ignore
-                           };
-            JsonSettings.Converters.Add(new StringEnumConverter {NamingStrategy = new CamelCaseNamingStrategy()});
+            JsonOptions = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true,
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            };
+
+            JsonOptions.Converters.Add(new CustomJsonStringEnumConverter(JsonNamingPolicy.CamelCase));
+
         }
-        
+
         /// <summary>
         /// Wrapper for the tinypng.com API
         /// </summary>
@@ -47,7 +48,7 @@ namespace TinyPng
                 throw new ArgumentNullException(nameof(apiKey));
 
             HttpClient = httpClient ?? new HttpClient();
-            
+
             ConfigureHttpClient(apiKey);
         }
 
@@ -73,14 +74,14 @@ namespace TinyPng
         {
             if (string.IsNullOrEmpty(apiKey))
                 throw new ArgumentNullException(nameof(apiKey));
-            
+
             AmazonS3Configuration = amazonConfiguration ?? throw new ArgumentNullException(nameof(amazonConfiguration));
         }
 
         private static HttpContent CreateContent(Stream source) => new StreamContent(source);
 
-        private static HttpContent CreateContent(string source) => new StringContent(
-            JsonConvert.SerializeObject(new {source = new {url = source}}, JsonSettings),
+        private static HttpContent CreateContent(Uri source) => new StringContent(
+            JsonSerializer.Serialize(new { source = new { url = source } }, JsonOptions),
             Encoding.UTF8, "application/json");
 
         /// <summary>
@@ -93,10 +94,8 @@ namespace TinyPng
             if (string.IsNullOrEmpty(pathToFile))
                 throw new ArgumentNullException(nameof(pathToFile));
 
-            using (var file = File.OpenRead(pathToFile))
-            {
-                return await Compress(file).ConfigureAwait(false);
-            }
+            using var file = File.OpenRead(pathToFile);
+            return await Compress(file).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -109,10 +108,8 @@ namespace TinyPng
             if (data == null)
                 throw new ArgumentNullException(nameof(data));
 
-            using (var stream = new MemoryStream(data))
-            {
-                return await Compress(stream).ConfigureAwait(false);
-            }
+            using var stream = new MemoryStream(data);
+            return await Compress(stream).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -123,7 +120,7 @@ namespace TinyPng
         {
             if (data == null)
                 throw new ArgumentNullException(nameof(data));
-            
+
             return CompressInternal(CreateContent(data));
         }
 
@@ -132,11 +129,11 @@ namespace TinyPng
         /// </summary>
         /// <param name="url">Image url to compress</param>
         /// <returns>TinyPngApiResult, <see cref="TinyPngApiResult"/></returns>
-        public Task<TinyPngCompressResponse> CompressFromUrl(string url)
+        public Task<TinyPngCompressResponse> Compress(Uri url)
         {
-            if (string.IsNullOrEmpty(url))
+            if (url is null)
                 throw new ArgumentNullException(nameof(url));
-            
+
             return CompressInternal(CreateContent(url));
         }
 
@@ -147,7 +144,7 @@ namespace TinyPng
             if (response.IsSuccessStatusCode)
                 return new TinyPngCompressResponse(response, HttpClient);
 
-            var errorMsg = JsonConvert.DeserializeObject<ApiErrorResponse>(await response.Content.ReadAsStringAsync().ConfigureAwait(false));
+            var errorMsg = await JsonSerializer.DeserializeAsync<ApiErrorResponse>(await response.Content.ReadAsStreamAsync().ConfigureAwait(false));
             throw new TinyPngApiException((int)response.StatusCode, response.ReasonPhrase, errorMsg.Error, errorMsg.Message);
         }
 
@@ -169,7 +166,7 @@ namespace TinyPng
 
             amazonSettings.Path = path;
 
-            var amazonSettingsAsJson = JsonConvert.SerializeObject(new { store = amazonSettings }, JsonSettings);
+            var amazonSettingsAsJson = JsonSerializer.Serialize(new { store = amazonSettings }, JsonOptions);
 
             var msg = new HttpRequestMessage(HttpMethod.Post, result.Output.Url)
             {
@@ -182,7 +179,7 @@ namespace TinyPng
                 return response.Headers.Location;
             }
 
-            var errorMsg = JsonConvert.DeserializeObject<ApiErrorResponse>(await response.Content.ReadAsStringAsync().ConfigureAwait(false));
+            var errorMsg = await JsonSerializer.DeserializeAsync<ApiErrorResponse>(await response.Content.ReadAsStreamAsync().ConfigureAwait(false));
             throw new TinyPngApiException((int)response.StatusCode, response.ReasonPhrase, errorMsg.Error, errorMsg.Message);
         }
 
