@@ -2,34 +2,49 @@ name: .NET
 
 on:
   push:
-    branches: [ master ]
+    branches: [ master, main ]
   pull_request:
-    branches: [ master ]
+    branches: [ master, main ]
+  workflow_dispatch:
+    inputs:
+      Environment:
+        description: 'Environment'
+        type: environment
+        required: false
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.Environment }}
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Setup .NET
-      uses: actions/setup-dotnet@v1
+      uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: 3.1.x
+        dotnet-version: 6.0.x
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
       run: dotnet build --no-restore
     - name: Test
       run: dotnet test --no-build --verbosity normal
+    - name: Pack #If we're not in production, add a version suffix to the package. This indicates pre-release
+      if: (${{ github.environment }} != 'Production')
+      run: dotnet pack --configuration release --output ${{ github.workspace}}/artifact/ /p:VersionSuffix=${{ github.run_id}}
     - name: Pack
+      if: github.environment == 'Production'
       run: dotnet pack --configuration release --output ${{ github.workspace}}/artifact/
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v3
       with:
         name: tinypng
         path: ${{ github.workspace}}/artifact/
         if-no-files-found: error
-    - name: Push
-      run: dotnet nuget push ${{ github.workspace}}/artifact/*.nupkg --source https://nuget.pkg.github.com/ctolkien/index.json --api-key ${GITHUB_TOKEN} --skip-duplicate
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}        
+    #- name: Push to NuGet
+      #if:  github.environment != null
+      #run: dotnet nuget push ${{ github.workspace}}/artifact/*.nupkg --source https://nuget.pkg.github.com/ctolkien/index.json --api-key ${{secrets.GITHUB_TOKEN}} --skip-duplicate
+    #- name: Create GitHub Release
+     # if:  github.environment != null
+      #run: gh release create --generate-notes
+     # env:
+      #  GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
