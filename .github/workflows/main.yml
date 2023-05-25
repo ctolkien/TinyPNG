@@ -1,10 +1,11 @@
 name: .NET
 
 on:
-  push:
-    branches: [ master, main ]
+  push: 
+    branches:
+      - main
   pull_request:
-    branches: [ master, main ]
+
   workflow_dispatch:
     inputs:
       Environment:
@@ -39,9 +40,9 @@ jobs:
         name: tinypng
         path: ${{ github.workspace}}/artifact/
         if-no-files-found: error
-    #- name: Push to NuGet
-      #if:  github.environment != null
-      #run: dotnet nuget push ${{ github.workspace}}/artifact/*.nupkg --source https://nuget.pkg.github.com/ctolkien/index.json --api-key ${{secrets.GITHUB_TOKEN}} --skip-duplicate
+    - name: Push to GitHub NuGet Package Registry
+      if:  github.ref == 'refs/heads/v4'
+      run: dotnet nuget push ${{ github.workspace}}/artifact/*.nupkg --source https://nuget.pkg.github.com/ctolkien/index.json --api-key ${{secrets.GITHUB_TOKEN}} --skip-duplicate
     #- name: Create GitHub Release
      # if:  github.environment != null
       #run: gh release create --generate-notes
