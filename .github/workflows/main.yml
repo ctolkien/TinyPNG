@@ -30,10 +30,10 @@ jobs:
       run: dotnet test --no-build --verbosity normal --logger GitHubActions
     - name: Pack #If we're not in production, add a version suffix to the package. This indicates pre-release
       if: (${{ github.environment }} != 'Production')
-      run: dotnet pack --configuration release --output ${{ github.workspace}}/artifact/ /p:VersionSuffix=${{ github.run_number}}
+      run: dotnet pack ./src/TinyPNG --configuration release --output ${{ github.workspace}}/artifact/ /p:VersionSuffix=${{ github.run_number}}
     - name: Pack
       if: github.environment == 'Production'
-      run: dotnet pack --configuration release --output ${{ github.workspace}}/artifact/
+      run: dotnet pack ./src/TinyPNG --configuration release --output ${{ github.workspace}}/artifact/
     - uses: actions/upload-artifact@v3
       with:
         name: tinypng
