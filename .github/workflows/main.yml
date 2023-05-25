@@ -27,7 +27,7 @@ jobs:
     - name: Build
       run: dotnet build --no-restore
     - name: Test
-      run: dotnet test --no-build --verbosity normal
+      run: dotnet test --no-build --verbosity normal --logger GitHubActions
     - name: Pack #If we're not in production, add a version suffix to the package. This indicates pre-release
       if: (${{ github.environment }} != 'Production')
       run: dotnet pack --configuration release --output ${{ github.workspace}}/artifact/ /p:VersionSuffix=${{ github.run_number}}
