@@ -5,11 +5,11 @@ using System.Text.Json;
 
 namespace TinyPng.Tests;
 
-static class Extensions
+internal static class Extensions
 {
     public static FakeResponseHandler Compress(this FakeResponseHandler fakeResponse)
     {
-        var content = new TinyPngApiResult()
+        TinyPngApiResult content = new()
         {
             Input = new TinyPngApiInput
             {
@@ -26,7 +26,7 @@ static class Extensions
                 Url = "https://api.tinify.com/output"
             }
         };
-        var compressResponseMessage = new HttpResponseMessage
+        HttpResponseMessage compressResponseMessage = new()
         {
             StatusCode = System.Net.HttpStatusCode.Created,
             Content = new StringContent(JsonSerializer.Serialize(content)),
@@ -40,9 +40,9 @@ static class Extensions
 
     public static FakeResponseHandler CompressAndFail(this FakeResponseHandler fakeResponse)
     {
-        var errorApiObject = new TinyPngApiException(400, "reason", "title", "message");
+        TinyPngApiException errorApiObject = new(400, "reason", "title", "message");
 
-        var compressResponseMessage = new HttpResponseMessage
+        HttpResponseMessage compressResponseMessage = new()
         {
             StatusCode = System.Net.HttpStatusCode.BadRequest,
             Content = new StringContent(JsonSerializer.Serialize(errorApiObject))
@@ -53,8 +53,8 @@ static class Extensions
 
     public static FakeResponseHandler Download(this FakeResponseHandler fakeResponse)
     {
-        var compressedCatStream = File.OpenRead(TinyPngTests.CompressedCat);
-        var outputResponseMessage = new HttpResponseMessage
+        FileStream compressedCatStream = File.OpenRead(TinyPngTests.CompressedCat);
+        HttpResponseMessage outputResponseMessage = new()
         {
             Content = new StreamContent(compressedCatStream),
             StatusCode = System.Net.HttpStatusCode.OK
@@ -66,9 +66,9 @@ static class Extensions
 
     public static FakeResponseHandler DownloadAndFail(this FakeResponseHandler fakeResponse)
     {
-        var outputResponseMessage = new HttpResponseMessage
+        HttpResponseMessage outputResponseMessage = new()
         {
-            Content = new StringContent(JsonSerializer.Serialize(new Responses.ApiErrorResponse { Error = "Stuff's on fire yo!", Message = "This is the error message"  })),
+            Content = new StringContent(JsonSerializer.Serialize(new Responses.ApiErrorResponse { Error = "Stuff's on fire yo!", Message = "This is the error message" })),
             StatusCode = System.Net.HttpStatusCode.InternalServerError
         };
 
@@ -78,8 +78,8 @@ static class Extensions
 
     public static FakeResponseHandler Resize(this FakeResponseHandler fakeResponse)
     {
-        var resizedCatStream = File.OpenRead(TinyPngTests.ResizedCat);
-        var resizeMessage = new HttpResponseMessage
+        FileStream resizedCatStream = File.OpenRead(TinyPngTests.ResizedCat);
+        HttpResponseMessage resizeMessage = new()
         {
             StatusCode = System.Net.HttpStatusCode.OK,
             Content = new StreamContent(resizedCatStream)
@@ -93,7 +93,7 @@ static class Extensions
 
     public static FakeResponseHandler S3(this FakeResponseHandler fakeResponse)
     {
-        var amazonMessage = new HttpResponseMessage
+        HttpResponseMessage amazonMessage = new()
         {
             StatusCode = System.Net.HttpStatusCode.OK
         };
@@ -105,7 +105,7 @@ static class Extensions
 
     public static FakeResponseHandler S3AndFail(this FakeResponseHandler fakeResponse)
     {
-        var amazonMessage = new HttpResponseMessage
+        HttpResponseMessage amazonMessage = new()
         {
             Content = new StringContent(JsonSerializer.Serialize(new Responses.ApiErrorResponse { Error = "Stuff's on fire yo!", Message = "This is the error message" })),
             StatusCode = System.Net.HttpStatusCode.BadRequest
