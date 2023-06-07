@@ -78,12 +78,6 @@ public class TinyPngClient
         AmazonS3Configuration = amazonConfiguration ?? throw new ArgumentNullException(nameof(amazonConfiguration));
     }
 
-    private static HttpContent CreateContent(Stream source) => new StreamContent(source);
-
-    private static HttpContent CreateContent(Uri source) => new StringContent(
-        JsonSerializer.Serialize(new { source = new { url = source } }, JsonOptions),
-        Encoding.UTF8, "application/json");
-
     /// <summary>
     /// Compress a file on disk
     /// </summary>
@@ -121,7 +115,7 @@ public class TinyPngClient
         if (data == null)
             throw new ArgumentNullException(nameof(data));
 
-        return CompressInternal(CreateContent(data));
+        return CompressInternal(new StreamContent(data));
     }
 
     /// <summary>
@@ -135,6 +129,10 @@ public class TinyPngClient
             throw new ArgumentNullException(nameof(url));
 
         return CompressInternal(CreateContent(url));
+
+        static HttpContent CreateContent(Uri source) => new StringContent(
+        JsonSerializer.Serialize(new { source = new { url = source } }, JsonOptions),
+        Encoding.UTF8, "application/json");
     }
 
     private async Task<TinyPngCompressResponse> CompressInternal(HttpContent contentData)

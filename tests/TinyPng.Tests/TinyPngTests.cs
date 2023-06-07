@@ -32,6 +32,17 @@ public class TinyPngTests
     }
 
     [Fact]
+    public void HandleScenarioOfExistingAuthHeaderOnTheClient()
+    {
+        var httpClient = new HttpClient();
+        httpClient.DefaultRequestHeaders.Add("Authorization", "Basic dGVzdDp0ZXN0");
+
+        _ = new TinyPngClient("test", httpClient);
+
+        //This just ensures that it doesn't throw
+    }
+
+    [Fact]
     public async Task Compression()
     {
         TinyPngClient pngx = new(apiKey, new HttpClient(new FakeResponseHandler().Compress()));

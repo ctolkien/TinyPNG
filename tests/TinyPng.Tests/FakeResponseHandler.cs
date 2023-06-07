@@ -21,14 +21,14 @@ public class FakeResponseHandler : DelegatingHandler
         _FakePostResponses.Add(uri, responseMessage);
     }
 
-#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
-    protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, System.Threading.CancellationToken cancellationToken)
-#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
+    protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, System.Threading.CancellationToken cancellationToken)
     {
-        return request.Method == HttpMethod.Get && _FakeGetResponses.ContainsKey(request.RequestUri)
+        var result =  request.Method == HttpMethod.Get && _FakeGetResponses.ContainsKey(request.RequestUri)
             ? _FakeGetResponses[request.RequestUri]
             : request.Method == HttpMethod.Post && _FakePostResponses.ContainsKey(request.RequestUri)
             ? _FakePostResponses[request.RequestUri]
             : new HttpResponseMessage(HttpStatusCode.NotFound) { RequestMessage = request };
+
+        return Task.FromResult(result);
     }
 }
