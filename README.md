@@ -32,9 +32,11 @@ var result = await png.Compress("cat.jpg");
 result.Output.Url;
 ```
 
+# Version Upgrades
+
 ## Upgrading from V3 to V4
 
-* The namespaces have changed for the extension methods to all reside in the `TinyPng` namespace.
+* The namespaces have changed for the extension methods to all reside in the `TinyPng` namespace. This will avoid needing to bring in two different namespaces.
 * The `CompressFromUrl` method has been removed. This is now available via a new overload for `Compress` which takes in a `Uri` object
 * I've standardised the namespace on `TinyPng`, it was a bit of a mixed bag of casing previously.
 
@@ -139,7 +141,11 @@ var compressAndConvert = await png.Compress("cat.png").Convert(ConvertImageForma
 
 By using the `Wildcard` format, TinyPng will return the best type for the supplied image.
 
-In the scenario that you are converting to an image and loosing transparency, you can specify a background colour to use for the image.
+In the scenario that you are converting to an image and losing transparency, you can specify a background colour to use for the image.
+
+```csharp
+var compressAndConvert = await png.Compress("cat.png").Convert(ConvertImageFormat.Wildcard, "#FF0000");
+```
 
 
 ## Amazon S3 Storage
@@ -147,7 +153,7 @@ In the scenario that you are converting to an image and loosing transparency, yo
 The result of any compress operation can be stored directly on to Amazon S3 storage. I'd strongly recommend referring to [TinyPNG.com's documentation](https://tinypng.com/developers/reference) with regard to how to configure
 the appropriate S3 access.
 
-If you're going to be storing images for most requests onto S3, then you can pass in an `AmazonS3Configuration` object to the constructor.
+If you're going to be storing images for most requests into S3, then you can pass in an `AmazonS3Configuration` object to the constructor which will be used for all subsequent requests.
 
 ```csharp
 using var png = new TinyPngClient("yourSecretApiKey",
@@ -191,7 +197,7 @@ compressedCat.CompressionCount; // = 5
 
 ## HttpClient
 
-TinyPngClient can take HttpClient, which can be controlled from outside the library.
+TinyPngClient can take HttpClient as constructor overload, the lifetime of which can be controlled from outside the library.
 
 ```csharp
 var httpClient = new HttpClient();
