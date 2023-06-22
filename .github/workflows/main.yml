@@ -43,14 +43,18 @@ jobs:
         path: ${{ github.workspace}}/artifact/
         if-no-files-found: error
     - name: Push to GitHub NuGet Package Registry
-      if:  github.environment == 'Production'
+      if:  github.environment != 'Production'
       run: dotnet nuget push ${{ github.workspace}}/artifact/*.nupkg --source https://nuget.pkg.github.com/ctolkien/index.json --api-key ${{secrets.GITHUB_TOKEN}} --skip-duplicate
+
+    - name: Push to NuGet Package Registry
+      if:  github.environment == 'Production'
+      run: dotnet nuget push ${{ github.workspace}}/artifact/*.nupkg --api-key ${{ secrets.NUGET_APIKEY }} --skip-duplicate
 
     - name: Extract version
       shell: pwsh
       working-directory: src/TinyPNG
       run: |
-        $version = ([xml](Get-Content TinyPng.csproj)).Project.PropertyGroup.VersionPrefix
+        $version = ([xml](Get-Content TinyPNG.csproj)).Project.PropertyGroup.VersionPrefix
         Add-Content -Path $env:GITHUB_ENV -Value "VERSION=$version"
         Add-Content -Path $env:GITHUB_ENV -Value "VERSIONWITHPREFIX=$version-${{ github.run_number }}"
       
