@@ -23,7 +23,7 @@ public class FakeResponseHandler : DelegatingHandler
 
     protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, System.Threading.CancellationToken cancellationToken)
     {
-        var result =  request.Method == HttpMethod.Get && _FakeGetResponses.ContainsKey(request.RequestUri)
+        var result = request.Method == HttpMethod.Get && _FakeGetResponses.ContainsKey(request.RequestUri)
             ? _FakeGetResponses[request.RequestUri]
             : request.Method == HttpMethod.Post && _FakePostResponses.ContainsKey(request.RequestUri)
             ? _FakePostResponses[request.RequestUri]

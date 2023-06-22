@@ -1,5 +1,4 @@
-﻿// See https://aka.ms/new-console-template for more information
-using TinyPng;
+﻿using TinyPng;
 
 
 var tinyPngClient = new TinyPngClient("lolwat");

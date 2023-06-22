@@ -23,7 +23,7 @@ public class TinyPngApiException : Exception
         Data.Add(nameof(StatusReasonPhrase), StatusReasonPhrase);
     }
 
-    public override string Message => 
+    public override string Message =>
         $"Api Service returned a non-success status code when attempting an operation on an image: {StatusCode} - {StatusReasonPhrase}. {ErrorTitle}, {ErrorMessage}";
 
 }

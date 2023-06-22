@@ -19,9 +19,9 @@ namespace TinyPng
         }
 
         [JsonPropertyName("aws_access_key_id")]
-        public string AwsAccessKeyId { get;  }
+        public string AwsAccessKeyId { get; }
         [JsonPropertyName("aws_secret_access_key")]
-        public string AwsSecretAccessKey { get;  }
+        public string AwsSecretAccessKey { get; }
         public string Region { get; set; }
         [JsonIgnore]
         public string Bucket { get; set; }

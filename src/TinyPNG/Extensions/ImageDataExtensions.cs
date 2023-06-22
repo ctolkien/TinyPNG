@@ -11,7 +11,7 @@ public static class ImageDataExtensions
     /// </summary>
     /// <param name="result">The result from compress</param>
     /// <returns>Byte array of the image data</returns>
-    public static async Task<byte[]> GetImageByteData<T>(this Task<T> result) where T: TinyPngImageResponse
+    public static async Task<byte[]> GetImageByteData<T>(this Task<T> result) where T : TinyPngImageResponse
     {
         var imageResponse = await result;
         return await imageResponse.GetImageByteData();

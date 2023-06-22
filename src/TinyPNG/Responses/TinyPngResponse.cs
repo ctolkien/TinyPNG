@@ -12,7 +12,7 @@ public class TinyPngResponse
 
     public int CompressionCount => compressionCount;
 
-    
+
 
     protected TinyPngResponse(HttpResponseMessage msg)
     {
