@@ -30,23 +30,39 @@ jobs:
     - name: Test
       run: dotnet test --no-build --verbosity normal --logger GitHubActions
     - name: Pack #If we're not in production, add a version suffix to the package. This indicates pre-release
-      if: (${{ github.environment }} != 'Production')
+      if: github.environment != 'Production'
       run: dotnet pack ./src/TinyPNG --configuration release --output ${{ github.workspace}}/artifact/ /p:VersionSuffix=${{ github.run_number}}
     - name: Pack
       if: github.environment == 'Production'
       run: dotnet pack ./src/TinyPNG --configuration release --output ${{ github.workspace}}/artifact/
-    - uses: actions/upload-artifact@v3
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v3
       with:
         name: tinypng
         path: ${{ github.workspace}}/artifact/
         if-no-files-found: error
     - name: Push to GitHub NuGet Package Registry
-      if:  github.ref == 'refs/heads/v4'
+      if:  github.environment == 'Production'
       run: dotnet nuget push ${{ github.workspace}}/artifact/*.nupkg --source https://nuget.pkg.github.com/ctolkien/index.json --api-key ${{secrets.GITHUB_TOKEN}} --skip-duplicate
-    #- name: Create GitHub Release
-     # if:  github.environment != null
-      #run: gh release create --generate-notes
-     # env:
-      #  GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+
+    - name: Extract version
+      shell: pwsh
+      working-directory: src/TinyPNG
+      run: |
+        $version = ([xml](Get-Content TinyPng.csproj)).Project.PropertyGroup.VersionPrefix
+        Add-Content -Path $env:GITHUB_ENV -Value "VERSION=$version"
+        Add-Content -Path $env:GITHUB_ENV -Value "VERSIONWITHPREFIX=$version-${{ github.run_number }}"
+      
+    - name: Create GitHub Release
+      if:  github.environment != 'Production'
+      run: gh release create ${{ env.VERSIONWITHPREFIX }} --generate-notes --prerelease
+      env:
+        GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+    - name: Create GitHub Release
+      if:  github.environment == 'Production'
+      run: gh release create ${{ env.VERSION }} --generate-notes
+      env:
+        GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
 
