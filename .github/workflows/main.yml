@@ -54,18 +54,18 @@ jobs:
       shell: pwsh
       working-directory: src/TinyPNG
       run: |
-        $version = ([xml](Get-Content TinyPNG.csproj)).Project.PropertyGroup.VersionPrefix
+        $version = ([xml](Get-Content TinyPNG.csproj)).Project.PropertyGroup.VersionPrefix[0].Trim()
         Add-Content -Path $env:GITHUB_ENV -Value "VERSION=$version"
         Add-Content -Path $env:GITHUB_ENV -Value "VERSIONWITHPREFIX=$version-${{ github.run_number }}"
       
     - name: Create GitHub Release
       if:  github.environment != 'Production'
-      run: gh release create ${{ env.VERSIONWITHPREFIX }} --generate-notes --prerelease
+      run: gh release create "${{ env.VERSIONWITHPREFIX }}" --generate-notes --prerelease
       env:
         GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
     - name: Create GitHub Release
       if:  github.environment == 'Production'
-      run: gh release create ${{ env.VERSION }} --generate-notes
+      run: gh release create "${{ env.VERSION }}" --generate-notes
       env:
         GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
