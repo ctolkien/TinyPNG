@@ -1,4 +1,4 @@
-name: .NET
+name: TinyPNG Actions
 
 on:
   push: 
@@ -58,7 +58,7 @@ jobs:
         name: tinypng
         path: ${{ github.workspace}}/artifact/
     - name: Push to NuGet Package Registry
-      run: dotnet nuget push ${{ github.workspace}}/artifact/*.nupkg --api-key ${{ secrets.NUGET_APIKEY }} --skip-duplicate
+      run: dotnet nuget push ${{ github.workspace}}/artifact/*.nupkg --api-key ${{ secrets.NUGET_APIKEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
 
     - name: Extract version
       shell: pwsh
