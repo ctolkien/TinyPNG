@@ -58,7 +58,7 @@ jobs:
         Add-Content -Path $env:GITHUB_ENV -Value "VERSIONWITHSUFFIX=$version-${{ github.run_number }}"
       
     - name: Create GitHub Release
-      if:  github.environment != 'Production'
+      if:  github.environment == 'PreRelease'
       run: gh release create "${{ env.VERSIONWITHSUFFIX }}" --generate-notes --prerelease
       env:
         GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
