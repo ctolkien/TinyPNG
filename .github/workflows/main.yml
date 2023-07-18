@@ -1,35 +1,71 @@
 name: .NET
 
 on:
-  push:
-    branches: [ master ]
+  push: 
+    branches:
+      - main
   pull_request:
-    branches: [ master ]
+
+  workflow_dispatch:
+    inputs:
+      Environment:
+        description: 'Environment'
+        type: environment
+        required: true
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.Environment }}
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Setup .NET
-      uses: actions/setup-dotnet@v1
+      uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: 3.1.x
+        dotnet-version: 6.0.x
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
       run: dotnet build --no-restore
     - name: Test
-      run: dotnet test --no-build --verbosity normal
+      run: dotnet test --no-build --verbosity normal --logger GitHubActions
+    - name: Pack #If we're not in production, add a version suffix to the package. This indicates pre-release
+      if: github.environment != 'Production'
+      run: dotnet pack ./src/TinyPNG --configuration release --output ${{ github.workspace}}/artifact/ /p:VersionSuffix=${{ github.run_number}}
     - name: Pack
-      run: dotnet pack --configuration release --output ${{ github.workspace}}/artifact/
-    - uses: actions/upload-artifact@v2
+      if: github.environment == 'Production'
+      run: dotnet pack ./src/TinyPNG --configuration release --output ${{ github.workspace}}/artifact/
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v3
       with:
         name: tinypng
         path: ${{ github.workspace}}/artifact/
         if-no-files-found: error
-    - name: Push
-      run: dotnet nuget push ${{ github.workspace}}/artifact/*.nupkg --source https://nuget.pkg.github.com/ctolkien/index.json --api-key ${GITHUB_TOKEN} --skip-duplicate
+    - name: Push to GitHub NuGet Package Registry
+      run: dotnet nuget push ${{ github.workspace}}/artifact/*.nupkg --source https://nuget.pkg.github.com/ctolkien/index.json --api-key ${{secrets.GITHUB_TOKEN}} --skip-duplicate
+
+    - name: Push to NuGet Package Registry
+      if:  github.environment == 'Production'
+      run: dotnet nuget push ${{ github.workspace}}/artifact/*.nupkg --api-key ${{ secrets.NUGET_APIKEY }} --skip-duplicate
+
+    - name: Extract version
+      shell: pwsh
+      working-directory: src/TinyPNG
+      run: |
+        $version = ([xml](Get-Content TinyPNG.csproj)).Project.PropertyGroup.VersionPrefix[0].Trim()
+        Add-Content -Path $env:GITHUB_ENV -Value "VERSION=$version"
+        Add-Content -Path $env:GITHUB_ENV -Value "VERSIONWITHSUFFIX=$version-${{ github.run_number }}"
+      
+    - name: Create GitHub Release
+      if:  github.environment != 'Production'
+      run: gh release create "${{ env.VERSIONWITHSUFFIX }}" --generate-notes --prerelease
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}        
+        GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+    - name: Create GitHub Release
+      if:  github.environment == 'Production'
+      run: gh release create "${{ env.VERSION }}" --generate-notes
+      env:
+        GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+
 

@@ -1,10 +1,10 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json.Serialization;
 
 namespace TinyPng
 {
     public class AmazonS3Configuration
     {
-        [JsonProperty("service")]
+        [JsonPropertyName("service")]
         public const string Service = "s3";
 
         public AmazonS3Configuration(string awsAccessKeyId,
@@ -18,17 +18,17 @@ namespace TinyPng
             Region = defaultRegion;
         }
 
-        [JsonProperty("aws_access_key_id")]
-        public string AwsAccessKeyId { get;  }
-        [JsonProperty("aws_secret_access_key")]
-        public string AwsSecretAccessKey { get;  }
+        [JsonPropertyName("aws_access_key_id")]
+        public string AwsAccessKeyId { get; }
+        [JsonPropertyName("aws_secret_access_key")]
+        public string AwsSecretAccessKey { get; }
         public string Region { get; set; }
         [JsonIgnore]
         public string Bucket { get; set; }
         [JsonIgnore]
         public string Path { get; set; }
 
-        [JsonProperty("path")]
+        [JsonPropertyName("path")]
         public string BucketPath
         {
             get

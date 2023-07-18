@@ -1,7 +1,6 @@
-﻿namespace TinyPng.ResizeOperations
+﻿namespace TinyPng.ResizeOperations;
+
+public class FitResizeOperation : ResizeOperation
 {
-    public class FitResizeOperation : ResizeOperation
-    {
-        public FitResizeOperation(int width, int height) : base(ResizeType.Fit, width, height) { }
-    }
+    public FitResizeOperation(int width, int height) : base(ResizeType.Fit, width, height) { }
 }
