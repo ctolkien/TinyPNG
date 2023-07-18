@@ -48,7 +48,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     needs: build
-    name: Deploy to ${{ inputs.environment }}
+    name: Deploy
     environment: ${{ inputs.environment }}
     if: (inputs.environment == 'Production') || (inputs.environment == 'PreRelease')
     steps:
