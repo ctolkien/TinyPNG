@@ -11,7 +11,7 @@ on:
       Environment:
         description: 'Environment'
         type: environment
-        required: false
+        required: true
 
 jobs:
   build:
