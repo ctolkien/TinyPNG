@@ -46,7 +46,7 @@ jobs:
       run: dotnet nuget push ${{ github.workspace}}/artifact/*.nupkg --source https://nuget.pkg.github.com/ctolkien/index.json --api-key ${{secrets.GITHUB_TOKEN}} --skip-duplicate
 
     - name: Push to NuGet Package Registry
-      if:  github.environment == 'Production'
+      if:  ${{ (github.environment == 'Production') || (github.environment == 'PreRelease') }}
       run: dotnet nuget push ${{ github.workspace}}/artifact/*.nupkg --api-key ${{ secrets.NUGET_APIKEY }} --skip-duplicate
 
     - name: Extract version
@@ -58,7 +58,7 @@ jobs:
         Add-Content -Path $env:GITHUB_ENV -Value "VERSIONWITHSUFFIX=$version-${{ github.run_number }}"
       
     - name: Create GitHub Release
-      if:  github.environment != 'Production'
+      if:  github.environment == 'PreRelease'
       run: gh release create "${{ env.VERSIONWITHSUFFIX }}" --generate-notes --prerelease
       env:
         GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
