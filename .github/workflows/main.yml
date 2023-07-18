@@ -8,7 +8,7 @@ on:
 
   workflow_dispatch:
     inputs:
-      Environment:
+      environment:
         description: 'Environment'
         type: environment
         required: true
@@ -16,7 +16,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    environment: ${{ github.event.inputs.Environment }}
+    name: Build
     steps:
     - uses: actions/checkout@v3
     - name: Setup .NET
@@ -30,10 +30,10 @@ jobs:
     - name: Test
       run: dotnet test --no-build --verbosity normal --logger GitHubActions
     - name: Pack #If we're not in production, add a version suffix to the package. This indicates pre-release
-      if: github.environment != 'Production'
+      if: inputs.environment != 'Production'
       run: dotnet pack ./src/TinyPNG --configuration release --output ${{ github.workspace}}/artifact/ /p:VersionSuffix=${{ github.run_number}}
     - name: Pack
-      if: github.environment == 'Production'
+      if: inputs.environment == 'Production'
       run: dotnet pack ./src/TinyPNG --configuration release --output ${{ github.workspace}}/artifact/
 
     - name: Upload artifact
@@ -42,11 +42,22 @@ jobs:
         name: tinypng
         path: ${{ github.workspace}}/artifact/
         if-no-files-found: error
-    - name: Push to GitHub NuGet Package Registry
+    - name: Push to GitHub Package Registry
       run: dotnet nuget push ${{ github.workspace}}/artifact/*.nupkg --source https://nuget.pkg.github.com/ctolkien/index.json --api-key ${{secrets.GITHUB_TOKEN}} --skip-duplicate
 
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    name: Deploy to ${{ inputs.environment }}
+    environment: ${{ inputs.environment }}
+    if: (inputs.environment == 'Production') || (inputs.environment == 'PreRelease')
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/download-artifact@v3
+      with:
+        name: tinypng
+        path: ${{ github.workspace}}/artifact/
     - name: Push to NuGet Package Registry
-      if:  ${{ (github.environment == 'Production') || (github.environment == 'PreRelease') }}
       run: dotnet nuget push ${{ github.workspace}}/artifact/*.nupkg --api-key ${{ secrets.NUGET_APIKEY }} --skip-duplicate
 
     - name: Extract version
@@ -58,12 +69,12 @@ jobs:
         Add-Content -Path $env:GITHUB_ENV -Value "VERSIONWITHSUFFIX=$version-${{ github.run_number }}"
       
     - name: Create GitHub Release
-      if:  github.environment == 'PreRelease'
+      if:  inputs.environment == 'PreRelease'
       run: gh release create "${{ env.VERSIONWITHSUFFIX }}" --generate-notes --prerelease
       env:
         GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
     - name: Create GitHub Release
-      if:  github.environment == 'Production'
+      if:  inputs.environment == 'Production'
       run: gh release create "${{ env.VERSION }}" --generate-notes
       env:
         GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
