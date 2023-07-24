@@ -1,5 +1,8 @@
 name: TinyPNG Actions
 
+env:
+  PATH_TO_CSPROJ: 'src/TinyPNG/TinyPNG.csproj'
+
 on:
   push: 
     branches:
@@ -43,7 +46,7 @@ jobs:
         path: ${{ github.workspace}}/artifact/
         if-no-files-found: error
     - name: Push to GitHub Package Registry
-      run: dotnet nuget push ${{ github.workspace}}/artifact/*.nupkg --source https://nuget.pkg.github.com/ctolkien/index.json --api-key ${{secrets.GITHUB_TOKEN}} --skip-duplicate
+      run: dotnet nuget push ${{ github.workspace}}/artifact/*.nupkg --source https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json --api-key ${{secrets.GITHUB_TOKEN}} --skip-duplicate
 
   deploy:
     runs-on: ubuntu-latest
@@ -62,9 +65,8 @@ jobs:
 
     - name: Extract version
       shell: pwsh
-      working-directory: src/TinyPNG
       run: |
-        $version = ([xml](Get-Content TinyPNG.csproj)).Project.PropertyGroup.VersionPrefix[0].Trim()
+        $version = ([xml](Get-Content ${{ env.PATH_TO_CSPROJ }})).Project.PropertyGroup.VersionPrefix[0].Trim()
         Add-Content -Path $env:GITHUB_ENV -Value "VERSION=$version"
         Add-Content -Path $env:GITHUB_ENV -Value "VERSIONWITHSUFFIX=$version-${{ github.run_number }}"
       
