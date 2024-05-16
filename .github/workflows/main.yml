@@ -21,11 +21,11 @@ jobs:
     runs-on: ubuntu-latest
     name: Build
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Setup .NET
-      uses: actions/setup-dotnet@v3
+      uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: 6.0.x
+        dotnet-version: 8.0.x
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
@@ -40,7 +40,7 @@ jobs:
       run: dotnet pack ./src/TinyPNG --configuration release --output ${{ github.workspace}}/artifact/
 
     - name: Upload artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: tinypng
         path: ${{ github.workspace}}/artifact/
@@ -56,7 +56,7 @@ jobs:
     if: (inputs.environment == 'Production') || (inputs.environment == 'PreRelease')
     steps:
     - uses: actions/checkout@v3
-    - uses: actions/download-artifact@v3
+    - uses: actions/download-artifact@v4
       with:
         name: tinypng
         path: ${{ github.workspace}}/artifact/
