@@ -4,7 +4,7 @@ VisualStudioVersion = 17.6.33712.159
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TinyPNG", "src\TinyPNG\TinyPNG.csproj", "{52901FDB-68CE-4192-8B2B-3BD1773261F3}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TinyPng.Tests", "tests\TinyPng.Tests\TinyPng.Tests.csproj", "{DBA34C0E-C2A8-4D42-8770-FADC6251E93D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TinyPNG.Tests", "tests\TinyPng.Tests\TinyPNG.Tests.csproj", "{DBA34C0E-C2A8-4D42-8770-FADC6251E93D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{466E1CAF-57A2-4370-91C7-455AAC8E4D2E}"
 	ProjectSection(SolutionItems) = preProject
@@ -13,7 +13,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TinyPNG.Samples", "src\TinyPNG.Samples\TinyPNG.Samples.csproj", "{F4BE9305-126D-49CF-830F-E840A337EF13}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TinyPNG.Samples", "src\TinyPNG.Samples\TinyPNG.Samples.csproj", "{F4BE9305-126D-49CF-830F-E840A337EF13}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
