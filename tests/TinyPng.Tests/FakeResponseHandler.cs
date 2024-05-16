@@ -8,8 +8,8 @@ namespace TinyPng.Tests;
 
 public class FakeResponseHandler : DelegatingHandler
 {
-    private readonly Dictionary<Uri, HttpResponseMessage> _fakeGetResponses = new();
-    private readonly Dictionary<Uri, HttpResponseMessage> _fakePostResponses = new();
+    private readonly Dictionary<Uri, HttpResponseMessage> _fakeGetResponses = [];
+    private readonly Dictionary<Uri, HttpResponseMessage> _fakePostResponses = [];
 
 
     public void AddFakeGetResponse(Uri uri, HttpResponseMessage responseMessage)
@@ -23,12 +23,8 @@ public class FakeResponseHandler : DelegatingHandler
 
     protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, System.Threading.CancellationToken cancellationToken)
     {
-        var result = request.Method == HttpMethod.Get && _fakeGetResponses.ContainsKey(request.RequestUri)
-            ? _fakeGetResponses[request.RequestUri]
-            : request.Method == HttpMethod.Post && _fakePostResponses.ContainsKey(request.RequestUri)
-            ? _fakePostResponses[request.RequestUri]
-            : new HttpResponseMessage(HttpStatusCode.NotFound) { RequestMessage = request };
-
-        return Task.FromResult(result);
+        if (request.Method == HttpMethod.Get && _fakeGetResponses.TryGetValue(request.RequestUri, out var getMessage)) { return Task.FromResult(getMessage); }
+        else if (request.Method == HttpMethod.Post && _fakePostResponses.TryGetValue(request.RequestUri, out var postMessage)) { return Task.FromResult(postMessage); }
+        else { return Task.FromResult(new HttpResponseMessage(HttpStatusCode.NotFound) { RequestMessage = request }); }
     }
 }
