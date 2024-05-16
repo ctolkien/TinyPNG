@@ -12,22 +12,13 @@ namespace TinyPng
     /// Pinched from https://stackoverflow.com/questions/59059989/system-text-json-how-do-i-specify-a-custom-name-for-an-enum-value
     /// This is because System.Text.Json doesn't support EnumMemberAttribute or a way to customise what an Enum value is serialised as.
     /// </summary>
-    internal class CustomJsonStringEnumConverter : JsonConverterFactory
+    internal class CustomJsonStringEnumConverter(JsonNamingPolicy namingPolicy = null, bool allowIntegerValues = true) : JsonConverterFactory
     {
-        private readonly JsonNamingPolicy namingPolicy;
-        private readonly bool allowIntegerValues;
-        private readonly JsonStringEnumConverter baseConverter;
+        private readonly JsonStringEnumConverter _baseConverter = new(namingPolicy, allowIntegerValues);
 
         public CustomJsonStringEnumConverter() : this(null, true) { }
 
-        public CustomJsonStringEnumConverter(JsonNamingPolicy namingPolicy = null, bool allowIntegerValues = true)
-        {
-            this.namingPolicy = namingPolicy;
-            this.allowIntegerValues = allowIntegerValues;
-            this.baseConverter = new JsonStringEnumConverter(namingPolicy, allowIntegerValues);
-        }
-
-        public override bool CanConvert(Type typeToConvert) => baseConverter.CanConvert(typeToConvert);
+        public override bool CanConvert(Type typeToConvert) => _baseConverter.CanConvert(typeToConvert);
 
         public override JsonConverter CreateConverter(Type typeToConvert, JsonSerializerOptions options)
         {
@@ -42,26 +33,20 @@ namespace TinyPng
             }
             else
             {
-                return baseConverter.CreateConverter(typeToConvert, options);
+                return _baseConverter.CreateConverter(typeToConvert, options);
             }
         }
     }
 
-    public class JsonNamingPolicyDecorator : JsonNamingPolicy
+    public class JsonNamingPolicyDecorator(JsonNamingPolicy underlyingNamingPolicy) : JsonNamingPolicy
     {
-        readonly JsonNamingPolicy underlyingNamingPolicy;
-
-        public JsonNamingPolicyDecorator(JsonNamingPolicy underlyingNamingPolicy) => this.underlyingNamingPolicy = underlyingNamingPolicy;
-
         public override string ConvertName(string name) => underlyingNamingPolicy == null ? name : underlyingNamingPolicy.ConvertName(name);
     }
 
-    internal class DictionaryLookupNamingPolicy : JsonNamingPolicyDecorator
+    internal class DictionaryLookupNamingPolicy(Dictionary<string, string> dictionary, JsonNamingPolicy underlyingNamingPolicy) : JsonNamingPolicyDecorator(underlyingNamingPolicy)
     {
-        readonly Dictionary<string, string> dictionary;
+        readonly Dictionary<string, string> _dictionary = dictionary ?? throw new ArgumentNullException();
 
-        public DictionaryLookupNamingPolicy(Dictionary<string, string> dictionary, JsonNamingPolicy underlyingNamingPolicy) : base(underlyingNamingPolicy) => this.dictionary = dictionary ?? throw new ArgumentNullException();
-
-        public override string ConvertName(string name) => dictionary.TryGetValue(name, out var value) ? value : base.ConvertName(name);
+        public override string ConvertName(string name) => _dictionary.TryGetValue(name, out var value) ? value : base.ConvertName(name);
     }
 }

@@ -15,10 +15,10 @@ namespace TinyPng;
 
 public class TinyPngClient
 {
-    private const string ApiEndpoint = "https://api.tinify.com/shrink";
+    private const string _apiEndpoint = "https://api.tinify.com/shrink";
 
-    private readonly HttpClient HttpClient;
-    internal static readonly JsonSerializerOptions JsonOptions;
+    private readonly HttpClient _httpClient;
+    internal static readonly JsonSerializerOptions _jsonOptions;
 
     /// <summary>
     /// Configures the client to use these AmazonS3 settings when storing images in S3
@@ -28,14 +28,14 @@ public class TinyPngClient
     static TinyPngClient()
     {
         //configure json settings for camelCase.
-        JsonOptions = new JsonSerializerOptions
+        _jsonOptions = new JsonSerializerOptions
         {
             PropertyNameCaseInsensitive = true,
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
             DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
         };
 
-        JsonOptions.Converters.Add(new CustomJsonStringEnumConverter(JsonNamingPolicy.CamelCase));
+        _jsonOptions.Converters.Add(new CustomJsonStringEnumConverter(JsonNamingPolicy.CamelCase));
 
     }
 
@@ -49,7 +49,7 @@ public class TinyPngClient
         if (string.IsNullOrEmpty(apiKey))
             throw new ArgumentNullException(nameof(apiKey));
 
-        HttpClient = httpClient ?? new HttpClient();
+        _httpClient = httpClient ?? new HttpClient();
 
         ConfigureHttpClient(apiKey);
     }
@@ -62,7 +62,7 @@ public class TinyPngClient
         var apiKeyEncoded = Convert.ToBase64String(authByteArray);
 
         //add auth to the default outgoing headers.
-        HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("basic", apiKeyEncoded);
+        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("basic", apiKeyEncoded);
     }
 
     /// <summary>
@@ -133,16 +133,16 @@ public class TinyPngClient
         return CompressInternal(CreateContent(url));
 
         static HttpContent CreateContent(Uri source) => new StringContent(
-        JsonSerializer.Serialize(new { source = new { url = source } }, JsonOptions),
+        JsonSerializer.Serialize(new { source = new { url = source } }, _jsonOptions),
         Encoding.UTF8, "application/json");
     }
 
     private async Task<TinyPngCompressResponse> CompressInternal(HttpContent contentData)
     {
-        var response = await HttpClient.PostAsync(ApiEndpoint, contentData).ConfigureAwait(false);
+        var response = await _httpClient.PostAsync(_apiEndpoint, contentData).ConfigureAwait(false);
 
         if (response.IsSuccessStatusCode)
-            return new TinyPngCompressResponse(response, HttpClient);
+            return new TinyPngCompressResponse(response, _httpClient);
 
         var errorMsg = await JsonSerializer.DeserializeAsync<ApiErrorResponse>(await response.Content.ReadAsStreamAsync().ConfigureAwait(false));
         throw new TinyPngApiException((int)response.StatusCode, response.ReasonPhrase, errorMsg.Error, errorMsg.Message);
@@ -166,13 +166,13 @@ public class TinyPngClient
 
         amazonSettings.Path = path;
 
-        var amazonSettingsAsJson = JsonSerializer.Serialize(new { store = amazonSettings }, JsonOptions);
+        var amazonSettingsAsJson = JsonSerializer.Serialize(new { store = amazonSettings }, _jsonOptions);
 
         var msg = new HttpRequestMessage(HttpMethod.Post, result.Output.Url)
         {
             Content = new StringContent(amazonSettingsAsJson, System.Text.Encoding.UTF8, "application/json")
         };
-        var response = await HttpClient.SendAsync(msg).ConfigureAwait(false);
+        var response = await _httpClient.SendAsync(msg).ConfigureAwait(false);
 
         if (response.IsSuccessStatusCode)
         {

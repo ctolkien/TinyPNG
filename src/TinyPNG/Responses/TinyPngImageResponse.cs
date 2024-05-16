@@ -5,9 +5,6 @@ namespace TinyPng.Responses;
 /// <summary>
 /// This is a response which contains actual image data
 /// </summary>
-public class TinyPngImageResponse : TinyPngResponse
+public class TinyPngImageResponse(HttpResponseMessage msg) : TinyPngResponse(msg)
 {
-    public TinyPngImageResponse(HttpResponseMessage msg) : base(msg)
-    {
-    }
 }

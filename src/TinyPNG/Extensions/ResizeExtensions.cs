@@ -29,20 +29,20 @@ public static class ResizeExtensions
 
         TinyPngCompressResponse compressResponse = await result;
 
-        string requestBody = JsonSerializer.Serialize(new { resize = resizeOperation }, TinyPngClient.JsonOptions);
+        string requestBody = JsonSerializer.Serialize(new { resize = resizeOperation }, TinyPngClient._jsonOptions);
 
         HttpRequestMessage msg = new(HttpMethod.Post, compressResponse.Output.Url)
         {
             Content = new StringContent(requestBody, System.Text.Encoding.UTF8, "application/json")
         };
 
-        HttpResponseMessage response = await compressResponse.HttpClient.SendAsync(msg);
+        HttpResponseMessage response = await compressResponse._httpClient.SendAsync(msg);
         if (response.IsSuccessStatusCode)
         {
             return new TinyPngResizeResponse(response);
         }
 
-        ApiErrorResponse errorMsg = await JsonSerializer.DeserializeAsync<ApiErrorResponse>(await response.Content.ReadAsStreamAsync(), TinyPngClient.JsonOptions);
+        ApiErrorResponse errorMsg = await JsonSerializer.DeserializeAsync<ApiErrorResponse>(await response.Content.ReadAsStreamAsync(), TinyPngClient._jsonOptions);
         throw new TinyPngApiException((int)response.StatusCode, response.ReasonPhrase, errorMsg.Error, errorMsg.Message);
     }
 

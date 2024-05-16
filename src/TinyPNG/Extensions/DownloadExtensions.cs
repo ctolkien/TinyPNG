@@ -9,7 +9,7 @@ namespace TinyPng;
 
 public static class DownloadExtensions
 {
-    private const string JpegType = "image/jpeg";
+    private const string _jpegType = "image/jpeg";
 
     /// <summary>
     /// Downloads the result of a TinyPng Compression operation
@@ -44,7 +44,7 @@ public static class DownloadExtensions
             Content = CreateContent(metadata, compressResponse.Output.Type)
         };
 
-        var response = await compressResponse.HttpClient.SendAsync(msg).ConfigureAwait(false);
+        var response = await compressResponse._httpClient.SendAsync(msg).ConfigureAwait(false);
 
         if (response.IsSuccessStatusCode)
         {
@@ -68,15 +68,15 @@ public static class DownloadExtensions
         }
         if (metadata.HasFlag(PreserveMetadata.Creation))
         {
-            if (type != JpegType)
-                throw new InvalidOperationException($"Creation metadata can only be preserved with type {JpegType}");
+            if (type != _jpegType)
+                throw new InvalidOperationException($"Creation metadata can only be preserved with type {_jpegType}");
 
             preserve.Add("creation");
         }
         if (metadata.HasFlag(PreserveMetadata.Location))
         {
-            if (type != JpegType)
-                throw new InvalidOperationException($"Location metadata can only be preserved with type {JpegType}");
+            if (type != _jpegType)
+                throw new InvalidOperationException($"Location metadata can only be preserved with type {_jpegType}");
 
             preserve.Add("location");
         }
