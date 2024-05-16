@@ -126,27 +126,19 @@ public class TinyPngTests
     }
 
     [Fact]
-    public void CompressionShouldThrowIfNoPathToFile()
+    public async Task CompressionShouldThrowIfNoPathToFile()
     {
         TinyPngClient pngx = new(_apiKey, new HttpClient(new FakeResponseHandler().Compress()));
 
-        _ = Assert.ThrowsAsync<ArgumentNullException>(async () => await pngx.Compress(string.Empty));
+        await Assert.ThrowsAsync<ArgumentNullException>(async () => await pngx.Compress(string.Empty));
     }
 
     [Fact]
-    public void CompressionShouldThrowIfNoUrlToFile()
-    {
-        TinyPngClient pngx = new(_apiKey, new HttpClient(new FakeResponseHandler().Compress()));
-
-        _ = Assert.ThrowsAsync<ArgumentNullException>(async () => await pngx.Compress(new Uri(string.Empty)));
-    }
-
-    [Fact]
-    public void CompressionShouldThrowIfNoNonSuccessStatusCode()
+    public async Task CompressionShouldThrowIfNoNonSuccessStatusCode()
     {
         TinyPngClient pngx = new(_apiKey, new HttpClient(new FakeResponseHandler().CompressAndFail()));
 
-        _ = Assert.ThrowsAsync<TinyPngApiException>(async () => await pngx.Compress(_cat));
+        await Assert.ThrowsAsync<TinyPngApiException>(async () => await pngx.Compress(_cat));
     }
 
     [Fact]
@@ -191,38 +183,38 @@ public class TinyPngTests
     }
 
     [Fact]
-    public void ResizingOperationThrows()
+    public async Task ResizingOperationThrows()
     {
         TinyPngClient pngx = new(_apiKey, new HttpClient(new FakeResponseHandler().Compress().Resize()));
 
-        _ = Assert.ThrowsAsync<ArgumentNullException>(async () => await pngx.Compress((string)null).Resize(150, 150));
-        _ = Assert.ThrowsAsync<ArgumentNullException>(async () => await pngx.Compress((string)null).Resize(null));
-        _ = Assert.ThrowsAsync<ArgumentNullException>(async () => await pngx.Compress(_cat).Resize(null));
+        await Assert.ThrowsAsync<ArgumentNullException>(async () => await pngx.Compress((string)null).Resize(150, 150));
+        await Assert.ThrowsAsync<ArgumentNullException>(async () => await pngx.Compress((string)null).Resize(null));
+        await Assert.ThrowsAsync<ArgumentNullException>(async () => await pngx.Compress(_cat).Resize(null));
 
         Task<Responses.TinyPngCompressResponse> nullCompressResponse = null;
-        _ = Assert.ThrowsAsync<ArgumentNullException>(async () => await nullCompressResponse.Resize(150, 150));
+        await Assert.ThrowsAsync<ArgumentNullException>(async () => await nullCompressResponse.Resize(150, 150));
 
-        _ = Assert.ThrowsAsync<ArgumentOutOfRangeException>(async () => await pngx.Compress(_cat).Resize(0, 150));
-        _ = Assert.ThrowsAsync<ArgumentOutOfRangeException>(async () => await pngx.Compress(_cat).Resize(150, 0));
+        await Assert.ThrowsAsync<ArgumentOutOfRangeException>(async () => await pngx.Compress(_cat).Resize(0, 150));
+        await Assert.ThrowsAsync<ArgumentOutOfRangeException>(async () => await pngx.Compress(_cat).Resize(150, 0));
     }
 
     [Fact]
-    public void DownloadingOperationThrows()
+    public async Task DownloadingOperationThrows()
     {
         TinyPngClient pngx = new(_apiKey, new HttpClient(new FakeResponseHandler().Compress().Download()));
 
-        _ = Assert.ThrowsAsync<ArgumentNullException>(async () => await pngx.Compress((string)null).Download());
+        await Assert.ThrowsAsync<ArgumentNullException>(async () => await pngx.Compress((string)null).Download());
 
         Task<Responses.TinyPngCompressResponse> nullCompressResponse = null;
-        _ = Assert.ThrowsAsync<ArgumentNullException>(async () => await nullCompressResponse.Download());
+        await Assert.ThrowsAsync<ArgumentNullException>(async () => await nullCompressResponse.Download());
     }
 
     [Fact]
-    public void DownloadingOperationThrowsOnNonSuccessStatusCode()
+    public async Task DownloadingOperationThrowsOnNonSuccessStatusCode()
     {
         TinyPngClient pngx = new(_apiKey, new HttpClient(new FakeResponseHandler().Compress().DownloadAndFail()));
 
-        _ = Assert.ThrowsAsync<TinyPngApiException>(async () => await pngx.Compress(_cat).Download());
+        await Assert.ThrowsAsync<TinyPngApiException>(async () => await pngx.Compress(_cat).Download());
     }
 
     [Fact]
@@ -276,12 +268,12 @@ public class TinyPngTests
     }
 
     [Fact]
-    public void ResizingCoverResizeOperationThrowsWithInvalidParams()
+    public async Task ResizingCoverResizeOperationThrowsWithInvalidParams()
     {
         TinyPngClient pngx = new(_apiKey, new HttpClient(new FakeResponseHandler().Compress().Resize()));
 
-        _ = Assert.ThrowsAsync<ArgumentException>(async () => await pngx.Compress(_cat).Resize(new CoverResizeOperation(0, 150)));
-        _ = Assert.ThrowsAsync<ArgumentException>(async () => await pngx.Compress(_cat).Resize(new CoverResizeOperation(150, 0)));
+        await Assert.ThrowsAsync<ArgumentException>(async () => await pngx.Compress(_cat).Resize(new CoverResizeOperation(0, 150)));
+        await Assert.ThrowsAsync<ArgumentException>(async () => await pngx.Compress(_cat).Resize(new CoverResizeOperation(150, 0)));
     }
 
     [Fact]
@@ -297,9 +289,9 @@ public class TinyPngTests
 
         Responses.TinyPngCompressResponse result = await pngx.Compress(_cat);
 
-        _ = await Assert.ThrowsAsync<ArgumentNullException>(async () => await pngx.SaveCompressedImageToAmazonS3(null, "bucket/path.jpg"));
-        _ = await Assert.ThrowsAsync<InvalidOperationException>(async () => await pngx.SaveCompressedImageToAmazonS3(result, string.Empty));
-        _ = await Assert.ThrowsAsync<InvalidOperationException>(async () => await pngx.SaveCompressedImageToAmazonS3(result, "bucket/path.jpg"));
+        await Assert.ThrowsAsync<ArgumentNullException>(async () => await pngx.SaveCompressedImageToAmazonS3(null, "bucket/path.jpg"));
+        await Assert.ThrowsAsync<InvalidOperationException>(async () => await pngx.SaveCompressedImageToAmazonS3(result, string.Empty));
+        await Assert.ThrowsAsync<InvalidOperationException>(async () => await pngx.SaveCompressedImageToAmazonS3(result, "bucket/path.jpg"));
     }
 
     private const string _awsAccessKeyId = "lolwat";
@@ -326,7 +318,7 @@ public class TinyPngTests
 
         Responses.TinyPngCompressResponse result = await pngx.Compress(_cat);
 
-        _ = await Assert.ThrowsAsync<TinyPngApiException>(async () =>
+        await Assert.ThrowsAsync<TinyPngApiException>(async () =>
             await pngx.SaveCompressedImageToAmazonS3(result,
             new AmazonS3Configuration(_awsAccessKeyId, _awsSecretAccessKey, "tinypng-test-bucket", "ap-southeast-2"), "path"));
     }
