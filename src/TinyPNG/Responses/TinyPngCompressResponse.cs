@@ -10,11 +10,11 @@ public class TinyPngCompressResponse : TinyPngResponse
     public TinyPngApiOutput Output { get; private set; }
     public TinyPngApiResult ApiResult { get; private set; }
 
-    internal readonly HttpClient HttpClient;
+    internal readonly HttpClient _httpClient;
 
     public TinyPngCompressResponse(HttpResponseMessage msg, HttpClient httpClient) : base(msg)
     {
-        HttpClient = httpClient;
+        _httpClient = httpClient;
 
         //this is a cute trick to handle async in a ctor and avoid deadlocks
         ApiResult = Task.Run(() => Deserialize(msg)).GetAwaiter().GetResult();
@@ -24,6 +24,6 @@ public class TinyPngCompressResponse : TinyPngResponse
     }
     private async Task<TinyPngApiResult> Deserialize(HttpResponseMessage response)
     {
-        return await JsonSerializer.DeserializeAsync<TinyPngApiResult>(await response.Content.ReadAsStreamAsync(), TinyPngClient.JsonOptions);
+        return await JsonSerializer.DeserializeAsync<TinyPngApiResult>(await response.Content.ReadAsStreamAsync(), TinyPngClient._jsonOptions);
     }
 }

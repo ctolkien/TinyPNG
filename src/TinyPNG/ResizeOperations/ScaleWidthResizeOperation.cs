@@ -1,6 +1,5 @@
 ﻿namespace TinyPng.ResizeOperations;
 
-public class ScaleWidthResizeOperation : ResizeOperation
+public class ScaleWidthResizeOperation(int width) : ResizeOperation(ResizeType.Scale, width, null)
 {
-    public ScaleWidthResizeOperation(int width) : base(ResizeType.Scale, width, null) { }
 }

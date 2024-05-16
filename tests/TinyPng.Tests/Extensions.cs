@@ -53,7 +53,7 @@ internal static class Extensions
 
     public static FakeResponseHandler Download(this FakeResponseHandler fakeResponse)
     {
-        FileStream compressedCatStream = File.OpenRead(TinyPngTests.CompressedCat);
+        FileStream compressedCatStream = File.OpenRead(TinyPngTests._compressedCat);
         HttpResponseMessage outputResponseMessage = new()
         {
             Content = new StreamContent(compressedCatStream),
@@ -78,7 +78,7 @@ internal static class Extensions
 
     public static FakeResponseHandler Resize(this FakeResponseHandler fakeResponse)
     {
-        FileStream resizedCatStream = File.OpenRead(TinyPngTests.ResizedCat);
+        FileStream resizedCatStream = File.OpenRead(TinyPngTests._resizedCat);
         HttpResponseMessage resizeMessage = new()
         {
             StatusCode = System.Net.HttpStatusCode.OK,

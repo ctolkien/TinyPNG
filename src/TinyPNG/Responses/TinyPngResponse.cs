@@ -8,17 +8,16 @@ public class TinyPngResponse
 {
     internal HttpResponseMessage HttpResponseMessage { get; }
 
-    private readonly int compressionCount;
+    private readonly int _compressionCount;
 
-    public int CompressionCount => compressionCount;
-
+    public int CompressionCount => _compressionCount;
 
 
     protected TinyPngResponse(HttpResponseMessage msg)
     {
         if (msg.Headers.TryGetValues("Compression-Count", out IEnumerable<string> compressionCountHeaders))
         {
-            int.TryParse(compressionCountHeaders.First(), out compressionCount);
+            int.TryParse(compressionCountHeaders.First(), out _compressionCount);
         }
         HttpResponseMessage = msg;
     }

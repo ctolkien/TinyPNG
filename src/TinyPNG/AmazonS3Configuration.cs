@@ -2,29 +2,21 @@
 
 namespace TinyPng
 {
-    public class AmazonS3Configuration
+    public class AmazonS3Configuration(string awsAccessKeyId,
+        string awsSecretAccessKey,
+        string defaultBucket,
+        string defaultRegion)
     {
         [JsonPropertyName("service")]
         public const string Service = "s3";
 
-        public AmazonS3Configuration(string awsAccessKeyId,
-            string awsSecretAccessKey,
-            string defaultBucket,
-            string defaultRegion)
-        {
-            AwsAccessKeyId = awsAccessKeyId;
-            AwsSecretAccessKey = awsSecretAccessKey;
-            Bucket = defaultBucket;
-            Region = defaultRegion;
-        }
-
         [JsonPropertyName("aws_access_key_id")]
-        public string AwsAccessKeyId { get; }
+        public string AwsAccessKeyId { get; } = awsAccessKeyId;
         [JsonPropertyName("aws_secret_access_key")]
-        public string AwsSecretAccessKey { get; }
-        public string Region { get; set; }
+        public string AwsSecretAccessKey { get; } = awsSecretAccessKey;
+        public string Region { get; set; } = defaultRegion;
         [JsonIgnore]
-        public string Bucket { get; set; }
+        public string Bucket { get; set; } = defaultBucket;
         [JsonIgnore]
         public string Path { get; set; }
 
