@@ -33,7 +33,16 @@ public static class ConvertExtensions
 
         TinyPngCompressResponse compressResponse = await result;
 
-        string requestBody = JsonSerializer.Serialize(new { convert = new { type = convertOperation } }, TinyPngClient._jsonOptions);
+        string requestBody = JsonSerializer.Serialize(new {
+            convert = new
+            {
+                type = convertOperation
+            },
+            transform = backgroundTransform == null ? null : new
+            {
+                background = backgroundTransform
+            }
+        }, TinyPngClient._jsonOptions);
 
         HttpRequestMessage msg = new(HttpMethod.Post, compressResponse.Output.Url)
         {
