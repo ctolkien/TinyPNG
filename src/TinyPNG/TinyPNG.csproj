@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Copyright>Copyright Chad Tolkien &amp; Contributors</Copyright>
     <AssemblyTitle>TinyPNG</AssemblyTitle>
-    <VersionPrefix>4.0.0</VersionPrefix>
+    <VersionPrefix>4.0.1</VersionPrefix>
     <Authors>Chad Tolkien</Authors>
 	<LangVersion>latest</LangVersion>
     <TargetFrameworks>netstandard2.0</TargetFrameworks>
@@ -39,11 +39,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    
-
-    <!-- Source link support -->
-    <PackageReference Include="System.Text.Json" Version="8.0.4" />
-
+    <PackageReference Include="System.Text.Json" Version="[8.0.*,9)" />
   </ItemGroup>
 
 </Project>
