@@ -15,7 +15,8 @@ public static class ConvertExtensions
     /// </summary>
     /// <param name="result"></param>
     /// <param name="convertOperation"></param>
-    /// <param name="backgroundTransform">Optional. Specify a hex value such as #000FFF when converting to a non-transparent image option</param>
+    /// <param name="backgroundTransform">Optional. Specify a hex value such as #000FFF when converting to a non-transparent image option
+    /// You must specify a background color if you wish to convert an image with a transparent background to an image type which does not support transparency (like JPEG).</param>
     /// <returns></returns>
     /// <exception cref="ArgumentNullException"></exception>
     /// <exception cref="TinyPngApiException"></exception>
@@ -33,16 +34,12 @@ public static class ConvertExtensions
 
         TinyPngCompressResponse compressResponse = await result;
 
-        string requestBody = JsonSerializer.Serialize(new {
-            convert = new
-            {
-                type = convertOperation
+        var requestBody = JsonSerializer.Serialize(
+            new { 
+                convert = new { type = convertOperation }, 
+                transform = !string.IsNullOrEmpty(backgroundTransform) ? new { background = backgroundTransform } : null 
             },
-            transform = backgroundTransform == null ? null : new
-            {
-                background = backgroundTransform
-            }
-        }, TinyPngClient._jsonOptions);
+            TinyPngClient._jsonOptions);
 
         HttpRequestMessage msg = new(HttpMethod.Post, compressResponse.Output.Url)
         {
