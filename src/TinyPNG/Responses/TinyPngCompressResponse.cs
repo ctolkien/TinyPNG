@@ -1,29 +1,43 @@
-﻿using System.Net.Http;
-using System.Text.Json;
-using System.Threading.Tasks;
+﻿using System;
+using System.Net.Http;
 
 namespace TinyPng.Responses;
 
+/// <summary>
+/// Represents the response from the TinyPNG compression API.
+/// </summary>
 public class TinyPngCompressResponse : TinyPngResponse
 {
+    /// <summary>
+    /// Gets the input details of the compressed image.
+    /// </summary>
     public TinyPngApiInput Input { get; private set; }
+
+    /// <summary>
+    /// Gets the output details of the compressed image.
+    /// </summary>
     public TinyPngApiOutput Output { get; private set; }
-    public TinyPngApiResult ApiResult { get; private set; }
+    internal HttpClient HttpClient { get; }
 
-    internal readonly HttpClient _httpClient;
-
-    public TinyPngCompressResponse(HttpResponseMessage msg, HttpClient httpClient) : base(msg)
+    /// <summary>
+    /// Initializes a new instance of the <see cref="TinyPngCompressResponse"/> class.
+    /// </summary>
+    /// <param name="msg">The HTTP response message.</param>
+    /// <param name="apiResult">The result of the API call.</param>
+    public TinyPngCompressResponse(HttpResponseMessage msg, TinyPngApiResult apiResult, HttpClient httpClient) : base(msg)
     {
-        _httpClient = httpClient;
+        if (msg is null)
+        {
+            throw new ArgumentNullException(nameof(msg));
+        }
 
-        //this is a cute trick to handle async in a ctor and avoid deadlocks
-        ApiResult = Task.Run(() => Deserialize(msg)).GetAwaiter().GetResult();
-        Input = ApiResult.Input;
-        Output = ApiResult.Output;
+        if (apiResult is null)
+        {
+            throw new ArgumentNullException(nameof(apiResult));
+        }
 
-    }
-    private static async Task<TinyPngApiResult> Deserialize(HttpResponseMessage response)
-    {
-        return await JsonSerializer.DeserializeAsync<TinyPngApiResult>(await response.Content.ReadAsStreamAsync(), TinyPngClient.JsonOptions);
+        Input = apiResult.Input;
+        Output = apiResult.Output;
+        HttpClient = httpClient;
     }
 }

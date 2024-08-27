@@ -42,7 +42,8 @@ public class TinyPngClient
     /// Wrapper for the tinypng.com API
     /// </summary>
     /// <param name="apiKey">Your tinypng.com API key, signup here: https://tinypng.com/developers </param>
-    /// <param name="httpClient">HttpClient for requests (optional) </param>
+    /// <param name="httpClient">HttpClient for requests (optional). If you do not
+    /// supply a HttpClient, one will be created for each instance of a <see cref="TinyPngClient"/></param>
     public TinyPngClient(string apiKey, HttpClient httpClient = null)
     {
         if (string.IsNullOrEmpty(apiKey))
@@ -52,10 +53,10 @@ public class TinyPngClient
 
         _httpClient = httpClient ?? new HttpClient();
 
-        ConfigureHttpClient(apiKey);
+        ConfigureHttpClient(apiKey, _httpClient);
     }
 
-    private void ConfigureHttpClient(string apiKey)
+    private static void ConfigureHttpClient(string apiKey, HttpClient client)
     {
         //configure basic auth api key formatting.
         var auth = $"api:{apiKey}";
@@ -63,7 +64,7 @@ public class TinyPngClient
         var apiKeyEncoded = Convert.ToBase64String(authByteArray);
 
         //add auth to the default outgoing headers.
-        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("basic", apiKeyEncoded);
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("basic", apiKeyEncoded);
     }
 
     /// <summary>
@@ -147,7 +148,8 @@ public class TinyPngClient
 
         if (response.IsSuccessStatusCode)
         {
-            return new TinyPngCompressResponse(response, _httpClient);
+            var apiResult = await JsonSerializer.DeserializeAsync<TinyPngApiResult>(await response.Content.ReadAsStreamAsync().ConfigureAwait(false), JsonOptions);
+            return new TinyPngCompressResponse(response, apiResult, _httpClient);
         }
 
         var errorMsg = await JsonSerializer.DeserializeAsync<ApiErrorResponse>(await response.Content.ReadAsStreamAsync().ConfigureAwait(false), JsonOptions);
@@ -193,7 +195,7 @@ public class TinyPngClient
             return response.Headers.Location;
         }
 
-        var errorMsg = await JsonSerializer.DeserializeAsync<ApiErrorResponse>(await response.Content.ReadAsStreamAsync().ConfigureAwait(false));
+        var errorMsg = await JsonSerializer.DeserializeAsync<ApiErrorResponse>(await response.Content.ReadAsStreamAsync().ConfigureAwait(false), JsonOptions);
         throw new TinyPngApiException((int)response.StatusCode, response.ReasonPhrase, errorMsg.Error, errorMsg.Message);
     }
 
@@ -222,7 +224,11 @@ public class TinyPngClient
             throw new ArgumentNullException(nameof(path));
         }
 
+        // we clone the settings here, as we are going to override the path
+        // and potentially some of the other settings. We may not want
+        // to change the original settings.
         var amazonSettings = AmazonS3Configuration.Clone();
+
         amazonSettings.Path = path;
 
         if (!string.IsNullOrEmpty(regionOverride))
