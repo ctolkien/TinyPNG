@@ -22,8 +22,8 @@ public class TinyPngCompressResponse : TinyPngResponse
         Output = ApiResult.Output;
 
     }
-    private async Task<TinyPngApiResult> Deserialize(HttpResponseMessage response)
+    private static async Task<TinyPngApiResult> Deserialize(HttpResponseMessage response)
     {
-        return await JsonSerializer.DeserializeAsync<TinyPngApiResult>(await response.Content.ReadAsStreamAsync(), TinyPngClient._jsonOptions);
+        return await JsonSerializer.DeserializeAsync<TinyPngApiResult>(await response.Content.ReadAsStreamAsync(), TinyPngClient.JsonOptions);
     }
 }

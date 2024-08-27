@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net.Http;
 using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 using TinyPng.ResizeOperations;
 using TinyPng.Responses;
@@ -15,7 +16,7 @@ public static class ResizeExtensions
     /// <param name="result">This is the previous result of running a compression <see cref="TinyPngClient.Compress"/></param>
     /// <param name="resizeOperation">Supply a strongly typed Resize Operation. See <typeparamref name="CoverResizeOperation"/>, <typeparamref name="FitResizeOperation"/>, <typeparamref name="ScaleHeightResizeOperation"/>, <typeparamref name="ScaleWidthResizeOperation"/></param>
     /// <returns></returns>
-    public static async Task<TinyPngResizeResponse> Resize(this Task<TinyPngCompressResponse> result, ResizeOperation resizeOperation)
+    public static async Task<TinyPngResizeResponse> Resize(this Task<TinyPngCompressResponse> result, ResizeOperation resizeOperation, CancellationToken cancellationToken = default)
     {
         if (result == null)
         {
@@ -29,20 +30,20 @@ public static class ResizeExtensions
 
         TinyPngCompressResponse compressResponse = await result;
 
-        string requestBody = JsonSerializer.Serialize(new { resize = resizeOperation }, TinyPngClient._jsonOptions);
+        string requestBody = JsonSerializer.Serialize(new { resize = resizeOperation }, TinyPngClient.JsonOptions);
 
         HttpRequestMessage msg = new(HttpMethod.Post, compressResponse.Output.Url)
         {
-            Content = new StringContent(requestBody, System.Text.Encoding.UTF8, "application/json")
+            Content = new JsonContent(requestBody)
         };
 
-        HttpResponseMessage response = await compressResponse._httpClient.SendAsync(msg);
+        HttpResponseMessage response = await compressResponse._httpClient.SendAsync(msg, cancellationToken);
         if (response.IsSuccessStatusCode)
         {
             return new TinyPngResizeResponse(response);
         }
 
-        ApiErrorResponse errorMsg = await JsonSerializer.DeserializeAsync<ApiErrorResponse>(await response.Content.ReadAsStreamAsync(), TinyPngClient._jsonOptions);
+        ApiErrorResponse errorMsg = await JsonSerializer.DeserializeAsync<ApiErrorResponse>(await response.Content.ReadAsStreamAsync(), TinyPngClient.JsonOptions, cancellationToken);
         throw new TinyPngApiException((int)response.StatusCode, response.ReasonPhrase, errorMsg.Error, errorMsg.Message);
     }
 

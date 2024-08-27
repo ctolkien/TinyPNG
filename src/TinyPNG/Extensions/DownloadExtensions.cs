@@ -19,12 +19,9 @@ public static class DownloadExtensions
     /// <returns></returns>
     public static async Task<TinyPngImageResponse> Download(this Task<TinyPngCompressResponse> compressResponse, PreserveMetadata metadata = PreserveMetadata.None)
     {
-        if (compressResponse == null)
-            throw new ArgumentNullException(nameof(compressResponse));
-
-        var compressResult = await compressResponse;
-
-        return await Download(compressResult, metadata);
+        return compressResponse == null
+            ? throw new ArgumentNullException(nameof(compressResponse))
+            : await Download(await compressResponse, metadata);
     }
 
     /// <summary>
@@ -37,7 +34,9 @@ public static class DownloadExtensions
     public static async Task<TinyPngImageResponse> Download(this TinyPngCompressResponse compressResponse, PreserveMetadata metadata = PreserveMetadata.None)
     {
         if (compressResponse == null)
+        {
             throw new ArgumentNullException(nameof(compressResponse));
+        }
 
         var msg = new HttpRequestMessage(HttpMethod.Get, compressResponse.Output.Url)
         {
@@ -51,16 +50,18 @@ public static class DownloadExtensions
             return new TinyPngImageResponse(response);
         }
 
-        var errorMsg = await JsonSerializer.DeserializeAsync<ApiErrorResponse>(await response.Content.ReadAsStreamAsync());
+        var errorMsg = await JsonSerializer.DeserializeAsync<ApiErrorResponse>(await response.Content.ReadAsStreamAsync(), options: TinyPngClient.JsonOptions);
         throw new TinyPngApiException((int)response.StatusCode, response.ReasonPhrase, errorMsg.Error, errorMsg.Message);
     }
 
-    private static HttpContent CreateContent(PreserveMetadata metadata, string type)
+    private static JsonContent CreateContent(PreserveMetadata metadata, string type)
     {
         if (metadata == PreserveMetadata.None)
+        {
             return null;
+        }
 
-        var preserve = new List<string>();
+        var preserve = new List<string>(3);
 
         if (metadata.HasFlag(PreserveMetadata.Copyright))
         {
@@ -69,21 +70,25 @@ public static class DownloadExtensions
         if (metadata.HasFlag(PreserveMetadata.Creation))
         {
             if (type != _jpegType)
+            {
                 throw new InvalidOperationException($"Creation metadata can only be preserved with type {_jpegType}");
+            }
 
             preserve.Add("creation");
         }
         if (metadata.HasFlag(PreserveMetadata.Location))
         {
             if (type != _jpegType)
+            {
                 throw new InvalidOperationException($"Location metadata can only be preserved with type {_jpegType}");
+            }
 
             preserve.Add("location");
         }
 
-        var json = JsonSerializer.Serialize(new { preserve });
+        var json = JsonSerializer.Serialize(new { preserve }, options: TinyPngClient.JsonOptions);
 
-        return new StringContent(json, System.Text.Encoding.UTF8, "application/json");
+        return new JsonContent(json);
     }
 }
 

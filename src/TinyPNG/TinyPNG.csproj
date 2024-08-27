@@ -26,8 +26,15 @@
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
-	
+	<NoWarn>CA2007,CA1032,IDE0008,CA2000,IDE0130</NoWarn>
   </PropertyGroup>
+
+	<PropertyGroup>
+		<EnableNETAnalyzers>true</EnableNETAnalyzers>
+		<RunAnalyzersDuringBuild>true</RunAnalyzersDuringBuild>
+		<AnalysisMode>AllEnabledByDefault</AnalysisMode>
+		<AnalysisLevel>latest</AnalysisLevel>
+	</PropertyGroup>
 
   <!-- Deterministic builds -->
   <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">

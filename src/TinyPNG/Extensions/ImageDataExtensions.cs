@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Threading.Tasks;
 using TinyPng.Responses;
 
@@ -13,7 +14,7 @@ public static class ImageDataExtensions
     /// <returns>Byte array of the image data</returns>
     public static async Task<byte[]> GetImageByteData<T>(this Task<T> result) where T : TinyPngImageResponse
     {
-        var imageResponse = await result;
+        T imageResponse = await result;
         return await imageResponse.GetImageByteData();
     }
 
@@ -24,7 +25,9 @@ public static class ImageDataExtensions
     /// <returns>Byte array of the image data</returns>
     public static async Task<byte[]> GetImageByteData(this TinyPngImageResponse result)
     {
-        return await result.HttpResponseMessage.Content.ReadAsByteArrayAsync();
+        return result is null
+            ? throw new ArgumentNullException(nameof(result))
+            : await result.HttpResponseMessage.Content.ReadAsByteArrayAsync();
     }
 
     /// <summary>
@@ -34,7 +37,7 @@ public static class ImageDataExtensions
     /// <returns>Stream of compressed image data</returns>
     public static async Task<Stream> GetImageStreamData<T>(this Task<T> result) where T : TinyPngImageResponse
     {
-        var imageResponse = await result;
+        T imageResponse = await result;
         return await imageResponse.GetImageStreamData();
     }
 
@@ -45,7 +48,9 @@ public static class ImageDataExtensions
     /// <returns>Stream of compressed image data</returns>
     public static async Task<Stream> GetImageStreamData(this TinyPngImageResponse result)
     {
-        return await result.HttpResponseMessage.Content.ReadAsStreamAsync();
+        return result is null
+            ? throw new ArgumentNullException(nameof(result))
+            : await result.HttpResponseMessage.Content.ReadAsStreamAsync();
     }
 
     /// <summary>
@@ -56,7 +61,7 @@ public static class ImageDataExtensions
     /// <returns></returns>
     public static async Task SaveImageToDisk<T>(this Task<T> result, string filePath) where T : TinyPngImageResponse
     {
-        var response = await result;
+        T response = await result;
         await SaveImageToDisk(response, filePath);
     }
 
@@ -68,7 +73,11 @@ public static class ImageDataExtensions
     /// <returns></returns>
     public static async Task SaveImageToDisk(this TinyPngImageResponse result, string filePath)
     {
-        var byteData = await result.GetImageByteData();
+        if (string.IsNullOrEmpty(filePath))
+        {
+            throw new ArgumentException("File path cannot be null or empty", nameof(filePath));
+        }
+        byte[] byteData = await result.GetImageByteData();
         File.WriteAllBytes(filePath, byteData);
     }
 }

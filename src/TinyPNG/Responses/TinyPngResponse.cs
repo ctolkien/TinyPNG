@@ -12,12 +12,15 @@ public class TinyPngResponse
 
     public int CompressionCount => _compressionCount;
 
-
     protected TinyPngResponse(HttpResponseMessage msg)
     {
+        if (msg is null)
+        {
+            throw new System.ArgumentNullException(nameof(msg));
+        }
         if (msg.Headers.TryGetValues("Compression-Count", out IEnumerable<string> compressionCountHeaders))
         {
-            int.TryParse(compressionCountHeaders.First(), out _compressionCount);
+            _ = int.TryParse(compressionCountHeaders.First(), out _compressionCount);
         }
         HttpResponseMessage = msg;
     }

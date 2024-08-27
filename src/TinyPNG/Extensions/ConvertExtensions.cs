@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Net.Http;
 using System.Runtime.Serialization;
-using System.Text;
 using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 using TinyPng.Responses;
 
@@ -21,38 +21,39 @@ public static class ConvertExtensions
     /// <exception cref="ArgumentNullException"></exception>
     /// <exception cref="TinyPngApiException"></exception>
     /// <exception cref="ArgumentOutOfRangeException"></exception>
-    public static async Task<TinyPngConvertResponse> Convert(this Task<TinyPngCompressResponse> result, ConvertImageFormat convertOperation, string backgroundTransform = null)
+    public static async Task<TinyPngConvertResponse> Convert(this Task<TinyPngCompressResponse> result, ConvertImageFormat convertOperation, string backgroundTransform = null, CancellationToken cancellationToken = default)
     {
         if (result == null)
         {
             throw new ArgumentNullException(nameof(result));
         }
-        if (!string.IsNullOrEmpty(backgroundTransform) && (!backgroundTransform.StartsWith("#") || backgroundTransform.Length != 7))
+        if (!string.IsNullOrEmpty(backgroundTransform) && (!backgroundTransform.StartsWith("#", StringComparison.OrdinalIgnoreCase) || backgroundTransform.Length != 7))
         {
             throw new ArgumentOutOfRangeException(nameof(backgroundTransform), $"If {nameof(backgroundTransform)} is supplied, it should be a 6 character hex value, and include the hash");
         }
 
         TinyPngCompressResponse compressResponse = await result;
 
-        var requestBody = JsonSerializer.Serialize(
-            new { 
-                convert = new { type = convertOperation }, 
-                transform = !string.IsNullOrEmpty(backgroundTransform) ? new { background = backgroundTransform } : null 
+        string requestBody = JsonSerializer.Serialize(
+            new
+            {
+                convert = new { type = convertOperation },
+                transform = !string.IsNullOrEmpty(backgroundTransform) ? new { background = backgroundTransform } : null
             },
-            TinyPngClient._jsonOptions);
+            TinyPngClient.JsonOptions);
 
         HttpRequestMessage msg = new(HttpMethod.Post, compressResponse.Output.Url)
         {
-            Content = new StringContent(requestBody, Encoding.UTF8, "application/json")
+            Content = new JsonContent(requestBody)
         };
 
-        HttpResponseMessage response = await compressResponse._httpClient.SendAsync(msg);
+        HttpResponseMessage response = await compressResponse._httpClient.SendAsync(msg, cancellationToken);
         if (response.IsSuccessStatusCode)
         {
             return new TinyPngConvertResponse(response);
         }
 
-        ApiErrorResponse errorMsg = await JsonSerializer.DeserializeAsync<ApiErrorResponse>(await response.Content.ReadAsStreamAsync(), TinyPngClient._jsonOptions);
+        ApiErrorResponse errorMsg = await JsonSerializer.DeserializeAsync<ApiErrorResponse>(await response.Content.ReadAsStreamAsync(), TinyPngClient.JsonOptions, cancellationToken);
         throw new TinyPngApiException((int)response.StatusCode, response.ReasonPhrase, errorMsg.Error, errorMsg.Message);
 
 

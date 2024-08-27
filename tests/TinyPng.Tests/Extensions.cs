@@ -23,7 +23,7 @@ internal static class Extensions
                 Size = 16646,
                 Type = "image/jpeg",
                 Ratio = 0.9232f,
-                Url = "https://api.tinify.com/output"
+                Url = new Uri("https://api.tinify.com/output")
             }
         };
         HttpResponseMessage compressResponseMessage = new()

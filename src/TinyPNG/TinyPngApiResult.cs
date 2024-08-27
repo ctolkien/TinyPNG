@@ -1,4 +1,6 @@
-﻿namespace TinyPng;
+﻿using System;
+
+namespace TinyPng;
 
 public class TinyPngApiResult
 {
@@ -19,5 +21,5 @@ public class TinyPngApiOutput
     public int Width { get; set; }
     public int Height { get; set; }
     public float Ratio { get; set; }
-    public string Url { get; set; }
+    public Uri Url { get; set; }
 }
